@@ -1,4 +1,6 @@
 <script>
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+
 import Chart from "chart.js";
 import {GeoJSON, WFS} from "ol/format";
 import {and, equalTo} from "ol/format/filter";
@@ -145,14 +147,10 @@ export default {
          */
         createLayer () {
             if (!this.layer) {
-                this.layer = Radio.request(
-                    "ModelList",
-                    "getModelByAttributes",
-                    {
-                        isSimulationLayer: true,
-                        simModelId: this.processId
-                    }
-                );
+                this.layer = rawLayerList.getLayerWhere({
+                    isSimulationLayer: true,
+                    simModelId: this.processId
+                });
 
                 if (!this.layer) {
                     throw new Error(
@@ -161,9 +159,7 @@ export default {
                 }
 
                 // read and save the load mode for this layer/model
-                this.filterOnClient = Boolean(
-                    this.layer.attributes.filterOnClient
-                );
+                this.filterOnClient = Boolean(this.layer.filterOnClient);
             }
         },
 
@@ -219,11 +215,11 @@ export default {
          * @param {string} filter An XML filter string
          */
         getWFSUrl (filter) {
-            const mapProjection = Radio.request("MapView", "getProjection"),
-                url = new URL(this.layer.get("url"));
+            const mapProjection = mapCollection.getMapView("2D").getProjection(),
+                url = new URL(this.layer.url);
 
             url.searchParams.append("service", "WFS");
-            url.searchParams.append("version", this.layer.get("version"));
+            url.searchParams.append("version", this.layer.version);
             url.searchParams.append("request", "GetFeature");
             url.searchParams.append("typeName", `CUT:${this.jobId}`);
             url.searchParams.append("outputFormat", "application/json");
@@ -304,7 +300,13 @@ export default {
          * Initially set the job's filter values retrieved from the job's config
          */
         initMapFilters () {
-            this.mapFilters = this.job.results_metadata.values
+            const resultValues = this.job.results_metadata.values;
+
+            if (!resultValues) {
+                return;
+            }
+
+            this.mapFilters = resultValues
                 .map((filterEntry) => {
                     const key = Object.keys(filterEntry)[0],
                         filterValues = filterEntry[key],

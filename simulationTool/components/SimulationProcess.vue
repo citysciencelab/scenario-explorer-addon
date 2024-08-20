@@ -12,11 +12,11 @@ export default {
             required: true
         }
     },
-    emits: ["selected", "close"],
+    emits: ["selected"],
     data () {
         return {
             process: null,
-            jobs: null,
+            jobs: [],
             loadingJobs: false,
             apiUrl: Config.simulationApiUrl
         };
@@ -123,7 +123,7 @@ export default {
                 :process="process"
                 :jobs="jobs"
                 :loading-jobs="loadingJobs"
-                v-on="$listeners"
+                @selected="($event) => $emit('selected', $event)"
             />
 
             <SimulationProcessJobExecution

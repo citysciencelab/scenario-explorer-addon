@@ -1,5 +1,4 @@
 <script>
-import Vue from "vue";
 import SimulationJobExecutionInput from "./SimulationJobExecutionInput.vue";
 
 export default {
@@ -36,13 +35,13 @@ export default {
     },
     methods: {
         updateExecutionValue (key, value) {
-            Vue.set(this.executionValues, key, value);
+            this.executionValues[key] = value;
         },
         resetExecutionValues (newInputsConfig = this.inputsConfig) {
             this.executionValues = {};
             Object.entries(newInputsConfig).forEach(([key, input]) => {
                 if (input.schema.type === "array") {
-                    Vue.set(this.executionValues, key, [""]);
+                    this.executionValues[key] = [""];
                 }
             });
         },
