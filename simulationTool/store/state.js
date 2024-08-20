@@ -6,7 +6,6 @@
  * @property {Array.<Object>} processes a list of processes
  * @property {string} selectedProcessId the selected process id
  * @property {string} selectedJobId the selected job id
- * @property {boolean} active if true, the simulation tool will be rendered
  * @property {string} name displayed as title (config-param)
  * @property {string} icon icon next to title (config-param)
  * @property {boolean} renderToWindow if true, tool is rendered in a window, else in sidebar (config-param)
@@ -19,12 +18,11 @@
 const state = {
     id: "simulationTool",
     mode: "processes", // 'processes' | 'process' | 'job' | 'map'
-    processes: null,
+    processes: [],
     selectedProcessId: null,
     selectedJobId: null,
     apiUrl: Config.simulationApiUrl,
     // defaults for config.json parameters
-    active: false,
     name: "Sim Tool",
     icon: "bi-sliders2",
     renderToWindow: true,

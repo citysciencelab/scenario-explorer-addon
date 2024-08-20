@@ -1,3 +1,5 @@
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+
 const actions = {
     /**
      * Increases the count state.
@@ -9,9 +11,7 @@ const actions = {
         const response = await fetch(`${state.apiUrl}/processes/`, {
                 headers: {"content-type": "application/json"}
             }).then((res) => res.json()),
-            layers = Radio.request("ModelList", "getModelsByAttributes", {
-                isSimulationLayer: true
-            });
+            layers = rawLayerList.getLayerList().filter(layer => layer.isSimulationLayer);
 
         if (layers.length === 0) {
             throw new Error(
@@ -20,11 +20,9 @@ const actions = {
         }
 
         // filter by defined layers
-        const modelIdsFromLayers = layers.map(
-                (layer) => layer.attributes.simModelId
-            ),
-            processes = response.processes.filter((process) => modelIdsFromLayers.includes(process.id)
-            );
+        const processes = response.processes.filter((process) => {
+            return layers.some(layer => layer.simModelId === process.id);
+        });
 
         commit("setProcesses", processes);
     },

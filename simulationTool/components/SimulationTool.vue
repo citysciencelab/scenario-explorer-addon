@@ -14,39 +14,23 @@ export default {
         SimulationProcess,
         SimulationProcessJob
     },
-    data () {
-        return {};
-    },
     computed: {
         ...mapGetters("Modules/SimulationTool", Object.keys(getters))
     },
-    watch: {
+    mounted: function () {
+        this.fetchProcesses();
+    },
     /**
-     * Listens to the active property change.
-     * @param {Boolean} isActive Value deciding whether the tool gets activated or deactivated.
+     * Put initialize here if mounting occurs after config parsing
      * @returns {void}
      */
-        active (isActive) {
-            if (isActive) {
-                this.setMode("processes");
-                this.fetchProcesses();
-            }
-        }
-    },
-    created () {
-        // this.$on("close", this.close);
-    },
-    /**
-   * Put initialize here if mounting occurs after config parsing
-   * @returns {void}
-   */
     methods: {
-        ...mapMutations("Tools/SimulationTool", Object.keys(mutations)),
-        ...mapActions("Tools/SimulationTool", Object.keys(actions)),
+        ...mapMutations("Modules/SimulationTool", Object.keys(mutations)),
+        ...mapActions("Modules/SimulationTool", Object.keys(actions)),
         /**
-     * Selects a process by id
-     * @returns {void}
-     */
+         * Selects a process by id
+         * @returns {void}
+         */
         selectProcess (id) {
             if (typeof id === "string") {
                 this.setSelectedProcessId(id);
@@ -58,9 +42,9 @@ export default {
             }
         },
         /**
-     * Selects a job by id
-     * @returns {void}
-     */
+         * Selects a job by id
+         * @returns {void}
+         */
         selectJob (id) {
             this.setSelectedJobId(typeof id === "string" ? id : null);
 
@@ -73,21 +57,6 @@ export default {
             else {
                 this.setMode("processes");
             }
-        },
-        /**
-     * Closes this tool window by setting active to false
-     * @returns {void}
-     */
-        close () {
-            this.setActive(false);
-
-            const model = Radio.request("ModelList", "getModelByAttributes", {
-                id: this.$store.state.Tools.SimulationTool.id
-            });
-
-            if (model) {
-                model.set("isActive", false);
-            }
         }
     }
 };
@@ -95,10 +64,7 @@ export default {
 
 <template>
     <div id="template">
-        <div
-            v-if="active"
-            id="tool-simulationTool"
-        >
+        <div id="tool-simulationTool">
             <SimulationProcesses
                 v-if="mode === 'processes'"
                 :processes="processes"
@@ -123,7 +89,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-#tool-simulationTool {
-    background: white;
-}
+    #tool-simulationTool {
+        background: white;
+    }
 </style>

@@ -12,7 +12,7 @@ export default {
         },
         "value": {
             type: [String, Number, Boolean, Array],
-            required: true
+            default: ""
         }
     },
     emits: ["change"],
@@ -69,7 +69,7 @@ export default {
     <input
         v-else-if="data.schema.type === 'boolean'"
         :id="`input_${inputKey}`"
-        :key="`input_${inputKey}`"
+        :key="`input_${inputKey}_boolean`"
         class="form-check-input"
         :name="`input_${inputKey}`"
         type="checkbox"
