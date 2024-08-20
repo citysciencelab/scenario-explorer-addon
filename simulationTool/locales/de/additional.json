@@ -1,0 +1,34 @@
+{
+  "modules": {
+    "tools": {
+      "simulationTool": {
+        "title": "Simulationen",
+        "models": "Modelle",
+        "name": "Name",
+        "description": "Beschreibung",
+        "error": "Fehler",
+        "noModelsError": "Keine passenden Modelle für konfigurierte Layer gefunden!",
+        "info": "Info",
+        "model": "Modell",
+        "loading": "Lade",
+        "back": "zurück",
+        "job": "Job",
+        "status": "Status",
+        "started": "Gestartet",
+        "ended": "Geendet",
+        "parameters": "Parameter",
+        "result": "Ergebnis",
+        "show": "anzeigen",
+        "hide": "einklappen",
+        "propertyFilter": "Filter",
+        "charts": "Graphen",
+        "executeJob": "Job ausführen",
+        "runJob": "Start",
+        "chart-line": "Linien",
+        "chart-bar": "Balken",
+        "chart-radar": "Radar"
+      }
+    }
+  }
+}
+

@@ -1,0 +1,34 @@
+{
+  "modules": {
+    "tools": {
+      "simulationTool": {
+        "title": "Simulations",
+        "models": "Models",
+        "name": "Name",
+        "description": "Description",
+        "error": "Error",
+        "noModelsError": "No models found for configured simulation layers!",
+        "info": "Info",
+        "model": "Model",
+        "loading": "Loading",
+        "back": "back",
+        "job": "Job",
+        "status": "Status",
+        "started": "Started",
+        "ended": "Ended",
+        "parameters": "Parameter",
+        "result": "Result",
+        "show": "show",
+        "hide": "hide",
+        "propertyFilter": "Property Filter",
+        "charts": "Charts",
+        "executeJob": "Execute Job",
+        "runJob": "Run Job",
+        "chart-line": "Line Chart",
+        "chart-bar": "Bar Chart",
+        "chart-radar": "Radar Chart"
+      }
+    }
+  }
+}
+
