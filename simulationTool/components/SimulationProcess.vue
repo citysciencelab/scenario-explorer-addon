@@ -36,12 +36,19 @@ export default {
          * @param {String} processId
          */
         async fetchProcess (processId) {
-            this.process = await fetch(
-                `${this.apiUrl}/processes/${processId}`,
-                {
-                    headers: {"content-type": "application/json"}
+            let additionalHeaders = {};
+            if (this.$store.getters["Modules/Login/loggedIn"]) {
+                additionalHeaders = {
+                    Authorization: `Bearer ${this.$store.getters["Modules/Login/accessToken"]}`
+                };
+            }
+
+            this.process = await fetch(`${this.apiUrl}/processes/${processId}`,{
+                headers: {
+                    "Content-Type": "application/json",
+                    ...additionalHeaders
                 }
-            ).then((res) => res.json());
+            }).then((res) => res.json());
         },
         /**
          * Fetches the job list from the simulation backend
@@ -49,9 +56,20 @@ export default {
          */
         async fetchJobs (processId) {
             this.loadingJobs = true;
-            this.jobs = await fetch(
-                `${this.apiUrl}/jobs/?processID=${processId}`
-            )
+
+            let additionalHeaders = {};
+            if (this.$store.getters["Modules/Login/loggedIn"]) {
+                additionalHeaders = {
+                    Authorization: `Bearer ${this.$store.getters["Modules/Login/accessToken"]}`
+                };
+            }
+
+            this.jobs = await fetch(`${this.apiUrl}/jobs/?processID=${processId}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    ...additionalHeaders
+                }
+            })
                 .then((res) => res.json())
                 .then((json) => json.jobs);
 

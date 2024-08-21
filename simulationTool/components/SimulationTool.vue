@@ -17,7 +17,8 @@ export default {
     computed: {
         ...mapGetters("Modules/SimulationTool", Object.keys(getters))
     },
-    mounted: function () {
+    mounted: async function () {
+        await this.checkLoggedIn();
         this.fetchProcesses();
     },
     /**
@@ -25,6 +26,9 @@ export default {
      * @returns {void}
      */
     methods: {
+        ...mapActions("Modules/Login", [
+            "checkLoggedIn"
+        ]),
         ...mapMutations("Modules/SimulationTool", Object.keys(mutations)),
         ...mapActions("Modules/SimulationTool", Object.keys(actions)),
         /**
