@@ -25,7 +25,7 @@ export default {
 </script>
 
 <template>
-    <nav>
+    <nav class="pagination-wrapper">
         <ul class="pagination pagination-sm">
             <li
                 :class="{
@@ -65,13 +65,13 @@ export default {
             <li
                 :class="{
                     'page-item': true,
-                    disabled: currentPageIndex >= numberOfPages,
+                    disabled: currentPageIndex >= (numberOfPages - 1),
                 }"
             >
                 <a
                     class="page-link"
-                    :tabindex="currentPageIndex >= numberOfPages ? -1 : 0"
-                    :aria-disabled="currentPageIndex >= numberOfPages"
+                    :tabindex="currentPageIndex >= (numberOfPages - 1) ? -1 : 0"
+                    :aria-disabled="currentPageIndex >= (numberOfPages - 1)"
                     aria-label="Next"
                     @click.prevent="
                         $emit('pageChange', Math.min(currentPageIndex + 1, maxPageIndex))
@@ -85,7 +85,31 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.pagination {
+nav.pagination-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+ul.pagination {
+    display: flex;
+    list-style: none;
     margin: 0;
+    gap: 1em;
+    padding-left: 0;
+
+    li.page-item {
+        min-width: 2em;
+        text-align: center;
+        cursor: pointer;
+
+        &.disabled {
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        &.active {
+            font-weight: bold;
+        }
+    }
 }
 </style>
