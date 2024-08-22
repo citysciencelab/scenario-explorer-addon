@@ -63,8 +63,18 @@ export default {
          * @param {String} jobId Id of the job to fetch
          */
         async fetchJob (jobId) {
+            let additionalHeaders = {};
+            if (this.$store.getters["Modules/Login/loggedIn"]) {
+                additionalHeaders = {
+                    Authorization: `Bearer ${this.$store.getters["Modules/Login/accessToken"]}`
+                };
+            }
+
             this.job = await fetch(`${Config.simulationApiUrl}/jobs/${jobId}`, {
-                headers: {"content-type": "application/json"}
+                headers: {
+                    "content-type": "application/json",
+                    ...additionalHeaders
+                }
             }).then((res) => res.json());
         },
 

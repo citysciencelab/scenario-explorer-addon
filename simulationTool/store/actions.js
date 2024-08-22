@@ -7,9 +7,19 @@ const actions = {
      * @param {Object} context actions context object.
      * @returns {void}
      */
-    async fetchProcesses ({state, commit}) {
+    async fetchProcesses ({state, commit, rootGetters}) {
+        let additionalHeaders = {};
+        if (rootGetters["Modules/Login/loggedIn"]) {
+            additionalHeaders = {
+                Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
+            };
+        }
+
         const response = await fetch(`${state.apiUrl}/processes/`, {
-                headers: {"content-type": "application/json"}
+                headers: {
+                    "content-type": "application/json",
+                    ...additionalHeaders
+                }
             }).then((res) => res.json()),
             layers = rawLayerList.getLayerList().filter(layer => layer.isSimulationLayer);
 
@@ -33,12 +43,21 @@ const actions = {
      * @param {Object} context actions context object.
      * @returns {void}
      */
-    async fetchProcess ({state, commit}, processIndex) {
+    async fetchProcess ({state, commit, rootGetters}, processIndex) {
+        let additionalHeaders = {};
+        if (rootGetters["Modules/Login/loggedIn"]) {
+            additionalHeaders = {
+                Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
+            };
+        }
         const process = state.processes[processIndex],
             response = await fetch(
                 `${state.apiUrl}/processes/${process.id}/`,
                 {
-                    headers: {"content-type": "application/json"}
+                    headers: {
+                        "content-type": "application/json",
+                        ...additionalHeaders
+                    }
                 }
             ).then((res) => res.json());
 

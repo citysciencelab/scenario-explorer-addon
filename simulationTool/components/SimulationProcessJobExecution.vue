@@ -54,10 +54,20 @@ export default {
                 const processId = this.processId,
                     body = {inputs: this.executionValues};
 
+                let additionalHeaders = {};
+                if (this.$store.getters["Modules/Login/loggedIn"]) {
+                    additionalHeaders = {
+                        Authorization: `Bearer ${this.$store.getters["Modules/Login/accessToken"]}`
+                    };
+                }
+
                 await fetch(`${this.apiUrl}/processes/${processId}/execution`, {
                     method: "POST",
                     body: JSON.stringify(body),
-                    headers: {"Content-Type": "application/json"}
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
                 }).then((res) => res.json());
 
                 this.resetExecutionValues();
