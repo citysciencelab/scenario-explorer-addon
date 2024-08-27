@@ -2,33 +2,34 @@
   "modules": {
     "tools": {
       "simulationTool": {
-        "title": "Simulationen",
+        "additionalInfo": "Mehr Informationen",
+        "back": "zurück",
+        "chart-bar": "Balken",
+        "chart-line": "Linien",
+        "chart-radar": "Radar",
+        "charts": "Graphen",
+        "description": "Beschreibung",
+        "ended": "Geendet",
+        "error": "Fehler",
+        "executeJob": "Job ausführen",
+        "hide": "einklappen",
+        "info": "Info",
+        "job": "Job",
+        "loading": "Lade",
+        "model": "Modell",
         "models": "Modelle",
         "name": "Name",
-        "description": "Beschreibung",
-        "error": "Fehler",
         "noModelsError": "Keine passenden Modelle für konfigurierte Layer gefunden!",
-        "info": "Info",
-        "model": "Modell",
-        "loading": "Lade",
-        "back": "zurück",
-        "job": "Job",
-        "status": "Status",
-        "started": "Gestartet",
-        "ended": "Geendet",
         "parameters": "Parameter",
-        "result": "Ergebnis",
-        "show": "anzeigen",
-        "hide": "einklappen",
         "propertyFilter": "Filter",
-        "charts": "Graphen",
-        "executeJob": "Job ausführen",
+        "result": "Ergebnis",
         "runJob": "Start",
-        "chart-line": "Linien",
-        "chart-bar": "Balken",
-        "chart-radar": "Radar"
+        "show": "anzeigen",
+        "simulate": "Simulieren",
+        "started": "Gestartet",
+        "status": "Status",
+        "title": "Simulationen"
       }
     }
   }
 }
-

@@ -2,33 +2,34 @@
   "modules": {
     "tools": {
       "simulationTool": {
-        "title": "Simulations",
+        "additionalInfo": "Additional Info",
+        "back": "back",
+        "chart-bar": "Bar Chart",
+        "chart-line": "Line Chart",
+        "chart-radar": "Radar Chart",
+        "charts": "Charts",
+        "description": "Description",
+        "ended": "Ended",
+        "error": "Error",
+        "executeJob": "Execute Job",
+        "hide": "hide",
+        "info": "Info",
+        "job": "Job",
+        "loading": "Loading",
+        "model": "Model",
         "models": "Models",
         "name": "Name",
-        "description": "Description",
-        "error": "Error",
         "noModelsError": "No models found for configured simulation layers!",
-        "info": "Info",
-        "model": "Model",
-        "loading": "Loading",
-        "back": "back",
-        "job": "Job",
-        "status": "Status",
-        "started": "Started",
-        "ended": "Ended",
         "parameters": "Parameter",
-        "result": "Result",
-        "show": "show",
-        "hide": "hide",
         "propertyFilter": "Property Filter",
-        "charts": "Charts",
-        "executeJob": "Execute Job",
+        "result": "Result",
         "runJob": "Run Job",
-        "chart-line": "Line Chart",
-        "chart-bar": "Bar Chart",
-        "chart-radar": "Radar Chart"
+        "show": "show",
+        "simulate": "Simulate",
+        "started": "Started",
+        "status": "Status",
+        "title": "Simulations"
       }
     }
   }
 }
-
