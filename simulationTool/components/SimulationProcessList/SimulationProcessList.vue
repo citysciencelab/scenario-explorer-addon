@@ -125,6 +125,8 @@ export default {
 
 .process-list {
     height: 100%;
+    display: flex;
+    flex-direction: column;
 
     .process-list-toolbar {
         display: flex;
