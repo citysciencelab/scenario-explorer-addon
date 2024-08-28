@@ -107,11 +107,6 @@ export default {
             <button
                 class="btn btn-primary btn-sm"
                 type="submit"
-                :disabled="
-                    !Object.entries(executionValues).filter(
-                        ([, value]) => value != null
-                    ).length
-                "
                 @click="execute"
             >
                 {{ $t("additional:modules.tools.simulationTool.runJob") }}

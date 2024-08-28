@@ -62,7 +62,26 @@ const actions = {
             ).then((res) => res.json());
 
         commit("setProcess", response);
-    }
+    },
+
+    async fetchJobs ({state, commit, rootGetters}) {
+        let additionalHeaders = {};
+        if (rootGetters["Modules/Login/loggedIn"]) {
+            additionalHeaders = {
+                Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
+            };
+        }
+        const response = await fetch(
+            `${state.apiUrl}/jobs/`,
+            {
+                headers: {
+                    "content-type": "application/json",
+                    ...additionalHeaders
+                }
+            }).then((res) => res.json());
+
+        commit("setJobs", response.jobs);
+    },
 };
 
 export default actions;

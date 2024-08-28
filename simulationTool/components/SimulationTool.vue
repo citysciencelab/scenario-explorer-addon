@@ -3,6 +3,7 @@ import {mapGetters, mapActions, mapMutations} from "vuex";
 import SimulationProcessList from "./SimulationProcessList/SimulationProcessList.vue";
 import SimulationProcess from "./SimulationProcess.vue";
 import SimulationProcessJob from "./SimulationProcessJob.vue";
+import SimulationJobList from "./SimulationJobList/SimulationJobList.vue";
 import actions from "../store/actions";
 import getters from "../store/getters";
 import mutations from "../store/mutations";
@@ -15,7 +16,8 @@ export default {
     components: {
         SimulationProcessList,
         SimulationProcess,
-        SimulationProcessJob
+        SimulationProcessJob,
+        SimulationJobList,
     },
     computed: {
         ...mapGetters("Modules/SimulationTool", Object.keys(getters))
@@ -29,6 +31,7 @@ export default {
             });
         }
         this.fetchProcesses();
+        this.fetchJobs();
     },
     /**
      * Put initialize here if mounting occurs after config parsing
@@ -54,7 +57,7 @@ export default {
             }
             else {
                 this.setSelectedProcessId(null);
-                this.setMode("processes");
+                this.setMode("process-list");
             }
         },
         /**
@@ -71,7 +74,13 @@ export default {
                 this.setMode("process");
             }
             else {
-                this.setMode("processes");
+                this.setMode("process-list");
+            }
+        },
+        navigate(evt) {
+            const key = evt.target.dataset.key;
+            if (key) {
+                this.setMode(key);
             }
         }
     }
@@ -80,24 +89,49 @@ export default {
 
 <template>
     <div id="tool-simulationTool">
+        <nav>
+            <ul class="simulation-navigation" @click="navigate">
+                <li
+                    :class="{ 'active': this.mode === 'process-list' }"
+                    data-key="process-list"
+                >
+                    Modelle
+                </li>
+                <li
+                    :class="{ 'active': this.mode === 'job-list' }"
+                    data-key="job-list"
+                >
+                    Szenarien
+                </li>
+                <li
+                    :class="{ 'active': this.mode === 'ensembles' }"
+                    data-key="ensembles"
+                >
+                    Ensembles
+                </li>
+            </ul>
+        </nav>
         <SimulationProcessList
-            v-if="mode === 'processes'"
+            v-if="mode === 'process-list'"
             :processes="processes"
             @selected="selectProcess"
         />
-
         <SimulationProcess
             v-if="mode === 'process'"
             :process-id="selectedProcessId"
             @selected="selectJob"
-            @close="selectProcess"
+            @close="() => setMode('process-list')"
         />
-
         <SimulationProcessJob
             v-if="mode === 'job'"
             :job-id="selectedJobId"
             :process-id="selectedProcessId"
-            @close="selectJob"
+            @close="() => setMode('process-list')"
+        />
+        <SimulationJobList
+            v-if="mode === 'job-list'"
+            @close="() => setMode('process-list')"
+            :jobs="jobs"
         />
     </div>
 </template>
@@ -105,5 +139,18 @@ export default {
 <style lang="scss" scoped>
     #tool-simulationTool {
         overflow: hidden;
+
+        ul.simulation-navigation {
+            list-style: none;
+            display: flex;
+            justify-content: space-around;
+
+            li {
+                cursor: pointer;
+                &.active {
+                    text-decoration: underline;
+                }
+            }
+        }
     }
 </style>
