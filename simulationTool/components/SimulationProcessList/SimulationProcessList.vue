@@ -11,25 +11,37 @@ export default {
     props: {
         "processes": {
             type: Array,
-            required: true
+            required: true,
+            default: []
         }
     },
     data () {
         return {
             selectedTags: [],
-            filteredProcesses: [],
-            options: []
+            searchString: ""
         }
     },
     computed: {
         filteredProcesses: {
             get() {
-                if (this.selectedTags.length === 0) {
-                    return this.processes;
+                let filteredProcesses = this.processes;
+                if (this.selectedTags.length) {
+                    filteredProcesses = filteredProcesses.filter(process => {
+                        return this.selectedTags.some(tag =>
+                            process.keywords?.includes(tag.name)
+                        );
+                    });
                 }
-                return this.processes.filter(process => {
-                    return this.selectedTags.some(tag => process.keywords.includes(tag.name));
-                });
+                if (this.searchString) {
+                    // TODO: Check if every value should be compared
+                    filteredProcesses = filteredProcesses.filter(process => {
+                        return Object.values(process)
+                            .join()
+                            .toLowerCase()
+                            .includes(this.searchString.toLowerCase());
+                    });
+                }
+                return filteredProcesses;
             },
             set(newProcesses) {
                 this.filteredProcesses = newProcesses;
@@ -38,7 +50,7 @@ export default {
         options: {
             get() {
                 return this.processes.reduce((acc, process) => {
-                    process.keywords.forEach(keyword => {
+                    process.keywords?.forEach(keyword => {
                         if (!acc.some(tag => tag.name === keyword)) {
                             acc.push({name: keyword});
                         }
@@ -51,6 +63,11 @@ export default {
             }
         }
     },
+    methods: {
+        clearSearch() {
+            this.searchString = '';
+        }
+    },
     emits: ["selected"]
 };
 </script>
@@ -60,11 +77,23 @@ export default {
         <h3>{{ $t("additional:modules.tools.simulationTool.models") }}</h3>
         <div class="process-list-toolbar">
             <div class="input-group search-wrapper">
-                <input type="search" class="form-control" placeholder="Suche …" aria-label="Suche">
-                <button class="btn btn-primary" disabled="" aria-label="Suche" type="button">
-                    <i class="bi-search" role="img">
-                    </i>
-                </button>
+                <input
+                    class="form-control"
+                    placeholder="Suche …"
+                    aria-label="Suche"
+                    v-model="searchString"
+                >
+                <i
+                    v-if="searchString"
+                    class="bi-x-lg"
+                    role="img"
+                    @click="clearSearch"
+                ></i>
+                <i
+                    v-else
+                    class="bi-search"
+                    role="img"
+                ></i>
             </div>
             <multiselect
                 v-model="selectedTags"
@@ -100,16 +129,23 @@ export default {
         margin-bottom: 1rem;
 
         .search-wrapper {
-            button.btn {
-                border-top-right-radius: 5px;
-                border-bottom-right-radius: 5px;
+            input.form-control {
+                border-top-right-radius: 5px !important;
+                border-bottom-right-radius: 5px !important;
+            }
+            i {
+                z-index: 10;
+                position: absolute;
+                right: 1em;
+                top: 50%;
+                transform: translate(0, -50%);
             }
         }
     }
 
     .card-wrapper {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); /* Automatische Spaltenanpassung */
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1rem;
         max-height: 100%;
         overflow-y: auto;
