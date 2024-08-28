@@ -52,7 +52,10 @@ export default {
                 return this.processes.reduce((acc, process) => {
                     process.keywords?.forEach(keyword => {
                         if (!acc.some(tag => tag.name === keyword)) {
-                            acc.push({name: keyword});
+                            acc.push({
+                                name: keyword,
+                                code: keyword
+                            });
                         }
                     });
                     return acc;
