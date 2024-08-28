@@ -13,6 +13,10 @@ export default {
             const link = process.links.find(({rel}) => rel === "about");
 
             return link ? link.href : "";
+        },
+        getProcessImageSource (process) {
+            const image = process.links.find(({type}) => type === "image");
+            return image ? image : "resources/img/DALLE_Placeholder2.png";
         }
     }
 };
@@ -21,10 +25,9 @@ export default {
 <template>
   <div class="process-card card" style="width: 18rem;">
       <img
-        v-if="process.image"
         class="card-img-top"
-        src="resources/img/backgroundCanvas.jpeg"
-        alt="..."
+        :src="getProcessImageSource(process)"
+        :alt="process.title + ' image'"
       >
       <div class="card-body">
           <h5 class="card-title">
