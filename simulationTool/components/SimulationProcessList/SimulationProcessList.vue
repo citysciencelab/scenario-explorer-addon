@@ -79,8 +79,8 @@ export default {
             <div class="input-group search-wrapper">
                 <input
                     class="form-control"
-                    placeholder="Suche …"
-                    aria-label="Suche"
+                    :placeholder="$t('additional:modules.tools.simulationTool.search') + ' …'"
+                    :aria-label="$t('additional:modules.tools.simulationTool.search')"
                     v-model="searchString"
                 >
                 <i
@@ -97,7 +97,8 @@ export default {
             </div>
             <multiselect
                 v-model="selectedTags"
-                placeholder="Filter …"
+                :placeholder="$t('additional:modules.tools.simulationTool.filter') + ' …'"
+                :aria-label="$t('additional:modules.tools.simulationTool.filter')"
                 label="name"
                 track-by="code"
                 :options="options"
