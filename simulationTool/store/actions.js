@@ -31,7 +31,7 @@ const actions = {
 
         // filter by defined layers
         const processes = response.processes.filter((process) => {
-            return layers.some(layer => layer.simModelId === process.id);
+            return layers.some(layer => layer.simModelId === process.id || layer.simModelId === '*');
         });
 
         commit("setProcesses", processes);

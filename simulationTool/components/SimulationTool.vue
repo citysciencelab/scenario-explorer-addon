@@ -1,16 +1,19 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
-import SimulationProcesses from "./SimulationProcesses.vue";
+import SimulationProcessList from "./SimulationProcessList/SimulationProcessList.vue";
 import SimulationProcess from "./SimulationProcess.vue";
 import SimulationProcessJob from "./SimulationProcessJob.vue";
 import actions from "../store/actions";
 import getters from "../store/getters";
 import mutations from "../store/mutations";
 
+// Minimum width for two cards side by side
+const MIN_WIDTH = 560;
+
 export default {
     name: "SimulationTool",
     components: {
-        SimulationProcesses,
+        SimulationProcessList,
         SimulationProcess,
         SimulationProcessJob
     },
@@ -19,6 +22,12 @@ export default {
     },
     mounted: async function () {
         await this.checkLoggedIn();
+        if (window.innerWidth / 4 < MIN_WIDTH) {
+            this.setCurrentMenuWidth({
+                side: "secondaryMenu",
+                width: MIN_WIDTH + "px"
+            });
+        }
         this.fetchProcesses();
     },
     /**
@@ -28,6 +37,9 @@ export default {
     methods: {
         ...mapActions("Modules/Login", [
             "checkLoggedIn"
+        ]),
+        ...mapMutations("Menu", [
+            "setCurrentMenuWidth"
         ]),
         ...mapMutations("Modules/SimulationTool", Object.keys(mutations)),
         ...mapActions("Modules/SimulationTool", Object.keys(actions)),
@@ -67,33 +79,31 @@ export default {
 </script>
 
 <template>
-    <div id="template">
-        <div id="tool-simulationTool">
-            <SimulationProcesses
-                v-if="mode === 'processes'"
-                :processes="processes"
-                @selected="selectProcess"
-            />
+    <div id="tool-simulationTool">
+        <SimulationProcessList
+            v-if="mode === 'processes'"
+            :processes="processes"
+            @selected="selectProcess"
+        />
 
-            <SimulationProcess
-                v-if="mode === 'process'"
-                :process-id="selectedProcessId"
-                @selected="selectJob"
-                @close="selectProcess"
-            />
+        <SimulationProcess
+            v-if="mode === 'process'"
+            :process-id="selectedProcessId"
+            @selected="selectJob"
+            @close="selectProcess"
+        />
 
-            <SimulationProcessJob
-                v-if="mode === 'job'"
-                :job-id="selectedJobId"
-                :process-id="selectedProcessId"
-                @close="selectJob"
-            />
-        </div>
+        <SimulationProcessJob
+            v-if="mode === 'job'"
+            :job-id="selectedJobId"
+            :process-id="selectedProcessId"
+            @close="selectJob"
+        />
     </div>
 </template>
 
 <style lang="scss" scoped>
     #tool-simulationTool {
-        background: white;
+        overflow: hidden;
     }
 </style>
