@@ -77,6 +77,7 @@ export default {
 
 <template>
     <div class="job-list">
+        <h3>{{ $t('additional:modules.tools.simulationTool.scenarios') }}</h3>
         <div class="job-list-toolbar">
             <div class="input-group search-wrapper">
                 <input
