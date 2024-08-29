@@ -16,9 +16,11 @@ export default {
     data () {
         return {
             options: [
+                { name: "accepted", code: "accepted" },
                 { name: "running", code: "running" },
                 { name: "successful", code: "successful" },
-                { name: "failed", code: "failed" }
+                { name: "failed", code: "failed" },
+                { name: "dismissed", code: "dismissed" }
             ],
             selectedStatus: [],
             searchString: ""
@@ -53,6 +55,21 @@ export default {
     methods: {
         clearSearch() {
             this.searchString = '';
+        },
+        formatDateTime(dateTime) {
+            return new Date(dateTime).toLocaleString({
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        },
+        getJobName(job) {
+            return job.name || job.jobID;
+        },
+        getModelName(job) {
+            return job.process_title || job.processID;
         }
     },
 };
@@ -88,7 +105,18 @@ export default {
                 track-by="code"
                 :options="options"
                 :multiple="true"
-            />
+            >
+                <template #tag="{ option, remove }">
+                    <span class="multiselect__tag" :class="option.code" >
+                        <span>{{ option.name }}</span>
+                        <i
+                            tabindex="1"
+                            class="multiselect__tag-icon"
+                            @click="remove(option)"
+                        ></i>
+                    </span>
+                </template>
+            </multiselect>
         </div>
         <table class="job-list-table">
             <thead>
@@ -103,12 +131,36 @@ export default {
             </thead>
             <tbody>
                 <tr v-for="job in filteredJobs">
-                    <td><div>{{job.jobID}}</div></td>
-                    <td><div>{{job.processID}}</div></td>
-                    <td><div>{{job.started}}</div></td>
-                    <td><div>{{job.status}}</div></td>
-                    <td><div>{{job.user}}</div></td>
-                    <td><div>{{job.ensembles}}</div></td>
+                    <td>
+                        <div>
+                            {{this.getJobName(job)}}
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            {{this.getModelName(job)}}
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            {{this.formatDateTime(job.started)}}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="status" :class="job.status">
+                            {{job.status}}
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            {{job.user}}
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            {{job.ensembles}}
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -121,6 +173,22 @@ export default {
         height: 100%;
         display: flex;
         flex-direction: column;
+
+        .accepted {
+            background-color: var(--bs-info);
+        }
+        .running {
+            background-color: var(--bs-warning);
+        }
+        .successful {
+            background-color: var(--bs-success);
+        }
+        .dismissed {
+            background-color: var(--bs-secondary);
+        }
+        .failed {
+            background-color: var(--bs-danger);
+        }
 
         .job-list-toolbar {
             display: flex;
@@ -171,8 +239,16 @@ export default {
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                max-height: 2em;
                 word-break: break-word;
+            }
+
+            div.status {
+                display: inline-block;
+                padding: .25rem .5rem;
+                border-radius: .5rem;
+                font-size: .875rem;
+                font-weight: 500;
+                color: white;
             }
         }
     }

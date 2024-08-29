@@ -8,8 +8,7 @@ import actions from "../store/actions";
 import getters from "../store/getters";
 import mutations from "../store/mutations";
 
-// Minimum width for two cards side by side
-const MIN_WIDTH = 560;
+const MIN_WIDTH = 900;
 
 export default {
     name: "SimulationTool",
@@ -138,6 +137,7 @@ export default {
 
 <style lang="scss" scoped>
     #tool-simulationTool {
+        height: 100%;
         overflow: hidden;
 
         ul.simulation-navigation {

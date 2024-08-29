@@ -52,7 +52,10 @@ export default {
 
             if (formIsValid) {
                 const processId = this.processId,
-                    body = {inputs: this.executionValues};
+                {
+                    job_name,
+                    ...inputs
+                } = this.executionValues;
 
                 let additionalHeaders = {};
                 if (this.$store.getters["Modules/Login/loggedIn"]) {
@@ -63,7 +66,10 @@ export default {
 
                 await fetch(`${this.apiUrl}/processes/${processId}/execution`, {
                     method: "POST",
-                    body: JSON.stringify(body),
+                    body: JSON.stringify({
+                        job_name,
+                        inputs
+                    }),
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -86,6 +92,13 @@ export default {
             ref="form"
             class="execution-form"
         >
+            <label for="name_input">Job Name:</label>
+            <input
+                id="name_input"
+                type="text"
+                v-model="executionValues.job_name"
+                required
+            />
             <template
                 v-for="(input, key) in inputsConfig"
                 :key="`label_${key}`"
