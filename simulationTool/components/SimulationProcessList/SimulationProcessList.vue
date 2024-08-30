@@ -77,7 +77,7 @@ export default {
 
 <template>
     <div class="process-list">
-        <h3>{{ $t("additional:modules.tools.simulationTool.models") }}</h3>
+        <h3>{{ $t('additional:modules.tools.simulationTool.models') }}</h3>
         <div class="process-list-toolbar">
             <div class="input-group search-wrapper">
                 <input

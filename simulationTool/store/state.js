@@ -17,8 +17,9 @@
  */
 const state = {
     id: "simulationTool",
-    mode: "processes", // 'processes' | 'process' | 'job' | 'map'
+    mode: "process-list", // 'process-list' | 'process' | 'job' | 'job-execution'
     processes: [],
+    jobs: [],
     selectedProcessId: null,
     selectedJobId: null,
     apiUrl: Config.simulationApiUrl,
