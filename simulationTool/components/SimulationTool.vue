@@ -1,10 +1,11 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
-import SimulationProcessList from "./SimulationProcessList/SimulationProcessList.vue";
+import ProcessList from "./Process/ProcessList.vue";
 import SimulationProcess from "./SimulationProcess.vue";
 import SimulationProcessJob from "./SimulationProcessJob.vue";
-import SimulationJobList from "./SimulationJobList/SimulationJobList.vue";
-import SimulationToolSidebar from "./SimulationToolSidebar.vue";
+import JobList from "./Job/JobList.vue";
+import SideMenu from "./SideMenu.vue";
+import EnsembleList from "./Ensemble/EnsembleList.vue";
 import actions from "../store/actions";
 import getters from "../store/getters";
 import mutations from "../store/mutations";
@@ -14,11 +15,12 @@ const MIN_WIDTH = 900;
 export default {
     name: "SimulationTool",
     components: {
-        SimulationProcessList,
+        ProcessList,
         SimulationProcess,
         SimulationProcessJob,
-        SimulationJobList,
-        SimulationToolSidebar
+        JobList,
+        SideMenu,
+        EnsembleList
     },
     computed: {
         ...mapGetters("Modules/SimulationTool", Object.keys(getters))
@@ -94,7 +96,7 @@ export default {
 <template>
     <div id="tool-simulationTool">
         <div class="content">
-            <SimulationProcessList
+            <ProcessList
                 v-if="mode === 'process-list'"
                 :processes="processes"
                 @selected="selectProcess"
@@ -111,13 +113,18 @@ export default {
                 :process-id="selectedProcessId"
                 @close="() => setMode('process-list')"
             />
-            <SimulationJobList
+            <JobList
                 v-if="mode === 'job-list'"
                 @close="() => setMode('process-list')"
                 :jobs="jobs"
             />
+            <EnsembleList
+                v-if="mode === 'ensemble-list'"
+                @close="() => setMode('process-list')"
+                :ensembles="ensembles"
+            />
         </div>
-        <SimulationToolSidebar />
+        <SideMenu />
     </div>
 </template>
 

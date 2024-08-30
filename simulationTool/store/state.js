@@ -17,7 +17,7 @@
  */
 const state = {
     id: "simulationTool",
-    mode: "process-list", // 'process-list' | 'process' | 'job' | 'job-execution'
+    mode: "process-list", // 'process-list' | 'process' | 'job' | 'job-execution' | 'ensemble-list'
     processes: [],
     jobs: [],
     selectedProcessId: null,

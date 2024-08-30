@@ -1,10 +1,12 @@
 <script>
 import Multiselect from "vue-multiselect";
+import SectionHeader from "../SectionHeader.vue";
 
 export default {
-    name: "SimulationJobList",
+    name: "JobList",
     components: {
-        Multiselect
+        Multiselect,
+        SectionHeader
     },
     props: {
         "jobs": {
@@ -77,7 +79,7 @@ export default {
 
 <template>
     <div class="job-list">
-        <h3>{{ $t('additional:modules.tools.simulationTool.scenarios') }}</h3>
+        <SectionHeader title="Szenarien" icon="bi-box-fill" />
         <div class="job-list-toolbar">
             <div class="input-group search-wrapper">
                 <input
