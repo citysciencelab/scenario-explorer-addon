@@ -1,12 +1,14 @@
 <script>
 import Multiselect from "vue-multiselect";
 import ProcessCard from './ProcessCard.vue';
+import SectionHeader from '../SectionHeader.vue';
 
 export default {
-    name: "SimulationProcessList",
+    name: "ProcessList",
     components: {
         Multiselect,
-        ProcessCard
+        ProcessCard,
+        SectionHeader
     },
     props: {
         "processes": {
@@ -77,7 +79,7 @@ export default {
 
 <template>
     <div class="process-list">
-        <h3>{{ $t('additional:modules.tools.simulationTool.models') }}</h3>
+        <SectionHeader title="Modelle" icon="bi-cpu-fill" />
         <div class="process-list-toolbar">
             <div class="input-group search-wrapper">
                 <input

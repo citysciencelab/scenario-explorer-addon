@@ -2,7 +2,7 @@
 import { mapActions, mapMutations, mapGetters} from "vuex";
 
 export default {
-    name: 'SimulationToolSidebar',
+    name: 'SideMenu',
     mounted: async function () {
         this.applyCustomLayout();
     },
@@ -75,8 +75,8 @@ export default {
         </button>
         <button
             class="btn btn-link"
-            :class="{ active: mode === 'ensembles' }"
-            @click="() => this.setMode('ensembles')"
+            :class="{ active: mode === 'ensemble-list' }"
+            @click="() => this.setMode('ensemble-list')"
             title="Ensembles"
         >
             <i class="bi bi-collection-fill"></i>
