@@ -49,19 +49,18 @@ export default {
               </span>
           </div>
           <div class="card-buttons">
-            <a
-              target="_blank"
+            <button
               class="btn btn-secondary"
-              :href="getProcessLink(process)"
+              @click="$emit('selected', { id: process.id, mode: 'process-details'})"
             >
-              <span class="bi-info-circle-fill"></span>&nbsp;
+              <i class="bi bi-info-circle-fill">&nbsp;</i>
               {{ $t("additional:modules.tools.simulationTool.additionalInfo") }}
-            </a>
+            </button>
             <button
               class="btn btn-primary"
-              @click="$emit('selected', process.id)"
+              @click="$emit('selected', { id: process.id, mode: 'job-execution'})"
             >
-              <span class="bi-rocket"></span>&nbsp;
+              <i class="bi bi-rocket">&nbsp;</i>
               {{ $t("additional:modules.tools.simulationTool.simulate") }}
             </button>
           </div>

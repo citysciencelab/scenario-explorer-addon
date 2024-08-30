@@ -1,4 +1,5 @@
 <script>
+import { mapMutations } from "vuex";
 import Multiselect from "vue-multiselect";
 import SectionHeader from "../SectionHeader.vue";
 
@@ -55,6 +56,9 @@ export default {
         }
     },
     methods: {
+        ...mapMutations("Modules/SimulationTool", [
+            "setMode"
+        ]),
         clearSearch() {
             this.searchString = '';
         },
@@ -79,7 +83,17 @@ export default {
 
 <template>
     <div class="job-list">
-        <SectionHeader title="Szenarien" icon="bi-box-fill" />
+        <SectionHeader title="Szenarien" icon="bi-box-fill">
+            <template #actions>
+                <button
+                    class="btn btn-primary"
+                    @click="() => this.setMode('job-execution')"
+                >
+                    <i class="bi bi-plus-lg">&nbsp;</i>
+                    <span>Neues Szenario</span>
+                </button>
+            </template>
+        </SectionHeader>
         <div class="job-list-toolbar">
             <div class="input-group search-wrapper">
                 <input

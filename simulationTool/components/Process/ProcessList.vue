@@ -35,7 +35,6 @@ export default {
                     });
                 }
                 if (this.searchString) {
-                    // TODO: Check if every value should be compared
                     filteredProcesses = filteredProcesses.filter(process => {
                         return Object.values(process)
                             .join()
@@ -115,7 +114,7 @@ export default {
                 v-for="process in filteredProcesses"
                 :key="process.id"
                 :process="process"
-                @selected="$emit('selected', process.id)"
+                @selected="(payload) => $emit('selected', payload)"
             />
         </div>
     </div>
