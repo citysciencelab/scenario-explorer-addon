@@ -3,12 +3,6 @@ import { mapActions, mapMutations, mapGetters} from "vuex";
 
 export default {
     name: 'SimulationToolSidebar',
-    // data() {
-    //     return {
-    //         title: 'Hello World',
-    //         message: 'Welcome to my Vue component!',
-    //     };
-    // },
     mounted: async function () {
         this.applyCustomLayout();
     },
@@ -83,7 +77,7 @@ export default {
             class="btn btn-link"
             :class="{ active: mode === 'ensembles' }"
             @click="() => this.setMode('ensembles')"
-            title="Ensambles"
+            title="Ensembles"
         >
             <i class="bi bi-collection-fill"></i>
         </button>
