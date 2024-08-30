@@ -9,18 +9,22 @@ import EnsembleList from "./Ensemble/EnsembleList.vue";
 import actions from "../store/actions";
 import getters from "../store/getters";
 import mutations from "../store/mutations";
+import JobExecution from "./Job/JobExecution.vue";
+import ProcessDetails from "./Process/ProcessDetails.vue";
 
 const MIN_WIDTH = 900;
 
 export default {
     name: "SimulationTool",
     components: {
-        ProcessList,
-        SimulationProcess,
-        SimulationProcessJob,
+        EnsembleList,
+        JobExecution,
         JobList,
+        ProcessDetails,
+        ProcessList,
         SideMenu,
-        EnsembleList
+        SimulationProcess,
+        SimulationProcessJob
     },
     computed: {
         ...mapGetters("Modules/SimulationTool", Object.keys(getters))
@@ -56,15 +60,9 @@ export default {
          * Selects a process by id
          * @returns {void}
          */
-        selectProcess (id) {
-            if (typeof id === "string") {
-                this.setSelectedProcessId(id);
-                this.setMode("process");
-            }
-            else {
-                this.setSelectedProcessId(null);
-                this.setMode("process-list");
-            }
+        selectProcess ({id, mode}) {
+            this.setSelectedProcessId(id);
+            this.setMode(mode);
         },
         /**
          * Selects a job by id
@@ -101,6 +99,10 @@ export default {
                 :processes="processes"
                 @selected="selectProcess"
             />
+            <ProcessDetails
+                v-if="mode === 'process-details'"
+                @close="() => setMode('process-list')"
+            />
             <SimulationProcess
                 v-if="mode === 'process'"
                 :process-id="selectedProcessId"
@@ -117,6 +119,10 @@ export default {
                 v-if="mode === 'job-list'"
                 @close="() => setMode('process-list')"
                 :jobs="jobs"
+            />
+            <JobExecution
+                v-if="mode === 'job-execution'"
+                @close="() => setMode('job-list')"
             />
             <EnsembleList
                 v-if="mode === 'ensemble-list'"
