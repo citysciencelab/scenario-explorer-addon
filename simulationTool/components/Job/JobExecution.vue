@@ -75,12 +75,12 @@ export default {
                     ...inputs
                 } = this.executionValues;
 
-            let additionalHeaders = {};
-            if (this.loggedIn) {
-                additionalHeaders = {
-                    Authorization: `Bearer ${this.accessToken}`
-                };
-            }
+                let additionalHeaders = {};
+                if (this.loggedIn) {
+                    additionalHeaders = {
+                        Authorization: `Bearer ${this.accessToken}`
+                    };
+                }
 
                 const result = await fetch(`${this.apiUrl}/processes/${this.selectedProcessId}/execution`, {
                     method: "POST",
