@@ -109,9 +109,12 @@ export default {
                     </span>
                 </div>
                 <div class="actions">
-                    <button class="btn btn-primary">
-                        <i class="bi bi-box-fill">&nbsp;</i>
-                        <span>Simulieren</span>
+                    <button
+                        class="btn btn-primary"
+                        @click="$emit('selected', { id: process.id, mode: 'job-execution'})"
+                        >
+                        <i class="bi bi-rocket">&nbsp;</i>
+                        {{ $t("additional:modules.tools.simulationTool.simulate") }}
                     </button>
                     <button class="btn btn-secondary">
                         <i class="bi bi-collection-fill">&nbsp;</i>

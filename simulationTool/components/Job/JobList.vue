@@ -57,7 +57,8 @@ export default {
     },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
-            "setMode"
+            "setMode",
+            "setSelectedJobId"
         ]),
         clearSearch() {
             this.searchString = '';
@@ -76,6 +77,10 @@ export default {
         },
         getModelName(job) {
             return job.process_title || job.processID;
+        },
+        onJobClick(job) {
+            this.setSelectedJobId(job.jobID);
+            this.setMode("job-details");
         }
     },
 };
@@ -150,7 +155,12 @@ export default {
                 <tr v-for="job in filteredJobs">
                     <td>
                         <div>
-                            {{this.getJobName(job)}}
+                            <button
+                                class="btn btn-link"
+                                @click="onJobClick(job)"
+                            >
+                                {{this.getJobName(job)}}
+                            </button>
                         </div>
                     </td>
                     <td>

@@ -1,16 +1,19 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
-import ProcessList from "./Process/ProcessList.vue";
-import SimulationProcess from "./SimulationProcess.vue";
-import SimulationProcessJob from "./SimulationProcessJob.vue";
-import JobList from "./Job/JobList.vue";
-import SideMenu from "./SideMenu.vue";
-import EnsembleList from "./Ensemble/EnsembleList.vue";
+
 import actions from "../store/actions";
 import getters from "../store/getters";
 import mutations from "../store/mutations";
+
+import EnsembleList from "./Ensemble/EnsembleList.vue";
+import JobDetails from "./Job/JobDetails.vue";
 import JobExecution from "./Job/JobExecution.vue";
+import JobList from "./Job/JobList.vue";
 import ProcessDetails from "./Process/ProcessDetails.vue";
+import ProcessList from "./Process/ProcessList.vue";
+import SideMenu from "./SideMenu.vue";
+import SimulationProcess from "./SimulationProcess.vue";
+import SimulationProcessJob from "./SimulationProcessJob.vue";
 
 const MIN_WIDTH = 900;
 
@@ -18,6 +21,7 @@ export default {
     name: "SimulationTool",
     components: {
         EnsembleList,
+        JobDetails,
         JobExecution,
         JobList,
         ProcessDetails,
@@ -70,16 +74,6 @@ export default {
          */
         selectJob (id) {
             this.setSelectedJobId(typeof id === "string" ? id : null);
-
-            if (typeof id === "string") {
-                this.setMode("job");
-            }
-            else if (this.selectedProcessId) {
-                this.setMode("process");
-            }
-            else {
-                this.setMode("process-list");
-            }
         },
         navigate(evt) {
             const key = evt.target.dataset.key;
@@ -101,6 +95,7 @@ export default {
             />
             <ProcessDetails
                 v-if="mode === 'process-details'"
+                @selected="selectProcess"
                 @close="() => setMode('process-list')"
             />
             <SimulationProcess
@@ -122,6 +117,10 @@ export default {
             />
             <JobExecution
                 v-if="mode === 'job-execution'"
+                @close="() => setMode('job-list')"
+            />
+            <JobDetails
+                v-if="mode === 'job-details'"
                 @close="() => setMode('job-list')"
             />
             <EnsembleList
