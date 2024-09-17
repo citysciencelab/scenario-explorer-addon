@@ -10,8 +10,7 @@ export default {
     },
     data() {
         return {
-            process: null,
-            apiUrl: Config.simulationApiUrl
+            process: null
         };
     },
     computed: {
@@ -38,7 +37,7 @@ export default {
                 };
             }
 
-            this.process = await fetch(`${this.apiUrl}/processes/${processId}`,{
+            this.process = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders

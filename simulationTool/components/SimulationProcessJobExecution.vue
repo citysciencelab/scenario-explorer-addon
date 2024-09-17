@@ -17,8 +17,7 @@ export default {
     emits: ["executed"],
     data () {
         return {
-            executionValues: {},
-            apiUrl: Config.simulationApiUrl
+            executionValues: {}
         };
     },
     watch: {
@@ -64,7 +63,7 @@ export default {
                     };
                 }
 
-                await fetch(`${this.apiUrl}/processes/${processId}/execution`, {
+                await fetch(`${Config.simulationApiUrl}/processes/${processId}/execution`, {
                     method: "POST",
                     body: JSON.stringify({
                         job_name,
