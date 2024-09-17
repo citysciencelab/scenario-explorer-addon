@@ -9,8 +9,7 @@ export default {
     },
     data() {
         return {
-            job: null,
-            apiUrl: Config.simulationApiUrl
+            job: null
         };
     },
     computed: {
@@ -41,7 +40,7 @@ export default {
                 };
             }
 
-            this.job = await fetch(`${this.apiUrl}/jobs/${jobId}`,{
+            this.job = await fetch(`${Config.simulationApiUrl}/jobs/${jobId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders

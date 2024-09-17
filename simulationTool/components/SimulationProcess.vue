@@ -17,8 +17,7 @@ export default {
         return {
             process: null,
             jobs: [],
-            loadingJobs: false,
-            apiUrl: Config.simulationApiUrl
+            loadingJobs: false
         };
     },
     computed: {
@@ -43,7 +42,7 @@ export default {
                 };
             }
 
-            this.process = await fetch(`${this.apiUrl}/processes/${processId}`,{
+            this.process = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders
@@ -64,7 +63,7 @@ export default {
                 };
             }
 
-            this.jobs = await fetch(`${this.apiUrl}/jobs/?processID=${processId}`, {
+            this.jobs = await fetch(`${Config.simulationApiUrl}/jobs/?processID=${processId}`, {
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders

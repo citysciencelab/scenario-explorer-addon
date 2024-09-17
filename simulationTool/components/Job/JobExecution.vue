@@ -13,8 +13,7 @@ export default {
     data() {
         return {
             process: null,
-            executionValues: {},
-            apiUrl: Config.simulationApiUrl
+            executionValues: {}
         };
     },
     computed: {
@@ -46,7 +45,7 @@ export default {
                 };
             }
 
-            this.process = await fetch(`${this.apiUrl}/processes/${processId}`,{
+            this.process = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders
@@ -82,7 +81,7 @@ export default {
                     };
                 }
 
-                const result = await fetch(`${this.apiUrl}/processes/${this.selectedProcessId}/execution`, {
+                const result = await fetch(`${Config.simulationApiUrl}/processes/${this.selectedProcessId}/execution`, {
                     method: "POST",
                     body: JSON.stringify({
                         job_name,
