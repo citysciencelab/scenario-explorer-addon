@@ -14,6 +14,7 @@ import ProcessList from "./Process/ProcessList.vue";
 import SideMenu from "./SideMenu.vue";
 import SimulationProcess from "./SimulationProcess.vue";
 import SimulationProcessJob from "./SimulationProcessJob.vue";
+import EnsembleExecution from "./Ensemble/EnsembleExecution.vue";
 
 const MIN_WIDTH = 900;
 
@@ -21,6 +22,7 @@ export default {
     name: "SimulationTool",
     components: {
         EnsembleList,
+        EnsembleExecution,
         JobDetails,
         JobExecution,
         JobList,
@@ -127,6 +129,10 @@ export default {
                 v-if="mode === 'ensemble-list'"
                 @close="() => setMode('process-list')"
                 :ensembles="ensembles"
+            />
+            <EnsembleExecution
+                v-if="mode === 'ensemble-execution'"
+                @close="() => setMode('ensemble-list')"
             />
         </div>
         <SideMenu />
