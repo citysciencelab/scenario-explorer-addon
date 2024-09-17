@@ -63,7 +63,7 @@ export default {
                     };
                 }
 
-                await fetch(`${Config.simulationApiUrl}/processes/${processId}/execution`, {
+                await fetch(`/api/processes/${processId}/execution`, {
                     method: "POST",
                     body: JSON.stringify({
                         job_name,

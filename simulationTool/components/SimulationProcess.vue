@@ -42,7 +42,7 @@ export default {
                 };
             }
 
-            this.process = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
+            this.process = await fetch(`/api/processes/${processId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders
@@ -63,7 +63,7 @@ export default {
                 };
             }
 
-            this.jobs = await fetch(`${Config.simulationApiUrl}/jobs/?processID=${processId}`, {
+            this.jobs = await fetch(`/api/jobs/?processID=${processId}`, {
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders

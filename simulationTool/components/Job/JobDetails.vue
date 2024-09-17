@@ -40,7 +40,7 @@ export default {
                 };
             }
 
-            this.job = await fetch(`${Config.simulationApiUrl}/jobs/${jobId}`,{
+            this.job = await fetch(`/api/jobs/${jobId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders
