@@ -15,7 +15,7 @@ const actions = {
             };
         }
 
-        const response = await fetch(`${state.apiUrl}/processes/`, {
+        const response = await fetch(`${Config.simulationApiUrl}/processes/`, {
                 headers: {
                     "content-type": "application/json",
                     ...additionalHeaders
@@ -52,7 +52,7 @@ const actions = {
         }
         const process = state.processes[processIndex],
             response = await fetch(
-                `${state.apiUrl}/processes/${process.id}/`,
+                `${Config.simulationApiUrl}/processes/${process.id}/`,
                 {
                     headers: {
                         "content-type": "application/json",
@@ -72,7 +72,7 @@ const actions = {
             };
         }
         const response = await fetch(
-            `${state.apiUrl}/jobs/`,
+            `${Config.simulationApiUrl}/jobs/`,
             {
                 headers: {
                     "content-type": "application/json",
