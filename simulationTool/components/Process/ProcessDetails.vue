@@ -37,7 +37,7 @@ export default {
                 };
             }
 
-            this.process = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
+            this.process = await fetch(`/api/processes/${processId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders

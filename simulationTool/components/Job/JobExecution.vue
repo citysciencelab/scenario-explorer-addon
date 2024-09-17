@@ -45,7 +45,7 @@ export default {
                 };
             }
 
-            this.process = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
+            this.process = await fetch(`/api/processes/${processId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders
@@ -81,7 +81,7 @@ export default {
                     };
                 }
 
-                const result = await fetch(`${Config.simulationApiUrl}/processes/${this.selectedProcessId}/execution`, {
+                const result = await fetch(`/api/processes/${this.selectedProcessId}/execution`, {
                     method: "POST",
                     body: JSON.stringify({
                         job_name,

@@ -23,7 +23,6 @@ const state = {
     jobs: [],
     selectedProcessId: null,
     selectedJobId: null,
-    apiUrl: Config.simulationApiUrl,
     // defaults for config.json parameters
     name: "Sim Tool",
     icon: "bi-sliders2",
