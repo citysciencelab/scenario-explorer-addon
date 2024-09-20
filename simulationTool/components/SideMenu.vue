@@ -52,8 +52,9 @@ export default {
         </button>
         <button
             class="btn btn-link"
+            :class="{ active: mode === 'home-panel' }"
+            @click="() => this.setMode('home-panel')"
             title="Home"
-            disabled
         >
             <i class="bi bi-house-fill"></i>
         </button>

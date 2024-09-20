@@ -32,7 +32,14 @@
         "simulate": "Simulieren",
         "started": "Gestartet",
         "status": "Status",
-        "title": "Simulationen"
+        "title": "Simulationen",
+        "welcome": "Willkommen",
+        "tutorialInfo": "Ein kurzes Tutorial zu allen wichtigen Funktionen findest du hier",
+        "areYouNew": "Neu hier?",
+        "continue": "Arbeit fortsetzen",
+        "news": "Neuigkeiten für dich",
+        "newsCards": "hier sind die news karten"
+
       }
     }
   }

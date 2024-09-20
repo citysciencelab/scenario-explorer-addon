@@ -6,6 +6,7 @@ import getters from "../store/getters";
 import mutations from "../store/mutations";
 
 import EnsembleList from "./Ensemble/EnsembleList.vue";
+import HomePanel from "./Job/HomePanel.vue";
 import JobDetails from "./Job/JobDetails.vue";
 import JobExecution from "./Job/JobExecution.vue";
 import JobList from "./Job/JobList.vue";
@@ -21,6 +22,7 @@ export default {
     name: "SimulationTool",
     components: {
         EnsembleList,
+        HomePanel,
         JobDetails,
         JobExecution,
         JobList,
@@ -92,27 +94,33 @@ export default {
                 v-if="mode === 'process-list'"
                 :processes="processes"
                 @selected="selectProcess"
+                @close="() => setMode('home-panel')"
             />
             <ProcessDetails
                 v-if="mode === 'process-details'"
                 @selected="selectProcess"
-                @close="() => setMode('process-list')"
+                @close="() => setMode('home-panel')"
             />
             <SimulationProcess
                 v-if="mode === 'process'"
                 :process-id="selectedProcessId"
                 @selected="selectJob"
-                @close="() => setMode('process-list')"
+                @close="() => setMode('home-panel')"
             />
             <SimulationProcessJob
                 v-if="mode === 'job'"
                 :job-id="selectedJobId"
                 :process-id="selectedProcessId"
-                @close="() => setMode('process-list')"
+                @close="() => setMode('home-panel')"
+            />
+            <!-- Todo: @close muss noch geändert werden! -->
+            <HomePanel
+                v-if="mode === 'home-panel'"
+                @close="() => setMode('home-panel')"    
             />
             <JobList
                 v-if="mode === 'job-list'"
-                @close="() => setMode('process-list')"
+                @close="() => setMode('home-panel')"
                 :jobs="jobs"
             />
             <JobExecution
@@ -125,7 +133,7 @@ export default {
             />
             <EnsembleList
                 v-if="mode === 'ensemble-list'"
-                @close="() => setMode('process-list')"
+                @close="() => setMode('home-panel')"
                 :ensembles="ensembles"
             />
         </div>

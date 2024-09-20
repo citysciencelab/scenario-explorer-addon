@@ -32,7 +32,13 @@
         "simulate": "Simulate",
         "started": "Started",
         "status": "Status",
-        "title": "Simulations"
+        "title": "Simulations",
+        "welcome": "Welcome",
+        "tutorialInfo": "You can find a short tutorial about all important functions here",
+        "areYouNew": "New here?",
+        "continue": "Continue working",
+        "news": "News for you",
+        "newsCards": "Here are the news cards"
       }
     }
   }
