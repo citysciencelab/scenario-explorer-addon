@@ -7,11 +7,68 @@ export default {
     components: {
         SectionHeader
     },
+    props: {
+        "ensembles": {
+            type: Array,
+            required: true,
+            default: []
+        }
+    },
+    data () {
+        return {
+            searchString: ""
+        }
+    },
+    computed: {
+        filteredEnsembles: {
+            get() {
+                let filteredEnsembles = this.ensembles;
+                if (this.searchString) {
+                    filteredEnsembles = filteredEnsembles.filter(ensemble => {
+                        return Object.values(ensemble)
+                            .join()
+                            .toLowerCase()
+                            .includes(this.searchString.toLowerCase());
+                    });
+                }
+                return filteredEnsembles;
+            },
+            set(newEnsembles) {
+                this.filteredEnsembles = newEnsembles;
+            }
+        }
+    },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
             "setMode",
-            "setSelectedJobId"
-        ])
+            "setSelectedEnsembleId"
+        ]),
+        clearSearch() {
+            this.searchString = '';
+        },
+        formatDateTime(dateTime) {
+            if (!dateTime) {
+                return "TODO in Backend";
+            }
+            return new Date(dateTime).toLocaleString({
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        },
+        getEnsembleName(ensemble) {
+            return ensemble.name || ensemble.id;
+        },
+        getScenarioStatus(ensemble) {
+            const passed = "TODO in Backend";
+            return `${passed} / ${ensemble?.scenarios?.length}`;
+        },
+        onEnsembleClick(ensemble) {
+            this.setSelectedEnsembleId(ensemble.ensembleID);
+            this.setMode("ensemble-details");
+        }
     }
 }
 </script>
@@ -29,6 +86,66 @@ export default {
                 </button>
             </template>
         </SectionHeader>
+        <div class="ensemble-list-toolbar">
+            <div class="input-group search-wrapper">
+                <input
+                    class="form-control"
+                    :placeholder="$t('additional:modules.tools.simulationTool.search') + ' …'"
+                    :aria-label="$t('additional:modules.tools.simulationTool.search')"
+                    v-model="searchString"
+                >
+                <i
+                    v-if="searchString"
+                    class="bi-x-lg"
+                    role="img"
+                    @click="clearSearch"
+                ></i>
+                <i
+                    v-else
+                    class="bi-search"
+                    role="img"
+                ></i>
+            </div>
+        </div>
+        <table class="ensemble-list-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Szenarien</th>
+                    <th>Datum</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="ensemble in filteredEnsembles">
+                    <td>
+                        <div>
+                            <button
+                                class="btn btn-link"
+                                @click="onEnsembleClick(ensemble)"
+                            >
+                                {{this.getEnsembleName(ensemble)}}
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="scenarios">
+                            {{ this.getScenarioStatus(ensemble) }}
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            {{this.formatDateTime(ensemble.started)}}
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            {{ensemble.user_id}}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -37,5 +154,58 @@ export default {
         height: 100%;
         display: flex;
         flex-direction: column;
+
+        .ensemble-list-toolbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+
+            .search-wrapper {
+                input.form-control {
+                    border-top-right-radius: 5px !important;
+                    border-bottom-right-radius: 5px !important;
+                }
+                i {
+                    z-index: 10;
+                    position: absolute;
+                    right: 1em;
+                    top: 50%;
+                    transform: translate(0, -50%);
+                }
+            }
+        }
+
+        .ensemble-list-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+
+            th, td {
+                padding: .5rem;
+                text-align: left;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                &:not(:last-child) {
+                    border-right: 2px solid var(--bs-default);
+                }
+            }
+
+            th {
+                white-space: nowrap;
+            }
+
+            td > div {
+                white-space: normal;
+                display: -webkit-box;
+                line-clamp: 2;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                word-break: break-word;
+            }
+        }
     }
 </style>
