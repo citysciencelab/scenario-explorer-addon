@@ -17,13 +17,13 @@
  */
 const state = {
     id: "simulationTool",
-    // 'process-list' | 'process-details' | 'job' | 'job-details' | 'job-execution' | 'ensemble-list'
     mode: "process-list",
     ensembles: [],
     processes: [],
     jobs: [],
     selectedProcessId: null,
     selectedJobId: null,
+    selectedEnsembleId: null,
     // defaults for config.json parameters
     name: "Sim Tool",
     icon: "bi-sliders2",

@@ -40,6 +40,7 @@ export default {
         this.maximizeDrawer();
         this.fetchProcesses();
         this.fetchJobs();
+        this.fetchEnsembles();
     },
     /**
      * Put initialize here if mounting occurs after config parsing

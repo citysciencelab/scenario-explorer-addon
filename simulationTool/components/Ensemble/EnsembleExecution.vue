@@ -18,7 +18,8 @@ export default {
             selectedProcesses: [],
             processDetails: [],
             executionValues: {
-                sample_size: 10
+                sample_size: 10,
+                sampling_method: "lhs"
             },
             apiUrl: Config.simulationApiUrl
         };
@@ -42,7 +43,8 @@ export default {
     },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
-            "setMode"
+            "setMode",
+            "setSelectedEnsembleId"
         ]),
         updateExecutionValue(processId, key, value) {
             this.executionValues[processId] = this.executionValues[processId] || {};
@@ -75,7 +77,9 @@ export default {
 
             if (formIsValid) {
                 const {
-                    job_name,
+                    name,
+                    sample_size,
+                    sampling_method,
                     ...inputs
                 } = this.executionValues;
 
@@ -86,8 +90,31 @@ export default {
                     };
                 }
 
-                console.log("TODO");
-                // TODO: Implement the execution of the job ensemble
+                const scenario_configs = Object.keys(inputs).map((process_id) => {
+                    return {
+                        process_id,
+                        parameters: inputs[process_id]
+                    };
+                });
+
+                const result = await fetch('/api/ensembles', {
+                    method: "POST",
+                    body: JSON.stringify({
+                        name,
+                        sample_size,
+                        sampling_method,
+                        scenario_configs
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                }).then((res) => res.json());
+
+                // TODO: Handle errors
+
+                this.setMode("ensemble-details");
+                this.setSelectedEnsembleId(result.ensembleId);
             }
         }
     }
@@ -106,7 +133,7 @@ export default {
                 class="form-control"
                 type="text"
                 placeholder="Name des Ensembles"
-                v-model="executionValues.ensemble_name"
+                v-model="executionValues.name"
                 required
             />
             <div>
@@ -174,6 +201,16 @@ export default {
                     v-model="executionValues.sample_size"
                     required
                 />
+                <label for="sampling_method_input">Sampling Methode:</label>
+                <select
+                    id="sampling_method_input"
+                    class="form-control"
+                    v-model="executionValues.sampling_method"
+                    required
+                    disabled
+                >
+                    <option value="lhs" selected>Latin Hypercube Sampling</option>
+                </select>
             </div>
             <button
                 class="btn btn-primary btn-lg"

@@ -82,6 +82,25 @@ const actions = {
 
         commit("setJobs", response.jobs);
     },
+
+    async fetchEnsembles ({state, commit, rootGetters}) {
+        let additionalHeaders = {};
+        if (rootGetters["Modules/Login/loggedIn"]) {
+            additionalHeaders = {
+                Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
+            };
+        }
+        const response = await fetch(
+            `/api/ensembles/`,
+            {
+                headers: {
+                    "content-type": "application/json",
+                    ...additionalHeaders
+                }
+            }).then((res) => res.json());
+
+        commit("setEnsembles", response.ensembles);
+    },
 };
 
 export default actions;
