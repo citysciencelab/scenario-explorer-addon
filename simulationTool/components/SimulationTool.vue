@@ -5,6 +5,8 @@ import actions from "../store/actions";
 import getters from "../store/getters";
 import mutations from "../store/mutations";
 
+import EnsembleDetails from "./Ensemble/EnsembleDetails.vue";
+import EnsembleExecution from "./Ensemble/EnsembleExecution.vue";
 import EnsembleList from "./Ensemble/EnsembleList.vue";
 import JobDetails from "./Job/JobDetails.vue";
 import JobExecution from "./Job/JobExecution.vue";
@@ -14,15 +16,15 @@ import ProcessList from "./Process/ProcessList.vue";
 import SideMenu from "./SideMenu.vue";
 import SimulationProcess from "./SimulationProcess.vue";
 import SimulationProcessJob from "./SimulationProcessJob.vue";
-import EnsembleExecution from "./Ensemble/EnsembleExecution.vue";
 
 const MIN_WIDTH = 900;
 
 export default {
     name: "SimulationTool",
     components: {
-        EnsembleList,
+        EnsembleDetails,
         EnsembleExecution,
+        EnsembleList,
         JobDetails,
         JobExecution,
         JobList,
@@ -133,6 +135,10 @@ export default {
             />
             <EnsembleExecution
                 v-if="mode === 'ensemble-execution'"
+                @close="() => setMode('ensemble-list')"
+            />
+            <EnsembleDetails
+                v-if="mode === 'ensemble-details'"
                 @close="() => setMode('ensemble-list')"
             />
         </div>

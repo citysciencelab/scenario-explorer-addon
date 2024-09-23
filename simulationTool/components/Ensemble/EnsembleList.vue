@@ -66,7 +66,7 @@ export default {
             return `${passed} / ${ensemble?.scenarios?.length}`;
         },
         onEnsembleClick(ensemble) {
-            this.setSelectedEnsembleId(ensemble.ensembleID);
+            this.setSelectedEnsembleId(ensemble.id);
             this.setMode("ensemble-details");
         }
     }
