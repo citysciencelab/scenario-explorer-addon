@@ -9,6 +9,9 @@ export default {
     computed: {
         ...mapGetters("Modules/SimulationTool", [
             "mode"
+        ]),
+        ...mapGetters("Modules/Login", [
+            "loggedIn"
         ])
     },
     methods: {
@@ -77,7 +80,8 @@ export default {
             class="btn btn-link"
             :class="{ active: mode === 'ensemble-list' }"
             @click="() => this.setMode('ensemble-list')"
-            title="Ensembles"
+            :disabled="!loggedIn"
+            :title="!loggedIn ? 'Ensembles require login' : 'Ensembles'"
         >
             <i class="bi bi-collection-fill"></i>
         </button>

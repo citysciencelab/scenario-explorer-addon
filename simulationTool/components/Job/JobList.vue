@@ -192,7 +192,6 @@ export default {
             </tbody>
         </table>
     </div>
-
 </template>
 
 <style lang="scss" scoped>

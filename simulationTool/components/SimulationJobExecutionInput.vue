@@ -49,7 +49,6 @@ export default {
         :required="data.schema.required || data.required || data.minOccurs > 0"
         @input="$emit('change', $event.target.value)"
     >
-
     <input
         v-else-if="data.schema.type === 'number'"
         :id="`input_${inputKey}`"
@@ -65,7 +64,6 @@ export default {
         :required="data.schema.required || data.required || data.minOccurs > 0"
         @input="$emit('change', Number($event.target.value))"
     >
-
     <input
         v-else-if="data.schema.type === 'boolean'"
         :id="`input_${inputKey}`"
@@ -77,7 +75,6 @@ export default {
         :value="value"
         @input="$emit('change', $event.target.checked)"
     >
-
     <div
         v-else-if="data.schema.type === 'array'"
         :key="`input_${inputKey}_${value?.length}`"
@@ -99,7 +96,6 @@ export default {
                 :value="value[index]"
                 @change="handleArrayValueChange(index, $event)"
             />
-
             <button
                 v-if="value.length > 1"
                 class="bootstrap-icon"
@@ -108,7 +104,6 @@ export default {
                 <i class="bi-x-lg" />
             </button>
         </div>
-
         <button
             v-if="!data.schema.maxItems || value?.length < data.schema.maxItems"
             :key="`input_${inputKey}_array_add_button`"

@@ -115,6 +115,10 @@ export default {
                 :key="process.id"
                 :process="process"
                 @selected="(payload) => $emit('selected', payload)"
+                @tag-clicked="(tag) => selectedTags.push({
+                    name: tag,
+                    code: tag
+                })"
             />
         </div>
     </div>
