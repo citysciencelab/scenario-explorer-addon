@@ -28,6 +28,7 @@ const state = {
     selectedProcessId: null,
     selectedJobId: null,
     selectedEnsembleId: null,
+    jobResultData: null,
     // defaults for config.json parameters
     name: "Sim Tool",
     icon: "bi-sliders2",
