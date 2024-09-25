@@ -119,8 +119,8 @@ export default {
                 v-model="executionValues.job_name"
                 required
             />
+            <h4>Eingabeparameter</h4>
             <div v-if="process" class="inputs">
-                <h4>Eingabeparameter</h4>
                 <template
                     v-for="(input, key) in process.inputs"
                     :key="`label_${key}`"
@@ -163,11 +163,13 @@ export default {
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            overflow: hidden;
 
             .inputs {
                 display: flex;
                 flex-direction: column;
                 gap: 1rem;
+                overflow: auto;
             }
 
             button {

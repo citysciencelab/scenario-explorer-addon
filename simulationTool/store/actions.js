@@ -84,22 +84,20 @@ const actions = {
     },
 
     async fetchEnsembles ({state, commit, rootGetters}) {
-        let additionalHeaders = {};
-        if (rootGetters["Modules/Login/loggedIn"]) {
-            additionalHeaders = {
-                Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
-            };
+        if (!rootGetters["Modules/Login/loggedIn"]) {
+            return;
         }
         const response = await fetch(
             `/api/ensembles/`,
             {
                 headers: {
                     "content-type": "application/json",
-                    ...additionalHeaders
+                    Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
                 }
             }).then((res) => res.json());
 
-        commit("setEnsembles", response.ensembles);
+        // TODO: this might changed in the backend
+        commit("setEnsembles", response);
     },
 };
 
