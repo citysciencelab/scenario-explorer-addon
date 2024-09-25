@@ -87,7 +87,7 @@ export default {
             @tag="addTag"
         />
         <RangeSlider
-            v-if="data.schema.type === 'number'"
+            v-if="['number', 'integer'].includes(data.schema.type)"
             v-model="internalValue"
             :min="data.schema.minimum"
             :max="data.schema.maximum"
