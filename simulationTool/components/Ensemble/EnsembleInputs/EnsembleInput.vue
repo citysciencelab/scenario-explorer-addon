@@ -19,7 +19,7 @@ export default {
         "modelValue": {
             type: [Array, Boolean],
             default: (props) => {
-                const defaultValue = DEFAULT_VALUE_MAP[props.data?.schema?.type] || undefined
+                const defaultValue = DEFAULT_VALUE_MAP[props.data?.schema?.type] || []
                 if (props.data.schema.minimum !== undefined) {
                     defaultValue[0] = props.data.schema.minimum;
                 }
@@ -36,7 +36,7 @@ export default {
     },
     data() {
         return {
-            internalValue: [...this.modelValue],
+            internalValue: Array.isArray(this.modelValue) ? [...this.modelValue] : [],
         }
     },
     watch: {
