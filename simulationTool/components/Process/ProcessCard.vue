@@ -13,12 +13,11 @@ export default {
     ],
     methods: {
         getProcessLink (process) {
-            const link = process.links.find(({rel}) => rel === "about");
-
+            const link = process?.links?.find(({rel}) => rel === "about");
             return link ? link.href : "";
         },
         getProcessImageSource (process) {
-            const image = process.links.find(({type}) => type === "image");
+            const image = process?.links?.find(({type}) => type === "image");
             return image ? image : "resources/img/DALLE_Placeholder2.png";
         }
     }

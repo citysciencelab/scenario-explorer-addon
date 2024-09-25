@@ -6,7 +6,7 @@ import Config from "../../../../portal/simulation/config";
 import EnsembleInput from "./EnsembleInputs/EnsembleInput.vue";
 
 export default {
-    name: "EnsembleExecution",
+    name: "EnsembleCreation",
     components: {
         EnsembleInput,
         SectionHeader,
@@ -17,7 +17,7 @@ export default {
             processSelectVisible: false,
             selectedProcesses: [],
             processDetails: [],
-            executionValues: {
+            creationValues: {
                 sample_size: 10,
                 sampling_method: "lhs"
             },
@@ -47,9 +47,9 @@ export default {
             "setSelectedEnsembleId"
         ]),
         updateExecutionValue(processId, key, value) {
-            this.executionValues[processId] = this.executionValues[processId] || {};
-            this.executionValues[processId][key] = value;
-            console.log(JSON.parse(JSON.stringify(this.executionValues)));
+            this.creationValues[processId] = this.creationValues[processId] || {};
+            this.creationValues[processId][key] = value;
+            console.log(JSON.parse(JSON.stringify(this.creationValues)));
         },
         /**
          * Fetches a process from the simulation backend
@@ -81,7 +81,7 @@ export default {
                     sample_size,
                     sampling_method,
                     ...inputs
-                } = this.executionValues;
+                } = this.creationValues;
 
                 let additionalHeaders = {};
                 if (this.loggedIn) {
@@ -114,7 +114,7 @@ export default {
                 // TODO: Handle errors
 
                 this.setMode("ensemble-details");
-                this.setSelectedEnsembleId(result.ensembleId);
+                this.setSelectedEnsembleId(result.id);
             }
         }
     }
@@ -122,20 +122,27 @@ export default {
 </script>
 
 <template>
-    <div class="ensemble-execution">
+    <div class="ensemble-creation">
         <SectionHeader title="Neues Ensemble" icon="bi-box-fill" />
         <form
             ref="form"
-            class="execution-form"
+            class="creation-form"
         >
             <input
                 id="name_input"
                 class="form-control"
                 type="text"
                 placeholder="Name des Ensembles"
-                v-model="executionValues.name"
+                v-model="creationValues.name"
                 required
             />
+            <textarea
+                id="name_input"
+                class="form-control"
+                placeholder="Beschreibung des Ensembles"
+                v-model="creationValues.description"
+                required
+            ></textarea>
             <div>
                 <h4 class="title-with-button">
                     <span>Enthaltene Modelle</span>
@@ -183,7 +190,7 @@ export default {
                                 <EnsembleInput
                                     :id="`input_${key}`"
                                     :data="input"
-                                    :modelValue="executionValues?.[process.id]?.[key]"
+                                    :modelValue="creationValues?.[process.id]?.[key]"
                                     @update:modelValue="(value) => updateExecutionValue(process.id, key, value)"
                                 />
                             </div>
@@ -198,14 +205,14 @@ export default {
                     id="size_input"
                     class="form-control"
                     type="number"
-                    v-model="executionValues.sample_size"
+                    v-model="creationValues.sample_size"
                     required
                 />
                 <label for="sampling_method_input">Sampling Methode:</label>
                 <select
                     id="sampling_method_input"
                     class="form-control"
-                    v-model="executionValues.sampling_method"
+                    v-model="creationValues.sampling_method"
                     required
                     disabled
                 >
@@ -225,13 +232,13 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    .ensemble-execution {
+    .ensemble-creation {
         max-height: 100%;
         display: flex;
         flex-direction: column;
         padding: 1rem;
 
-        .execution-form {
+        .creation-form {
             display: flex;
             flex-direction: column;
             gap: 1rem;

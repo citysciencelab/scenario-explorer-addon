@@ -63,7 +63,7 @@ export default {
         },
         getScenarioStatus(ensemble) {
             const passed = "TODO in Backend";
-            return `${passed} / ${ensemble?.scenarios?.length}`;
+            return `${passed} / ${ensemble?.scenario_configs?.length}`;
         },
         onEnsembleClick(ensemble) {
             this.setSelectedEnsembleId(ensemble.id);
@@ -79,7 +79,7 @@ export default {
             <template #actions>
                 <button
                     class="btn btn-primary"
-                    @click="() => this.setMode('ensemble-execution')"
+                    @click="() => this.setMode('ensemble-creation')"
                 >
                     <i class="bi bi-plus-lg">&nbsp;</i>
                     <span>Neues Ensemble</span>
@@ -135,7 +135,7 @@ export default {
                     </td>
                     <td>
                         <div>
-                            {{this.formatDateTime(ensemble.started)}}
+                            {{this.formatDateTime(ensemble.created)}}
                         </div>
                     </td>
                     <td>

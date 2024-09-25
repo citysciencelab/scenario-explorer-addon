@@ -5,8 +5,9 @@ import actions from "../store/actions";
 import getters from "../store/getters";
 import mutations from "../store/mutations";
 
+
 import EnsembleDetails from "./Ensemble/EnsembleDetails.vue";
-import EnsembleExecution from "./Ensemble/EnsembleExecution.vue";
+import EnsembleCreation from "./Ensemble/EnsembleCreation.vue";
 import EnsembleList from "./Ensemble/EnsembleList.vue";
 import JobDetails from "./Job/JobDetails.vue";
 import JobExecution from "./Job/JobExecution.vue";
@@ -23,7 +24,7 @@ export default {
     name: "SimulationTool",
     components: {
         EnsembleDetails,
-        EnsembleExecution,
+        EnsembleCreation,
         EnsembleList,
         JobDetails,
         JobExecution,
@@ -133,8 +134,8 @@ export default {
                 @close="() => setMode('process-list')"
                 :ensembles="ensembles"
             />
-            <EnsembleExecution
-                v-if="mode === 'ensemble-execution'"
+            <EnsembleCreation
+                v-if="mode === 'ensemble-creation'"
                 @close="() => setMode('ensemble-list')"
             />
             <EnsembleDetails
