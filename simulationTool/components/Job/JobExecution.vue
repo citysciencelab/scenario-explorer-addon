@@ -1,8 +1,9 @@
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapMutations, mapGetters, mapActions } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import SimulationJobExecutionInput from "../SimulationJobExecutionInput.vue";
 import Config from "../../../../portal/simulation/config";
+import { map } from "lodash";
 
 export default {
     name: "JobExecution",
@@ -32,6 +33,9 @@ export default {
         ...mapMutations("Modules/SimulationTool", [
             "setSelectedJobId",
             "setMode"
+        ]),
+        ...mapActions("Modules/SimulationTool", [
+            "fetchJobs"
         ]),
         /**
          * Fetches a process from the simulation backend
@@ -97,6 +101,8 @@ export default {
 
                 this.setMode("job-details");
                 this.setSelectedJobId(result.jobID);
+
+                this.fetchJobs();
             }
         }
     }

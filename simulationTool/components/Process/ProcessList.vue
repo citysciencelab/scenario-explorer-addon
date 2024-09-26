@@ -1,21 +1,18 @@
 <script>
+import {mapGetters} from "vuex";
+
 import Multiselect from "vue-multiselect";
 import ProcessCard from './ProcessCard.vue';
 import SectionHeader from '../SectionHeader.vue';
+import LoadingMask from "../LoadingMask.vue";
 
 export default {
     name: "ProcessList",
     components: {
+        LoadingMask,
         Multiselect,
         ProcessCard,
         SectionHeader
-    },
-    props: {
-        "processes": {
-            type: Array,
-            required: true,
-            default: []
-        }
     },
     data () {
         return {
@@ -24,6 +21,10 @@ export default {
         }
     },
     computed: {
+        ...mapGetters("Modules/SimulationTool", [
+            "processes",
+            "processesLoading"
+        ]),
         filteredProcesses: {
             get() {
                 let filteredProcesses = this.processes;
@@ -109,7 +110,8 @@ export default {
                 :multiple="true"
             />
         </div>
-        <div class="card-wrapper">
+        <LoadingMask v-if="processesLoading" label="Lade Modelle..."/>
+        <div v-else class="card-wrapper">
             <ProcessCard
                 v-for="process in filteredProcesses"
                 :key="process.id"

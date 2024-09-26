@@ -1,18 +1,13 @@
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
+import LoadingMask from "../LoadingMask.vue";
 
 export default {
     name: "EnsembleList",
     components: {
+        LoadingMask,
         SectionHeader
-    },
-    props: {
-        "ensembles": {
-            type: Array,
-            required: true,
-            default: []
-        }
     },
     data () {
         return {
@@ -20,6 +15,10 @@ export default {
         }
     },
     computed: {
+        ...mapGetters("Modules/SimulationTool", [
+            "ensembles",
+            "ensemblesLoading"
+        ]),
         filteredEnsembles: {
             get() {
                 let filteredEnsembles = this.ensembles;

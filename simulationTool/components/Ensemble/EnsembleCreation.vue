@@ -1,5 +1,5 @@
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapMutations, mapGetters, mapActions } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import ProcessSelect from "../Process/ProcessSelect.vue";
 import Config from "../../../../portal/simulation/config";
@@ -58,6 +58,9 @@ export default {
             "setMode",
             "setSelectedEnsembleId"
         ]),
+        ...mapActions("Modules/SimulationTool", [
+            "fetchEnsembles"
+        ]),
         updateExecutionValue(processId, key, value) {
             this.creationValues[processId] = this.creationValues[processId] || {};
             this.creationValues[processId][key] = value;
@@ -81,7 +84,7 @@ export default {
                 }
             }).then((res) => res.json());
         },
-        async execute (event) {
+        async create (event) {
             event.preventDefault();
 
             const formIsValid = this.$refs.form.reportValidity();
@@ -131,6 +134,7 @@ export default {
 
                 this.setMode("ensemble-details");
                 this.setSelectedEnsembleId(result.id);
+                this.fetchEnsembles();
             }
         }
     }
@@ -246,7 +250,7 @@ export default {
             <button
                 class="btn btn-primary btn-lg"
                 type="submit"
-                @click="execute"
+                @click="create"
             >
                 <i class="bi bi-collection-fill">&nbsp;</i>
                 Ensemble ausführen

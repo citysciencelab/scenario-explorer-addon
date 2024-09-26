@@ -5,7 +5,6 @@ import actions from "../store/actions";
 import getters from "../store/getters";
 import mutations from "../store/mutations";
 
-
 import EnsembleDetails from "./Ensemble/EnsembleDetails.vue";
 import EnsembleCreation from "./Ensemble/EnsembleCreation.vue";
 import EnsembleList from "./Ensemble/EnsembleList.vue";
@@ -82,7 +81,7 @@ export default {
             this.setSelectedJobId(typeof id === "string" ? id : null);
         },
         navigate(evt) {
-            const key = evt.target.dataset.key;
+            const kensemblesey = evt.target.dataset.key;
             if (key) {
                 this.setMode(key);
             }
@@ -96,7 +95,6 @@ export default {
         <div class="content">
             <ProcessList
                 v-if="mode === 'process-list'"
-                :processes="processes"
                 @selected="selectProcess"
             />
             <ProcessDetails
@@ -119,7 +117,6 @@ export default {
             <JobList
                 v-if="mode === 'job-list'"
                 @close="() => setMode('process-list')"
-                :jobs="jobs"
             />
             <JobExecution
                 v-if="mode === 'job-execution'"
@@ -132,7 +129,6 @@ export default {
             <EnsembleList
                 v-if="mode === 'ensemble-list'"
                 @close="() => setMode('process-list')"
-                :ensembles="ensembles"
             />
             <EnsembleCreation
                 v-if="mode === 'ensemble-creation'"

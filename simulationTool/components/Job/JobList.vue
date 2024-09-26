@@ -1,20 +1,15 @@
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 import Multiselect from "vue-multiselect";
 import SectionHeader from "../SectionHeader.vue";
+import LoadingMask from "../LoadingMask.vue";
 
 export default {
     name: "JobList",
     components: {
+        LoadingMask,
         Multiselect,
         SectionHeader
-    },
-    props: {
-        "jobs": {
-            type: Array,
-            required: true,
-            default: []
-        }
     },
     data () {
         return {
@@ -30,6 +25,10 @@ export default {
         }
     },
     computed: {
+        ...mapGetters("Modules/SimulationTool", [
+            "jobs",
+            "jobsLoading"
+        ]),
         filteredJobs: {
             get() {
                 let filteredJobs = this.jobs;
@@ -140,7 +139,8 @@ export default {
                 </template>
             </multiselect>
         </div>
-        <table class="job-list-table">
+        <LoadingMask v-if="jobsLoading" label="Lade Jobs..." />
+        <table v-else class="job-list-table">
             <thead>
                 <tr>
                     <th>Name</th>
