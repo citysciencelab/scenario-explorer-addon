@@ -1,6 +1,6 @@
 <script>
 export default {
-    name: "SimulationJobExecutionInput",
+    name: "JobExecutionInput",
     props: {
         "inputKey": {
             type: [String, Number],
@@ -85,7 +85,7 @@ export default {
             :key="`input_${inputKey}_${index}`"
             class="d-flex align-items-center gap-2"
         >
-            <SimulationJobExecutionInput
+            <JobExecutionInput
                 :input-key="index"
                 :data="{
                     schema: {

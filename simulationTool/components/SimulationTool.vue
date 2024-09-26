@@ -14,8 +14,6 @@ import JobList from "./Job/JobList.vue";
 import ProcessDetails from "./Process/ProcessDetails.vue";
 import ProcessList from "./Process/ProcessList.vue";
 import SideMenu from "./SideMenu.vue";
-import SimulationProcess from "./SimulationProcess.vue";
-import SimulationProcessJob from "./SimulationProcessJob.vue";
 
 const MIN_WIDTH = 900;
 
@@ -30,9 +28,7 @@ export default {
         JobList,
         ProcessDetails,
         ProcessList,
-        SideMenu,
-        SimulationProcess,
-        SimulationProcessJob
+        SideMenu
     },
     computed: {
         ...mapGetters("Modules/SimulationTool", Object.keys(getters))
@@ -100,18 +96,6 @@ export default {
             <ProcessDetails
                 v-if="mode === 'process-details'"
                 @selected="selectProcess"
-                @close="() => setMode('process-list')"
-            />
-            <SimulationProcess
-                v-if="mode === 'process'"
-                :process-id="selectedProcessId"
-                @selected="selectJob"
-                @close="() => setMode('process-list')"
-            />
-            <SimulationProcessJob
-                v-if="mode === 'job'"
-                :job-id="selectedJobId"
-                :process-id="selectedProcessId"
                 @close="() => setMode('process-list')"
             />
             <JobList

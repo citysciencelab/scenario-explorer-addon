@@ -1,15 +1,13 @@
 <script>
 import { mapMutations, mapGetters, mapActions } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
-import SimulationJobExecutionInput from "../SimulationJobExecutionInput.vue";
-import Config from "../../../../portal/simulation/config";
-import { map } from "lodash";
+import JobExecutionInput from "./JobExecutionInput.vue";
 
 export default {
     name: "JobExecution",
     components: {
         SectionHeader,
-        SimulationJobExecutionInput
+        JobExecutionInput
     },
     data() {
         return {
@@ -137,7 +135,7 @@ export default {
                     >
                         {{ input.title }}:
                     </label>
-                    <SimulationJobExecutionInput
+                    <JobExecutionInput
                         :input-key="key"
                         :data="input"
                         :value="executionValues[key]"
