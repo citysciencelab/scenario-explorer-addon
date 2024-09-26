@@ -19,7 +19,7 @@ export default {
         "modelValue": {
             type: [Array, Boolean],
             default: (props) => {
-                const defaultValue = DEFAULT_VALUE_MAP[props.data?.schema?.type] || undefined
+                const defaultValue = DEFAULT_VALUE_MAP[props.data?.schema?.type] || []
                 if (props.data.schema.minimum !== undefined) {
                     defaultValue[0] = props.data.schema.minimum;
                 }
@@ -36,7 +36,7 @@ export default {
     },
     data() {
         return {
-            internalValue: [...this.modelValue],
+            internalValue: Array.isArray(this.modelValue) ? [...this.modelValue] : [],
         }
     },
     watch: {
@@ -87,7 +87,7 @@ export default {
             @tag="addTag"
         />
         <RangeSlider
-            v-if="data.schema.type === 'number'"
+            v-if="['number', 'integer'].includes(data.schema.type)"
             v-model="internalValue"
             :min="data.schema.minimum"
             :max="data.schema.maximum"

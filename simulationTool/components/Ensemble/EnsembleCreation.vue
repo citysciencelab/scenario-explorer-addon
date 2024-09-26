@@ -17,10 +17,7 @@ export default {
             processSelectVisible: false,
             selectedProcesses: [],
             processDetails: [],
-            creationValues: {
-                sample_size: 10,
-                sampling_method: "lhs"
-            },
+            creationValues: {},
             apiUrl: Config.simulationApiUrl
         };
     },
@@ -31,6 +28,21 @@ export default {
                     return this.fetchProcess(process.id);
                 })
             );
+            // add default values for sample size and sampling method
+            for (const process of this.processDetails) {
+                if (!this.creationValues?.[process.id]?.sample_size) {
+                    this.updateExecutionValue(process.id, 'sample_size', 10);
+                }
+                if (!this.creationValues?.[process.id]?.sampling_method) {
+                    this.updateExecutionValue(process.id, 'sampling_method', 'lhs');
+                }
+            }
+            // remove values for processes that are not selected anymore
+            Object.keys(this.creationValues).forEach((processId) => {
+                if (!this.selectedProcesses.find((process) => process.id === processId)) {
+                    delete this.creationValues[processId];
+                }
+            });
         }
     },
     computed: {
@@ -49,7 +61,6 @@ export default {
         updateExecutionValue(processId, key, value) {
             this.creationValues[processId] = this.creationValues[processId] || {};
             this.creationValues[processId][key] = value;
-            console.log(JSON.parse(JSON.stringify(this.creationValues)));
         },
         /**
          * Fetches a process from the simulation backend
@@ -78,8 +89,7 @@ export default {
             if (formIsValid) {
                 const {
                     name,
-                    sample_size,
-                    sampling_method,
+                    description,
                     ...inputs
                 } = this.creationValues;
 
@@ -91,9 +101,16 @@ export default {
                 }
 
                 const scenario_configs = Object.keys(inputs).map((process_id) => {
+                    const {
+                        sample_size,
+                        sampling_method,
+                        ...parameters
+                    } = inputs[process_id];
                     return {
                         process_id,
-                        parameters: inputs[process_id]
+                        sample_size,
+                        sampling_method,
+                        parameters
                     };
                 });
 
@@ -101,8 +118,7 @@ export default {
                     method: "POST",
                     body: JSON.stringify({
                         name,
-                        sample_size,
-                        sampling_method,
+                        description,
                         scenario_configs
                     }),
                     headers: {
@@ -175,6 +191,35 @@ export default {
                     <h4>{{ process.title }}</h4>
                     <p>{{ process.description }}</p>
                     <div v-if="process" class="inputs">
+                        <h4>Einstellungen</h4>
+                        <div class="settings">
+                            <label :for="`size_input-${process.id}`">
+                                Anzahl der Szenarien:
+                            </label>
+                            <input
+                                :id="`size_input-${process.id}`"
+                                class="form-control"
+                                type="number"
+                                min="1"
+                                max="1000"
+                                :value="creationValues?.[process.id]?.sample_size"
+                                @change="(evt) => updateExecutionValue(process.id, 'sample_size', evt.target.value)"
+                                required
+                            />
+                            <label :for="`sampling_method_input-${process.id}`">
+                                Sampling Methode:
+                            </label>
+                            <select
+                                :id="`sampling_method_input-${process.id}`"
+                                class="form-control"
+                                :value="creationValues?.[process.id]?.sampling_method"
+                                @change="(evt) => updateExecutionValue(process.id, 'sampling_method', evt.target.value)"
+                                required
+                                disabled
+                            >
+                                <option value="lhs" selected>Latin Hypercube Sampling</option>
+                            </select>
+                        </div>
                         <h4>Eingabeparameter</h4>
                         <template
                             v-for="(input, key) in process.inputs"
@@ -198,27 +243,6 @@ export default {
                     </div>
                 </div>
             </div>
-            <h4>Einstellungen</h4>
-            <div class="settings">
-                <label for="size_input">Anzahl der Szenarien:</label>
-                <input
-                    id="size_input"
-                    class="form-control"
-                    type="number"
-                    v-model="creationValues.sample_size"
-                    required
-                />
-                <label for="sampling_method_input">Sampling Methode:</label>
-                <select
-                    id="sampling_method_input"
-                    class="form-control"
-                    v-model="creationValues.sampling_method"
-                    required
-                    disabled
-                >
-                    <option value="lhs" selected>Latin Hypercube Sampling</option>
-                </select>
-            </div>
             <button
                 class="btn btn-primary btn-lg"
                 type="submit"
@@ -233,15 +257,17 @@ export default {
 
 <style lang="scss" scoped>
     .ensemble-creation {
-        max-height: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
         padding: 1rem;
 
         .creation-form {
+            flex: 1;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            overflow: hidden;
 
             .title-with-button {
                 display: flex;
@@ -270,6 +296,7 @@ export default {
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
                 gap: .25rem;
+                overflow: auto;
             }
 
             .process-details {
@@ -281,22 +308,16 @@ export default {
                 border-radius: 0.5rem;
             }
 
-            .inputs {
+            .inputs, .setttings {
                 display: flex;
                 flex-direction: column;
                 gap: .25rem;
-
-                .input-wrapper {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.5rem;
-                }
             }
 
-            .settings {
+            .inputs .input-wrapper {
                 display: flex;
                 flex-direction: column;
-                gap: .25rem;
+                gap: .5rem;
             }
 
             button {
