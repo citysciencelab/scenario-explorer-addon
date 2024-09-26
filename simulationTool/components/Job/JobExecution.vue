@@ -1,14 +1,13 @@
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapMutations, mapGetters, mapActions } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
-import SimulationJobExecutionInput from "../SimulationJobExecutionInput.vue";
-import Config from "../../../../portal/simulation/config";
+import JobExecutionInput from "./JobExecutionInput.vue";
 
 export default {
     name: "JobExecution",
     components: {
         SectionHeader,
-        SimulationJobExecutionInput
+        JobExecutionInput
     },
     data() {
         return {
@@ -32,6 +31,9 @@ export default {
         ...mapMutations("Modules/SimulationTool", [
             "setSelectedJobId",
             "setMode"
+        ]),
+        ...mapActions("Modules/SimulationTool", [
+            "fetchJobs"
         ]),
         /**
          * Fetches a process from the simulation backend
@@ -97,6 +99,8 @@ export default {
 
                 this.setMode("job-details");
                 this.setSelectedJobId(result.jobID);
+
+                this.fetchJobs();
             }
         }
     }
@@ -105,13 +109,16 @@ export default {
 
 <template>
     <div class="job-execution">
-        <SectionHeader title="Neues Szenario" icon="bi-box-fill" />
-        <h3>Modell: {{ process?.title }}</h3>
+        <SectionHeader
+            :title="$t('additional:modules.tools.simulationTool.newScenario')"
+            icon="bi-box-fill"
+        />
+        <h3>{{ $t('additional:modules.tools.simulationTool.model') }}: {{ process?.title }}</h3>
         <form
             ref="form"
             class="execution-form"
         >
-            <label for="name_input">Szenario Name:</label>
+            <label for="name_input">{{ $t('additional:modules.tools.simulationTool.scenarioName') }}:</label>
             <input
                 id="name_input"
                 class="form-control"
@@ -119,7 +126,7 @@ export default {
                 v-model="executionValues.job_name"
                 required
             />
-            <h4>Eingabeparameter</h4>
+            <h4>{{ $t('additional:modules.tools.simulationTool.inputParameters') }}</h4>
             <div v-if="process" class="inputs">
                 <template
                     v-for="(input, key) in process.inputs"
@@ -131,7 +138,7 @@ export default {
                     >
                         {{ input.title }}:
                     </label>
-                    <SimulationJobExecutionInput
+                    <JobExecutionInput
                         :input-key="key"
                         :data="input"
                         :value="executionValues[key]"
@@ -146,7 +153,7 @@ export default {
                 @click="execute"
             >
                 <i class="bi bi-box-fill">&nbsp;</i>
-                Szenario ausführen
+                {{ $t('additional:modules.tools.simulationTool.executeScenario') }}
             </button>
         </form>
     </div>

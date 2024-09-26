@@ -1,18 +1,13 @@
 <script>
-import { mapMutations } from "vuex";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
+import LoadingMask from "../LoadingMask.vue";
 
 export default {
     name: "EnsembleList",
     components: {
+        LoadingMask,
         SectionHeader
-    },
-    props: {
-        "ensembles": {
-            type: Array,
-            required: true,
-            default: []
-        }
     },
     data () {
         return {
@@ -20,6 +15,10 @@ export default {
         }
     },
     computed: {
+        ...mapGetters("Modules/SimulationTool", [
+            "ensembles",
+            "ensemblesLoading"
+        ]),
         filteredEnsembles: {
             get() {
                 let filteredEnsembles = this.ensembles;
@@ -43,13 +42,13 @@ export default {
             "setMode",
             "setSelectedEnsembleId"
         ]),
+        ...mapActions("Modules/SimulationTool", [
+            "fetchEnsembles"
+        ]),
         clearSearch() {
             this.searchString = '';
         },
         formatDateTime(dateTime) {
-            if (!dateTime) {
-                return "TODO in Backend";
-            }
             return new Date(dateTime).toLocaleString({
                 year: "numeric",
                 month: "2-digit",
@@ -75,14 +74,17 @@ export default {
 
 <template>
     <div class="ensemble-list">
-        <SectionHeader title="Ensembles" icon="bi-collection-fill">
+        <SectionHeader
+            :title="$t('additional:modules.tools.simulationTool.ensembles')"
+            icon="bi-collection-fill"
+        >
             <template #actions>
                 <button
                     class="btn btn-primary"
                     @click="() => this.setMode('ensemble-creation')"
                 >
                     <i class="bi bi-plus-lg">&nbsp;</i>
-                    <span>Neues Ensemble</span>
+                    <span>{{ $t('additional:modules.tools.simulationTool.newEnsemble') }}</span>
                 </button>
             </template>
         </SectionHeader>
@@ -106,14 +108,28 @@ export default {
                     role="img"
                 ></i>
             </div>
+            <button
+                class="btn btn-primary btn-sm"
+                @click="this.fetchEnsembles"
+                :title="$t('additional:modules.tools.simulationTool.refresh')"
+            >
+                <i class="bi-arrow-clockwise"></i>
+            </button>
         </div>
-        <table class="ensemble-list-table">
+        <LoadingMask
+            v-if="ensemblesLoading"
+            :text="$t('additional:modules.tools.simulationTool.loadingEnsembles') + '...'"
+        />
+        <table
+            v-else
+            class="ensemble-list-table"
+        >
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Szenarien</th>
-                    <th>Datum</th>
-                    <th>User</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.scenarios') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -162,6 +178,7 @@ export default {
             margin-bottom: 1rem;
 
             .search-wrapper {
+                height: 43px;
                 input.form-control {
                     border-top-right-radius: 5px !important;
                     border-bottom-right-radius: 5px !important;
@@ -173,6 +190,10 @@ export default {
                     top: 50%;
                     transform: translate(0, -50%);
                 }
+            }
+
+            >button {
+                align-self: center;
             }
         }
 

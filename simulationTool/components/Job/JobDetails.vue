@@ -62,22 +62,31 @@ export default {
 
 <template>
     <div class="job-details">
-        <SectionHeader title="Szenario Details" icon="bi-box-fill" />
+        <SectionHeader
+            :title="$t('additional:modules.tools.simulationTool.scenarioDetails')"
+            icon="bi-box-fill"
+        />
         <div v-if="this.job" class="details-body">
             <div class="details-header">
                 <h3 :title="job.jobID">{{ job.process_title }} -> {{ job.name }}</h3>
                 <div>
-                    <strong>gestartet:</strong> {{ this.formatDateTime(job.started) }}
+                    <strong>
+                        {{ $t('additional:modules.tools.simulationTool.started') }}:
+                    </strong>
+                    {{ this.formatDateTime(job.started) }}
                 </div>
                 <div>
-                    <strong>abgeschlossen:</strong> {{ this.formatDateTime(job.finished) }}
+                    <strong>
+                        {{ $t('additional:modules.tools.simulationTool.completed') }}:
+                    </strong>
+                    {{ this.formatDateTime(job.finished) }}
                 </div>
                 <div class="status" :class="job.status">
                     {{job.status}}
                 </div>
             </div>
             <div class="links">
-                <h4>Links</h4>
+                <h4>{{ $t('additional:modules.tools.simulationTool.links') }}</h4>
                 <ul>
                     <li v-for="(link, index) in job.links" :key="link.rel">
                         <i class="bi bi-link"></i>
@@ -86,7 +95,7 @@ export default {
                 </ul>
             </div>
             <div class="parameter">
-                <h4>Parameter</h4>
+                <h4>{{ $t('additional:modules.tools.simulationTool.parameters') }}</h4>
                 <ul>
                     <li v-for="(value, key) in job.parameters.inputs" :key="key">
                         <strong>{{key}}</strong>: {{value}}
@@ -94,13 +103,13 @@ export default {
                 </ul>
             </div>
             <div class="filter">
-                <h4>Filter</h4>
+                <h4>{{ $t('additional:modules.tools.simulationTool.filter') }}</h4>
             </div>
-            <div class="graphs">
-                <h4>Graphen</h4>
+            <div class="charts">
+                <h4>{{ $t('additional:modules.tools.simulationTool.charts') }}</h4>
             </div>
             <div class="notes">
-                <h4>Notizen</h4>
+                <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
             </div>
         </div>
     </div>
@@ -120,7 +129,7 @@ export default {
                 "header header"
                 "links links"
                 "parameter filter"
-                "graphs notes";
+                "charts notes";
             grid-template-columns: 1fr 1fr;
 
             ul {
@@ -177,8 +186,8 @@ export default {
                 grid-area: filter;
             }
 
-            .graphs {
-                grid-area: graphs;
+            .charts {
+                grid-area: charts;
             }
 
             .notes {

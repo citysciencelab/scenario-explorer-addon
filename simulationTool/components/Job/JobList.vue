@@ -1,20 +1,15 @@
 <script>
-import { mapMutations } from "vuex";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 import Multiselect from "vue-multiselect";
 import SectionHeader from "../SectionHeader.vue";
+import LoadingMask from "../LoadingMask.vue";
 
 export default {
     name: "JobList",
     components: {
+        LoadingMask,
         Multiselect,
         SectionHeader
-    },
-    props: {
-        "jobs": {
-            type: Array,
-            required: true,
-            default: []
-        }
     },
     data () {
         return {
@@ -30,6 +25,10 @@ export default {
         }
     },
     computed: {
+        ...mapGetters("Modules/SimulationTool", [
+            "jobs",
+            "jobsLoading"
+        ]),
         filteredJobs: {
             get() {
                 let filteredJobs = this.jobs;
@@ -60,6 +59,9 @@ export default {
             "setMode",
             "setSelectedJobId"
         ]),
+        ...mapActions("Modules/SimulationTool", [
+            "fetchJobs"
+        ]),
         clearSearch() {
             this.searchString = '';
         },
@@ -88,14 +90,14 @@ export default {
 
 <template>
     <div class="job-list">
-        <SectionHeader title="Szenarien" icon="bi-box-fill">
+        <SectionHeader :title="$t('additional:modules.tools.simulationTool.scenarios')" icon="bi-box-fill">
             <template #actions>
                 <button
                     class="btn btn-primary"
                     @click="() => this.setMode('job-execution')"
                 >
                     <i class="bi bi-plus-lg">&nbsp;</i>
-                    <span>Neues Szenario</span>
+                    <span>{{ $t('additional:modules.tools.simulationTool.newScenario') }}</span>
                 </button>
             </template>
         </SectionHeader>
@@ -139,16 +141,27 @@ export default {
                     </span>
                 </template>
             </multiselect>
+            <button
+                class="btn btn-primary btn-sm"
+                @click="this.fetchJobs"
+                :title="$t('additional:modules.tools.simulationTool.refresh')"
+            >
+                <i class="bi-arrow-clockwise"></i>
+            </button>
         </div>
-        <table class="job-list-table">
+        <LoadingMask
+            v-if="jobsLoading"
+            :label="$t('additional:modules.tools.simulationTool.loadingScenarios') + '...'"
+        />
+        <table v-else class="job-list-table">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Modell</th>
-                    <th>Datum</th>
-                    <th>Status</th>
-                    <th>User</th>
-                    <th>Ensembles</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.model') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.status') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.ensembles') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -234,6 +247,10 @@ export default {
                     top: 50%;
                     transform: translate(0, -50%);
                 }
+            }
+
+            >button {
+                align-self: center;
             }
         }
 

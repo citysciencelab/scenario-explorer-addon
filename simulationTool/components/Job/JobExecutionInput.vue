@@ -1,6 +1,6 @@
 <script>
 export default {
-    name: "SimulationJobExecutionInput",
+    name: "JobExecutionInput",
     props: {
         "inputKey": {
             type: [String, Number],
@@ -85,7 +85,7 @@ export default {
             :key="`input_${inputKey}_${index}`"
             class="d-flex align-items-center gap-2"
         >
-            <SimulationJobExecutionInput
+            <JobExecutionInput
                 :input-key="index"
                 :data="{
                     schema: {
@@ -101,7 +101,7 @@ export default {
                 class="bootstrap-icon"
                 @click="handleArrayValueDeletion(index)"
             >
-                <i class="bi-x-lg" />
+                <i class="bi-x-lg" ></i>
             </button>
         </div>
         <button
@@ -111,7 +111,8 @@ export default {
             class="btn btn-sm btn-secondary"
             @click="$emit('change', [...value, ''])"
         >
-            <i class="bi-plus-circle" /> Add {{ data.title }} value
+            <i class="bi-plus-circle" ></i>
+            {{ $t("additional:modules.tools.simulationTool.inputArrayAddButton", { title: data.title }) }}
         </button>
     </div>
 </template>

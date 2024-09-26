@@ -1,21 +1,18 @@
 <script>
+import { mapActions, mapGetters } from "vuex";
+
 import Multiselect from "vue-multiselect";
 import ProcessCard from './ProcessCard.vue';
 import SectionHeader from '../SectionHeader.vue';
+import LoadingMask from "../LoadingMask.vue";
 
 export default {
     name: "ProcessList",
     components: {
+        LoadingMask,
         Multiselect,
         ProcessCard,
         SectionHeader
-    },
-    props: {
-        "processes": {
-            type: Array,
-            required: true,
-            default: []
-        }
     },
     data () {
         return {
@@ -24,6 +21,10 @@ export default {
         }
     },
     computed: {
+        ...mapGetters("Modules/SimulationTool", [
+            "processes",
+            "processesLoading"
+        ]),
         filteredProcesses: {
             get() {
                 let filteredProcesses = this.processes;
@@ -68,6 +69,9 @@ export default {
         }
     },
     methods: {
+        ...mapActions("Modules/SimulationTool", [
+            "fetchProcesses"
+        ]),
         clearSearch() {
             this.searchString = '';
         }
@@ -78,7 +82,7 @@ export default {
 
 <template>
     <div class="process-list">
-        <SectionHeader title="Modelle" icon="bi-cpu-fill" />
+        <SectionHeader :title="$t('additional:modules.tools.simulationTool.models')" icon="bi-cpu-fill" />
         <div class="process-list-toolbar">
             <div class="input-group search-wrapper">
                 <input
@@ -108,8 +112,19 @@ export default {
                 :options="options"
                 :multiple="true"
             />
+            <button
+                class="btn btn-primary btn-sm"
+                @click="this.fetchProcesses"
+                :title="$t('additional:modules.tools.simulationTool.refresh')"
+            >
+                <i class="bi-arrow-clockwise"></i>
+            </button>
         </div>
-        <div class="card-wrapper">
+        <LoadingMask
+            v-if="processesLoading"
+            :label="$t('additional:modules.tools.simulationTool.loadingModels') + '...'"
+        />
+        <div v-else class="card-wrapper">
             <ProcessCard
                 v-for="process in filteredProcesses"
                 :key="process.id"
@@ -151,6 +166,10 @@ export default {
                 top: 50%;
                 transform: translate(0, -50%);
             }
+        }
+
+        >button {
+            align-self: center;
         }
     }
 

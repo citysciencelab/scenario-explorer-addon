@@ -1,6 +1,6 @@
 <script>
 import multiselect from "vue-multiselect";
-import RangeSlider from "../../RangeSlider.vue";
+import RangeSlider from "../RangeSlider.vue";
 import isEqual from "lodash/isEqual";
 
 const DEFAULT_VALUE_MAP = {
@@ -78,8 +78,8 @@ export default {
         <multiselect
             v-if="data.schema.type === 'string'"
             v-model="internalValue"
-            tag-placeholder="Diesen Wert hinzufügen"
-            placeholder="Wert auswählen oder hinzufügen ..."
+            :tag-placeholder="$t('additional:modules.tools.simulationTool.addThisValue')"
+            :placeholder="$t('additional:modules.tools.simulationTool.addOrSelectValue')"
             :options="options"
             :multiple="true"
             :taggable="this.data.schema.enum === undefined"
