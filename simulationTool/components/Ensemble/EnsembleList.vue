@@ -49,9 +49,6 @@ export default {
             this.searchString = '';
         },
         formatDateTime(dateTime) {
-            if (!dateTime) {
-                return "TODO in Backend";
-            }
             return new Date(dateTime).toLocaleString({
                 year: "numeric",
                 month: "2-digit",
@@ -77,14 +74,17 @@ export default {
 
 <template>
     <div class="ensemble-list">
-        <SectionHeader title="Ensembles" icon="bi-collection-fill">
+        <SectionHeader
+            :title="$t('additional:modules.tools.simulationTool.ensembles')"
+            icon="bi-collection-fill"
+        >
             <template #actions>
                 <button
                     class="btn btn-primary"
                     @click="() => this.setMode('ensemble-creation')"
                 >
                     <i class="bi bi-plus-lg">&nbsp;</i>
-                    <span>Neues Ensemble</span>
+                    <span>{{ $t('additional:modules.tools.simulationTool.newEnsemble') }}</span>
                 </button>
             </template>
         </SectionHeader>
@@ -111,18 +111,25 @@ export default {
             <button
                 class="btn btn-primary btn-sm"
                 @click="this.fetchEnsembles"
-                title="Aktualisieren"
+                :title="$t('additional:modules.tools.simulationTool.refresh')"
             >
                 <i class="bi-arrow-clockwise"></i>
             </button>
         </div>
-        <table class="ensemble-list-table">
+        <LoadingMask
+            v-if="ensemblesLoading"
+            :text="$t('additional:modules.tools.simulationTool.loadingEnsembles') + '...'"
+        />
+        <table
+            v-else
+            class="ensemble-list-table"
+        >
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Szenarien</th>
-                    <th>Datum</th>
-                    <th>User</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.scenarios') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
                 </tr>
             </thead>
             <tbody>

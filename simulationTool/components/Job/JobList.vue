@@ -90,14 +90,14 @@ export default {
 
 <template>
     <div class="job-list">
-        <SectionHeader title="Szenarien" icon="bi-box-fill">
+        <SectionHeader :title="$t('additional:modules.tools.simulationTool.scenarios')" icon="bi-box-fill">
             <template #actions>
                 <button
                     class="btn btn-primary"
                     @click="() => this.setMode('job-execution')"
                 >
                     <i class="bi bi-plus-lg">&nbsp;</i>
-                    <span>Neues Szenario</span>
+                    <span>{{ $t('additional:modules.tools.simulationTool.newScenario') }}</span>
                 </button>
             </template>
         </SectionHeader>
@@ -144,21 +144,24 @@ export default {
             <button
                 class="btn btn-primary btn-sm"
                 @click="this.fetchJobs"
-                title="Aktualisieren"
+                :title="$t('additional:modules.tools.simulationTool.refresh')"
             >
                 <i class="bi-arrow-clockwise"></i>
             </button>
         </div>
-        <LoadingMask v-if="jobsLoading" label="Lade Jobs..." />
+        <LoadingMask
+            v-if="jobsLoading"
+            :label="$t('additional:modules.tools.simulationTool.loadingScenarios') + '...'"
+        />
         <table v-else class="job-list-table">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Modell</th>
-                    <th>Datum</th>
-                    <th>Status</th>
-                    <th>User</th>
-                    <th>Ensembles</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.model') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.status') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
+                    <th>{{ $t('additional:modules.tools.simulationTool.ensembles') }}</th>
                 </tr>
             </thead>
             <tbody>

@@ -3,7 +3,7 @@ import { mapMutations, mapGetters, mapActions } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import ProcessSelect from "../Process/ProcessSelect.vue";
 import Config from "../../../../portal/simulation/config";
-import EnsembleInput from "./EnsembleInputs/EnsembleInput.vue";
+import EnsembleInput from "./EnsembleInput.vue";
 
 export default {
     name: "EnsembleCreation",
@@ -76,7 +76,6 @@ export default {
                     Authorization: `Bearer ${this.accessToken}`
                 };
             }
-
             return await fetch(`${this.apiUrl}/processes/${processId}`,{
                 headers: {
                     "Content-Type": "application/json",
@@ -143,7 +142,10 @@ export default {
 
 <template>
     <div class="ensemble-creation">
-        <SectionHeader title="Neues Ensemble" icon="bi-box-fill" />
+        <SectionHeader
+            :title="$t('additional:modules.tools.simulationTool.newEnsemble')"
+            icon="bi-box-fill"
+        />
         <form
             ref="form"
             class="creation-form"
@@ -152,25 +154,27 @@ export default {
                 id="name_input"
                 class="form-control"
                 type="text"
-                placeholder="Name des Ensembles"
+                :placeholder="$t('additional:modules.tools.simulationTool.ensembleName')"
                 v-model="creationValues.name"
                 required
             />
             <textarea
                 id="name_input"
                 class="form-control"
-                placeholder="Beschreibung des Ensembles"
+                :placeholder="$t('additional:modules.tools.simulationTool.ensembleDescription')"
                 v-model="creationValues.description"
                 required
             ></textarea>
             <div>
                 <h4 class="title-with-button">
-                    <span>Enthaltene Modelle</span>
+                    <span>{{ $t('additional:modules.tools.simulationTool.includedModels')}}</span>
                     <button
                         tabindex="0"
                         class="btn btn-light"
                         type="button"
-                        :title="processSelectVisible ? 'Schließen' : 'Modelle hinzufügen'"
+                        :title="processSelectVisible ?
+                            $t('additional:modules.tools.simulationTool.close') :
+                            $t('additional:modules.tools.simulationTool.addModel')"
                         @click="processSelectVisible = !processSelectVisible"
                     >
                         <i
@@ -195,10 +199,10 @@ export default {
                     <h4>{{ process.title }}</h4>
                     <p>{{ process.description }}</p>
                     <div v-if="process" class="inputs">
-                        <h4>Einstellungen</h4>
+                        <h4>{{ $t('additional:modules.tools.simulationTool.settings') }}</h4>
                         <div class="settings">
                             <label :for="`size_input-${process.id}`">
-                                Anzahl der Szenarien:
+                                {{ $t('additional:modules.tools.simulationTool.scenarioAmount') }}:
                             </label>
                             <input
                                 :id="`size_input-${process.id}`"
@@ -211,7 +215,7 @@ export default {
                                 required
                             />
                             <label :for="`sampling_method_input-${process.id}`">
-                                Sampling Methode:
+                                {{ $t('additional:modules.tools.simulationTool.samplingMethod') }}:
                             </label>
                             <select
                                 :id="`sampling_method_input-${process.id}`"
@@ -221,10 +225,12 @@ export default {
                                 required
                                 disabled
                             >
-                                <option value="lhs" selected>Latin Hypercube Sampling</option>
+                                <option value="lhs" selected>
+                                    {{ $t('additional:modules.tools.simulationTool.latinHyperCube') }}
+                                </option>
                             </select>
                         </div>
-                        <h4>Eingabeparameter</h4>
+                        <h4>{{ $t('additional:modules.tools.simulationTool.inputParameters') }}</h4>
                         <template
                             v-for="(input, key) in process.inputs"
                             :key="`label_${key}`"

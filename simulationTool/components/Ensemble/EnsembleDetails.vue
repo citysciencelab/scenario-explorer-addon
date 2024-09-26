@@ -65,19 +65,25 @@ export default {
 
 <template>
     <div class="ensemble-details">
-        <SectionHeader title="Ensemble Details" icon="bi-box-fill" />
+        <SectionHeader
+            :title="$t('additional:modules.tools.simulationTool.ensembleDetails')"
+            icon="bi-box-fill"
+        />
         <div v-if="this.ensemble" class="details-body">
             <div class="details-header">
                 <h3 :title="ensemble.id">{{ ensemble.name }}</h3>
                 <div>
-                    <strong>erstellt:</strong> {{ this.formatDateTime(ensemble.created) }}
+                    <strong>
+                        {{ $t('additional:modules.tools.simulationTool.created') }}:
+                    </strong>
+                    {{ this.formatDateTime(ensemble.created) }}
                 </div>
                 <div class="status" :class="ensemble.status">
                     {{ensemble.description}}
                 </div>
             </div>
             <div class="scenarios">
-                <h4>Enthaltene Szenarien</h4>
+                <h4>{{ $t('additional:modules.tools.simulationTool.includedScenarios') }}</h4>
                 <ul>
                     <li v-for="scenario in scenarios" :key="scenario.id">
                         <strong>{{scenario.process_id}}</strong>

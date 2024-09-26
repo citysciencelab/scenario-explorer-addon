@@ -49,13 +49,13 @@ export default {
         <button
             class="btn btn-link"
             @click="closeSimulationTool"
-            title="Close Simulation Tool"
+            :title="$t('additional:modules.tools.simulationTool.closeSimulationTool')"
         >
             <i class="bi bi-x-lg"></i>
         </button>
         <button
             class="btn btn-link"
-            title="Home"
+            :title="$t('additional:modules.tools.simulationTool.home')"
             disabled
         >
             <i class="bi bi-house-fill"></i>
@@ -64,7 +64,7 @@ export default {
             class="btn btn-link"
             :class="{ active: mode === 'process-list' }"
             @click="() => this.setMode('process-list')"
-            title="Modelle"
+            :title="$t('additional:modules.tools.simulationTool.models')"
         >
             <i class="bi bi-cpu-fill"></i>
         </button>
@@ -72,7 +72,7 @@ export default {
             class="btn btn-link"
             :class="{ active: mode === 'job-list' }"
             @click="() => this.setMode('job-list')"
-            title="Szenarien"
+            :title="$t('additional:modules.tools.simulationTool.scenarios')"
         >
             <i class="bi bi-box-fill"></i>
         </button>
@@ -81,13 +81,13 @@ export default {
             :class="{ active: mode === 'ensemble-list' }"
             @click="() => this.setMode('ensemble-list')"
             :disabled="!loggedIn"
-            :title="!loggedIn ? 'Ensembles require login' : 'Ensembles'"
+            :title="$t('additional:modules.tools.simulationTool.ensembles')"
         >
             <i class="bi bi-collection-fill"></i>
         </button>
         <button
             class="btn btn-link"
-            title="Hilfe"
+            :title="$t('additional:modules.tools.simulationTool.help')"
             disabled
         >
             <i class="bi bi-question-circle-fill"></i>

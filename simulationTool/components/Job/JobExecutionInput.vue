@@ -101,7 +101,7 @@ export default {
                 class="bootstrap-icon"
                 @click="handleArrayValueDeletion(index)"
             >
-                <i class="bi-x-lg" />
+                <i class="bi-x-lg" ></i>
             </button>
         </div>
         <button
@@ -111,7 +111,8 @@ export default {
             class="btn btn-sm btn-secondary"
             @click="$emit('change', [...value, ''])"
         >
-            <i class="bi-plus-circle" /> Add {{ data.title }} value
+            <i class="bi-plus-circle" ></i>
+            {{ $t("additional:modules.tools.simulationTool.inputArrayAddButton", { title: data.title }) }}
         </button>
     </div>
 </template>

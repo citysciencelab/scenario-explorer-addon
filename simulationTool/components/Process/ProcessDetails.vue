@@ -54,7 +54,10 @@ export default {
 
 <template>
     <div class="process-details">
-        <SectionHeader title="Modell Details" icon="bi-box-fill" />
+        <SectionHeader
+            :title="$t('additional:modules.tools.simulationTool.modelDetails')"
+            icon="bi-box-fill"
+        />
         <div v-if="this.process" class="details-body">
             <div class="title-wrapper">
                 <div class="title">
@@ -63,17 +66,17 @@ export default {
                     </h3>
                 </div>
                 <div class="subtitle">
-                    Version: {{process.version}}
+                    {{ $t('additional:modules.tools.simulationTool.version') }}: {{process.version}}
                 </div>
             </div>
             <div class="information">
                 <div class="left-column">
                     <div class="description">
-                        <h4>Beschreibung</h4>
+                        <h4>{{ $t('additional:modules.tools.simulationTool.description') }}</h4>
                         <p>{{process.description}}</p>
                     </div>
                     <div class="inputs">
-                        <h4>Eingabeparameter</h4>
+                        <h4>{{ $t('additional:modules.tools.simulationTool.inputParameters') }}</h4>
                         <ul>
                             <li v-for="input in process.inputs" :key="input.name">
                                 <strong>{{input.title}}</strong>: {{input.description}}
@@ -81,7 +84,7 @@ export default {
                         </ul>
                     </div>
                     <div class="links">
-                        <h4>Links</h4>
+                        <h4>{{ $t('additional:modules.tools.simulationTool.links') }}</h4>
                         <ul>
                             <li
                                 v-for="link in process.links"
@@ -113,7 +116,7 @@ export default {
             <div class="actions">
                 <button class="btn btn-secondary">
                     <i class="bi bi-collection-fill">&nbsp;</i>
-                    <span>Ensemble simulieren</span>
+                    <span>{{ $t('additional:modules.tools.simulationTool.createEnsemble') }}</span>
                 </button>
                 <button
                     class="btn btn-primary"

@@ -82,7 +82,7 @@ export default {
 
 <template>
     <div class="process-list">
-        <SectionHeader title="Modelle" icon="bi-cpu-fill" />
+        <SectionHeader :title="$t('additional:modules.tools.simulationTool.models')" icon="bi-cpu-fill" />
         <div class="process-list-toolbar">
             <div class="input-group search-wrapper">
                 <input
@@ -115,12 +115,15 @@ export default {
             <button
                 class="btn btn-primary btn-sm"
                 @click="this.fetchProcesses"
-                title="Aktualisieren"
+                :title="$t('additional:modules.tools.simulationTool.refresh')"
             >
                 <i class="bi-arrow-clockwise"></i>
             </button>
         </div>
-        <LoadingMask v-if="processesLoading" label="Lade Modelle..."/>
+        <LoadingMask
+            v-if="processesLoading"
+            :label="$t('additional:modules.tools.simulationTool.loadingModels') + '...'"
+        />
         <div v-else class="card-wrapper">
             <ProcessCard
                 v-for="process in filteredProcesses"

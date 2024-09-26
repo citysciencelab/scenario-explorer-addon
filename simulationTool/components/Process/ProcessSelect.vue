@@ -34,8 +34,8 @@ export default {
     <div class="process-list">
         <multiselect
             :modelValue="modelValue"
-            placeholder="Nach Modellen suchen ..."
-            aria-label="Nach Modellen suchen..."
+            :placeholder="$t('additional:modules.tools.simulationTool.searchModels') + '...'"
+            :aria-label="$t('additional:modules.tools.simulationTool.searchModels') + '...'"
             track-by="id"
             :custom-label="labelFunction"
             @update:modelValue="handleInputChange"
