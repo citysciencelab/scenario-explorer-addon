@@ -1,5 +1,5 @@
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 import Multiselect from "vue-multiselect";
 import SectionHeader from "../SectionHeader.vue";
 import LoadingMask from "../LoadingMask.vue";
@@ -58,6 +58,9 @@ export default {
         ...mapMutations("Modules/SimulationTool", [
             "setMode",
             "setSelectedJobId"
+        ]),
+        ...mapActions("Modules/SimulationTool", [
+            "fetchJobs"
         ]),
         clearSearch() {
             this.searchString = '';
@@ -138,6 +141,13 @@ export default {
                     </span>
                 </template>
             </multiselect>
+            <button
+                class="btn btn-primary btn-sm"
+                @click="this.fetchJobs"
+                title="Aktualisieren"
+            >
+                <i class="bi-arrow-clockwise"></i>
+            </button>
         </div>
         <LoadingMask v-if="jobsLoading" label="Lade Jobs..." />
         <table v-else class="job-list-table">
@@ -234,6 +244,10 @@ export default {
                     top: 50%;
                     transform: translate(0, -50%);
                 }
+            }
+
+            >button {
+                align-self: center;
             }
         }
 

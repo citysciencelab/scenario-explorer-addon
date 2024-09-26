@@ -1,5 +1,5 @@
 <script>
-import {mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 import Multiselect from "vue-multiselect";
 import ProcessCard from './ProcessCard.vue';
@@ -69,6 +69,9 @@ export default {
         }
     },
     methods: {
+        ...mapActions("Modules/SimulationTool", [
+            "fetchProcesses"
+        ]),
         clearSearch() {
             this.searchString = '';
         }
@@ -109,6 +112,13 @@ export default {
                 :options="options"
                 :multiple="true"
             />
+            <button
+                class="btn btn-primary btn-sm"
+                @click="this.fetchProcesses"
+                title="Aktualisieren"
+            >
+                <i class="bi-arrow-clockwise"></i>
+            </button>
         </div>
         <LoadingMask v-if="processesLoading" label="Lade Modelle..."/>
         <div v-else class="card-wrapper">
@@ -153,6 +163,10 @@ export default {
                 top: 50%;
                 transform: translate(0, -50%);
             }
+        }
+
+        >button {
+            align-self: center;
         }
     }
 

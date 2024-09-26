@@ -1,5 +1,5 @@
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import LoadingMask from "../LoadingMask.vue";
 
@@ -41,6 +41,9 @@ export default {
         ...mapMutations("Modules/SimulationTool", [
             "setMode",
             "setSelectedEnsembleId"
+        ]),
+        ...mapActions("Modules/SimulationTool", [
+            "fetchEnsembles"
         ]),
         clearSearch() {
             this.searchString = '';
@@ -105,6 +108,13 @@ export default {
                     role="img"
                 ></i>
             </div>
+            <button
+                class="btn btn-primary btn-sm"
+                @click="this.fetchEnsembles"
+                title="Aktualisieren"
+            >
+                <i class="bi-arrow-clockwise"></i>
+            </button>
         </div>
         <table class="ensemble-list-table">
             <thead>
@@ -161,6 +171,7 @@ export default {
             margin-bottom: 1rem;
 
             .search-wrapper {
+                height: 43px;
                 input.form-control {
                     border-top-right-radius: 5px !important;
                     border-bottom-right-radius: 5px !important;
@@ -172,6 +183,10 @@ export default {
                     top: 50%;
                     transform: translate(0, -50%);
                 }
+            }
+
+            >button {
+                align-self: center;
             }
         }
 
