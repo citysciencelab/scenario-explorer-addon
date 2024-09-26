@@ -15,10 +15,9 @@ export default {
         return {
             job: null,
             type: 'bar',
-            xProp: 'id',
-            yProp: 'properties.value',
-            sort: false,
-            rootProp: 'results.features'
+            xProp: '',
+            yProp: '',
+            rootProp: ''
         };
     },
     computed: {

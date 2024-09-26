@@ -19,10 +19,6 @@ export default {
       type: String,
       default: '',
     },
-    sort: {
-      type: Boolean,
-      default: false,
-    },
     rootProp: {
       type: String,
       default: '',
@@ -33,13 +29,24 @@ export default {
       localType: this.type,
       localXProp: this.xProp,
       localYProp: this.yProp,
-      localSort: this.sort,
       localRootProp: this.rootProp
     };
   },
   computed: {
-        ...mapGetters("Modules/SimulationTool", ["jobResultData"]),
-    },
+    ...mapGetters("Modules/SimulationTool", ["jobResultData"]),
+    dataNode() {
+      return this.getValue(this.jobResultData, this.localRootProp + '.0')
+    }
+  },
+  methods: {
+    getValue(obj, prop) {
+      try {
+        return prop.split('.').reduce((acc, prop) => acc[prop], obj);
+      } catch {
+        return undefined;
+      }
+    }
+  },
   watch: {
     localType(newVal) {
       this.$emit('update:type', newVal);
@@ -50,14 +57,8 @@ export default {
     localYProp(newVal) {
       this.$emit('update:yProp', newVal);
     },
-    localSort(newVal) {
-      this.$emit('update:sort', newVal);
-    },
     localRootProp(newVal) {
       this.$emit('update:rootProp', newVal);
-    },
-    jobResultData(newVal) {
-      console.log('Fritz:', newVal)
     }
   }
 };
@@ -73,20 +74,16 @@ export default {
       </select>
     </div>
     <div>
+      <label>Root Prop:</label>
+      <PropPathSelector v-if="this.jobResultData" v-model="localRootProp" :node="this.jobResultData" />
+    </div>
+    <div>
       <label>x prop:</label>
-      <input v-model="localXProp" />
+      <PropPathSelector v-if="this.dataNode" v-model="localXProp" :node="this.dataNode" />
     </div>
     <div>
       <label>y prop:</label>
-      <input v-model="localYProp" />
-    </div>
-    <div>
-      <label>sortieren:</label>
-      <input type="checkbox" v-model="localSort" />
-    </div>
-    <div>
-      <label>Root Prop:</label>
-      <PropPathSelector v-if="this.jobResultData" v-model="localRootProp" :node="this.jobResultData" />
+      <PropPathSelector v-if="this.dataNode" v-model="localYProp" :node="this.dataNode" />
     </div>
   </div>
 </template>
@@ -105,7 +102,9 @@ export default {
     margin-bottom: 5px;
   }
 
-  select, input[type="text"], input[type="checkbox"] {
+  select,
+  input[type="text"],
+  input[type="checkbox"] {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -137,7 +136,7 @@ export default {
 
   select {
     cursor: pointer;
-    
+
     &:hover {
       border-color: #888;
     }

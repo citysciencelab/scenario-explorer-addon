@@ -33,6 +33,16 @@ export default {
       data: [],
     };
   },
+  watch: {
+    jobResultData: {
+      handler(newData) {
+        if (newData && newData.length > 0) {
+          console.log('Daten wurden geladen:', newData);
+        }
+      },
+      immediate: true,
+    }
+  },
   computed: {
     ...mapGetters("Modules/SimulationTool", ["jobResultData"]),
   }
@@ -41,6 +51,7 @@ export default {
 
 <template>
   <div class="graph">
-    <Chart :data="this.jobResultData" :type="type" :x-prop="xProp" :y-prop="yProp" :sort="sort" :root-prop="rootProp" />
+    <Chart v-if="this.jobResultData" :data="this.jobResultData" :type="type" :xProp="xProp" :yProp="yProp"
+      :rootProp="rootProp" />
   </div>
 </template>

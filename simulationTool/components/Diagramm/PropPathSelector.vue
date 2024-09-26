@@ -33,7 +33,7 @@ export default {
     },
     hasValidChildren() {
       const target = this.node && this.currentKey ? this.node[this.currentKey] : null;
-      return target && typeof target === 'object' && !Array.isArray(target) && Object.keys(target).length > 0;
+      return target && typeof target === 'object' && Object.keys(target).length > 0;
     }
   }
 };
