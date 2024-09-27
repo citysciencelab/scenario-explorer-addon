@@ -3,6 +3,7 @@ import PropPathSelector from './PropPathSelector.vue';
 import { mapGetters } from "vuex";
 
 export default {
+  name: "ChartSettings",
   components: {
     PropPathSelector,
   },
@@ -66,24 +67,34 @@ export default {
 
 <template>
   <div class="settings">
-    <div>
-      <label>Diagrammtyp:</label>
+    <div class="input-wrapper">
+      <label>{{ $t('additional:modules.tools.simulationTool.chartType') }}</label>
       <select v-model="localType">
-        <option value="line">Liniendiagramm</option>
-        <option value="bar">Balkendiagramm</option>
+        <option value="line">{{ $t('additional:modules.tools.simulationTool.chart-line') }}</option>
+        <option value="bar">{{ $t('additional:modules.tools.simulationTool.chart-bar') }}</option>
       </select>
     </div>
-    <div>
-      <label>Root Prop:</label>
-      <PropPathSelector v-if="this.jobResultData" v-model="localRootProp" :node="this.jobResultData" />
+    <div class="input-wrapper">
+      <label>{{ $t('additional:modules.tools.simulationTool.chartDataRootProperty') }}</label>
+      <PropPathSelector
+        v-if="this.jobResultData"
+        v-model="localRootProp"
+        :node="this.jobResultData"
+      />
     </div>
-    <div>
-      <label>x prop:</label>
-      <PropPathSelector v-if="this.dataNode" v-model="localXProp" :node="this.dataNode" />
+    <div class="input-wrapper" v-if="this.dataNode">
+      <label>{{ $t('additional:modules.tools.simulationTool.chartDataXProperty') }}</label>
+      <PropPathSelector
+        v-model="localXProp"
+        :node="this.dataNode"
+      />
     </div>
-    <div>
-      <label>y prop:</label>
-      <PropPathSelector v-if="this.dataNode" v-model="localYProp" :node="this.dataNode" />
+    <div class="input-wrapper" v-if="this.dataNode">
+      <label>{{ $t('additional:modules.tools.simulationTool.chartDataYProperty') }}</label>
+      <PropPathSelector
+        v-model="localYProp"
+        :node="this.dataNode"
+      />
     </div>
   </div>
 </template>
@@ -92,10 +103,7 @@ export default {
 .settings {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-  max-width: 400px;
-  margin: 0 auto;
+  gap: 1rem;
 
   label {
     font-weight: 600;
@@ -119,15 +127,9 @@ export default {
     }
   }
 
-  input[type="checkbox"] {
-    width: auto;
-    margin-right: 10px;
-  }
-
-  div {
+  div.input-wrapper {
     display: flex;
     flex-direction: column;
-    margin-bottom: 15px;
 
     &:last-child {
       margin-bottom: 0;

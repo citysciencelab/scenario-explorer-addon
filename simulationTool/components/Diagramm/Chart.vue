@@ -3,6 +3,7 @@ import Plotly from 'plotly.js-dist';
 import { mapGetters } from "vuex";
 
 export default {
+  name: "Chart",
   props: {
     type: {
       type: String,
@@ -30,6 +31,15 @@ export default {
     },
     type() {
       this.drawChart();
+    },
+    xProp() {
+      this.drawChart();
+    },
+    yProp() {
+      this.drawChart();
+    },
+    rootProp() {
+      this.drawChart();
     }
   },
   methods: {
@@ -38,7 +48,7 @@ export default {
         return;
       }
       const config = {
-        displayModeBar: false,
+        displayModeBar: false
       };
       const plotlyData = this.getPlotlyData();
       const layout = this.guessLayoutByData();
@@ -58,7 +68,7 @@ export default {
       return prop.split('.').reduce((acc, prop) => acc[prop], obj);
     },
     getPlotlyData() {
-      if (!this.jobResultData) {
+      if (!this.jobResultData || !this.rootProp || !this.xProp || !this.yProp || !this.type) {
         return [];
       }
 
@@ -104,11 +114,15 @@ export default {
 </script>
 
 <template>
-  <div ref="plotlyChart" style="width: 100%; height: 400px;"></div>
+  <div
+    ref="plotlyChart"
+    class="plotly-chart"
+  ></div>
 </template>
 
 <style scoped>
-.read-the-docs {
-  color: #888;
-}
+  .plotly-chart {
+    width: 100%;
+    height: 100%;
+  }
 </style>

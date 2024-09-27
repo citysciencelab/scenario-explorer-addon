@@ -2,22 +2,17 @@
 import { mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import Diagramm from "../Diagramm/Diagramm.vue";
-import DiagrammSettings from "../Diagramm/DiagrammSettings.vue";
+import JobResultMockData from "../../mock_data/job_result.json"
 
 export default {
     name: "JobDetails",
     components: {
         SectionHeader,
-        Diagramm,
-        DiagrammSettings
+        Diagramm
     },
     data() {
         return {
-            job: null,
-            type: 'bar',
-            xProp: '',
-            yProp: '',
-            rootProp: ''
+            job: null
         };
     },
     computed: {
@@ -28,10 +23,7 @@ export default {
         this.fetchJob(this.selectedJobId);
     },
     watch: {
-        job: {
-            handler: 'fetchJobResultData',
-            immediate: true,
-        }
+        job: 'fetchJobResultData'
     },
     methods: {
         ...mapMutations("Modules/SimulationTool", ["setMode", "setJobResultData"]),
@@ -69,10 +61,19 @@ export default {
                 if (!url) {
                     return;
                 }
-                // Todo: fix protocol
-                const response = await fetch("http://" + url);
-                const jsonData = await response.json();
-                this.setJobResultData(jsonData);
+                let additionalHeaders = {};
+                if (this.loggedIn) {
+                    additionalHeaders = {
+                        Authorization: `Bearer ${this.accessToken}`
+                    };
+                }
+                const result = await fetch(url, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                }).then((res) => res.json());
+                this.setJobResultData(result);
             } catch (error) {
                 console.error("Fehler beim Laden der Daten", error);
             }
@@ -131,15 +132,7 @@ export default {
             <div class="charts">
                 <h4>{{ $t('additional:modules.tools.simulationTool.charts') }}</h4>
                 <div class="wrapper">
-                    <Diagramm :type="type" :x-prop="xProp" :y-prop="yProp" :sort="sort" :root-prop="rootProp" />
-                </div>
-            </div>
-
-            <div class="settings">
-                <h4>Graphen Einstellungen</h4>
-                <div class="wrapper">
-                    <DiagrammSettings v-model:type="type" v-model:xProp="xProp" v-model:yProp="yProp"
-                        v-model:sort="sort" :root-prop="rootProp" />
+                    <Diagramm />
                 </div>
             </div>
 
