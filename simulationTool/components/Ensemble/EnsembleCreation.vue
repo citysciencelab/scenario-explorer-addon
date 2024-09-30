@@ -38,11 +38,13 @@ export default {
                 }
             }
             // remove values for processes that are not selected anymore
-            Object.keys(this.creationValues).forEach((processId) => {
-                if (!this.selectedProcesses.find((process) => process.id === processId)) {
-                    delete this.creationValues[processId];
-                }
-            });
+            Object.keys(this.creationValues)
+                .filter(key => !['name', 'description'].includes(key))
+                .forEach((processId) => {
+                    if (!this.selectedProcesses.find((process) => process.id === processId)) {
+                        delete this.creationValues[processId];
+                    }
+                });
         }
     },
     computed: {
@@ -159,7 +161,7 @@ export default {
                 required
             />
             <textarea
-                id="name_input"
+                id="description_input"
                 class="form-control"
                 :placeholder="$t('additional:modules.tools.simulationTool.ensembleDescription')"
                 v-model="creationValues.description"
@@ -259,7 +261,7 @@ export default {
                 @click="create"
             >
                 <i class="bi bi-collection-fill">&nbsp;</i>
-                Ensemble ausführen
+                {{ $t('additional:modules.tools.simulationTool.createEnsemble') }}
             </button>
         </form>
     </div>

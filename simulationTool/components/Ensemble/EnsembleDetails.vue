@@ -9,7 +9,9 @@ export default {
     },
     data() {
         return {
-            ensemble: null
+            ensemble: null,
+            ensembleJobs: [],
+            executionResult: null
         };
     },
     computed: {
@@ -24,13 +26,30 @@ export default {
             return this.ensemble ? this.ensemble.scenario_configs : [];
         }
     },
+    watch: {
+        ensemble: function() {
+            if (this.ensemble) {
+                this.fetchEnsembleJobs();
+            }
+        }
+    },
     mounted() {
         this.fetchEnsemble(this.selectedEnsembleId);
     },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
-            "setMode"
+            "setMode",
+            "setSelectedProcessId",
+            "setSelectedJobId"
         ]),
+        showProcessDetails(processId) {
+            this.setSelectedProcessId(processId);
+            this.setMode('process-details');
+        },
+        showJobDetails(jobId) {
+            this.setSelectedJobId(jobId);
+            this.setMode('job-details');
+        },
         /**
          * Fetches a ensemble from the simulation backend
          * @param {String} ensembleId
@@ -42,13 +61,44 @@ export default {
                     Authorization: `Bearer ${this.accessToken}`
                 };
             }
-
             this.ensemble = await fetch(`/api/ensembles/${ensembleId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders
                 }
             }).then((res) => res.json());
+        },
+        async fetchEnsembleJobs () {
+            let additionalHeaders = {};
+            if (this.loggedIn) {
+                additionalHeaders = {
+                    Authorization: `Bearer ${this.accessToken}`
+                };
+            }
+            this.ensembleJobs = await fetch(`/api/ensembles/${this.selectedEnsembleId}/jobs`,{
+                headers: {
+                    "Content-Type": "application/json",
+                    ...additionalHeaders
+                }
+            }).then((res) => res.json());
+        },
+        async executeEnsemble() {
+            let additionalHeaders = {};
+            if (this.loggedIn) {
+                additionalHeaders = {
+                    Authorization: `Bearer ${this.accessToken}`
+                };
+            }
+            const response = await fetch(`/api/ensembles/${this.selectedEnsembleId}/execute`,{
+                headers: {
+                    "Content-Type": "application/json",
+                    ...additionalHeaders
+                }
+            })
+            if (response.ok) {
+                this.executionResult = await response.json();
+                this.fetchEnsemble(this.selectedEnsembleId);
+            }
         },
         formatDateTime(dateTime) {
             return new Date(dateTime).toLocaleString({
@@ -82,13 +132,48 @@ export default {
                     {{ensemble.description}}
                 </div>
             </div>
-            <div class="scenarios">
-                <h4>{{ $t('additional:modules.tools.simulationTool.includedScenarios') }}</h4>
-                <ul>
+            <div class="models">
+                <h4>{{ $t('additional:modules.tools.simulationTool.includedModels') }}</h4>
+                <ul class="scenario-list">
                     <li v-for="scenario in scenarios" :key="scenario.id">
                         <strong>{{scenario.process_id}}</strong>
+                        <button
+                            class="btn btn-link"
+                            @click="this.showProcessDetails(scenario.process_id)"
+                            :title="$t('additional:modules.tools.simulationTool.modelDetails')"
+                        >
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </button>
                     </li>
                 </ul>
+            </div>
+            <div class="jobs">
+                <h4>{{ $t('additional:modules.tools.simulationTool.includedScenarios') }}</h4>
+                <ul class="job-list">
+                    <li v-for="job in ensembleJobs" :key="job.id">
+                        <div>
+                            <strong :title="job.jobID">{{job.name}}</strong>
+                            <button
+                                class="btn btn-link"
+                                @click="this.showJobDetails(job.jobID)"
+                                :title="$t('additional:modules.tools.simulationTool.scenarioDetails')"
+                            >
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </button>
+                        </div>
+                        <div class="status" :class="job.status">
+                            {{ job.status }}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="toolbar">
+                <button
+                    class="btn btn-primary"
+                    @click="executeEnsemble"
+                >
+                    {{ $t('additional:modules.tools.simulationTool.executeEnsemble') }}
+                </button>
             </div>
         </div>
     </div>
@@ -106,9 +191,10 @@ export default {
             gap: 1rem;
             grid-template-areas:
                 "header header"
-                "links links"
-                "parameter filter"
-                "graphs notes";
+                "models models"
+                "jobs jobs"
+                "graphs notes"
+                "toolbar toolbar";
             grid-template-columns: 1fr 1fr;
 
             ul {
@@ -122,6 +208,13 @@ export default {
                         margin-right: .25rem;
                     }
                 }
+
+                &.job-list {
+                    li {
+                    display: flex;
+                    align-items: center;
+                    }
+                }
             }
 
             div.status {
@@ -131,38 +224,34 @@ export default {
                 font-size: .875rem;
                 font-weight: 500;
                 color: white;
+
+                &.accepted {
+                    background-color: var(--bs-info);
+                }
+                &.running {
+                    background-color: var(--bs-warning);
+                }
+                &.successful {
+                    background-color: var(--bs-success);
+                }
+                &.dismissed {
+                    background-color: var(--bs-secondary);
+                }
+                &.failed {
+                    background-color: var(--bs-danger);
+                }
             }
 
-            .accepted {
-                background-color: var(--bs-info);
-            }
-            .running {
-                background-color: var(--bs-warning);
-            }
-            .successful {
-                background-color: var(--bs-success);
-            }
-            .dismissed {
-                background-color: var(--bs-secondary);
-            }
-            .failed {
-                background-color: var(--bs-danger);
-            }
-
-            .links {
-                grid-area: links;
-            }
-
-            .header {
+            .details-header {
                 grid-area: header;
             }
 
-            .parameter {
-                grid-area: parameter;
+            .models {
+                grid-area: models;
             }
 
-            .filter {
-                grid-area: filter;
+            .jobs {
+                grid-area: jobs;
             }
 
             .graphs {
@@ -171,6 +260,12 @@ export default {
 
             .notes {
                 grid-area: notes;
+            }
+
+            .toolbar {
+                grid-area: toolbar;
+                display: flex;
+                justify-content: flex-end;
             }
         }
 
