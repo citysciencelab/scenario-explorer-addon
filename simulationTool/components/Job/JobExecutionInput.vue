@@ -1,6 +1,11 @@
 <script>
+import GeoJSONInput from '../GeoJSONInput.vue';
+
 export default {
     name: "JobExecutionInput",
+    components: {
+        GeoJSONInput
+    },
     props: {
         "inputKey": {
             type: [String, Number],
@@ -28,6 +33,16 @@ export default {
 
             newValue.splice(index, 1);
             this.$emit("change", newValue);
+        },
+        isNumberType (type) {
+            return [
+                'number', 'integer', 'double', 'float', 'int', 'long', 'short', 'byte'
+            ].includes(type);
+        },
+        isGeometry (type) {
+            return [
+                'geometry', 'object'
+            ].includes(type);
         }
     }
 };
@@ -50,7 +65,7 @@ export default {
         @input="$emit('change', $event.target.value)"
     >
     <input
-        v-else-if="data.schema.type === 'number'"
+        v-else-if="isNumberType(data.schema.type)"
         :id="`input_${inputKey}`"
         :key="`input_${inputKey}_number`"
         class="form-control"
@@ -75,6 +90,15 @@ export default {
         :value="value"
         @input="$emit('change', $event.target.checked)"
     >
+    <GeoJSONInput
+        v-else-if="isGeometry(data.schema.type)"
+        :key="`input_${inputKey}_geometry`"
+        :value="value"
+        @change="$emit('change', (event) => {
+            debugger;
+            console.log(event);
+        })"
+    />
     <div
         v-else-if="data.schema.type === 'array'"
         :key="`input_${inputKey}_${value?.length}`"
