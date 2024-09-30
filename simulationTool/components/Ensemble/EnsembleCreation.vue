@@ -76,7 +76,7 @@ export default {
                     Authorization: `Bearer ${this.accessToken}`
                 };
             }
-            return await fetch(`${this.apiUrl}/processes/${processId}`,{
+            return await fetch(`/api/processes/${processId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     ...additionalHeaders
