@@ -57,7 +57,8 @@ export default {
     methods: {
         ...mapMutations("Modules/SimulationTool", [
             "setMode",
-            "setSelectedJobId"
+            "setSelectedJobId",
+            "setSelectedEnsembleId"
         ]),
         ...mapActions("Modules/SimulationTool", [
             "fetchJobs"
@@ -83,7 +84,14 @@ export default {
         onJobClick(job) {
             this.setSelectedJobId(job.jobID);
             this.setMode("job-details");
-        }
+        },
+        getEnsembleName(job) {
+            return job.ensemble_name || job.ensemble_id;
+        },
+        onEnsembleClick(job) {
+            this.setSelectedEnsembleId(job.ensemble_id);
+            this.setMode("ensemble-details");
+        },
     },
 };
 </script>
@@ -198,7 +206,12 @@ export default {
                     </td>
                     <td>
                         <div>
-                            {{job.ensembles}}
+                            <button
+                                class="btn btn-link"
+                                @click="onEnsembleClick(job)"
+                            >
+                                {{this.getEnsembleName(job)}}
+                            </button>
                         </div>
                     </td>
                 </tr>

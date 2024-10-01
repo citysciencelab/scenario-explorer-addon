@@ -109,6 +109,16 @@ export default {
                 minute: "2-digit"
             });
         },
+        getJobName(job) {
+            return job.name || job.jobID;
+        },
+        getModelName(job) {
+            return job.process_title || job.processID;
+        },
+        onJobClick(job) {
+            this.setSelectedJobId(job.jobID);
+            this.setMode("job-details");
+        }
     }
 };
 </script>
@@ -149,23 +159,53 @@ export default {
             </div>
             <div class="jobs">
                 <h4>{{ $t('additional:modules.tools.simulationTool.includedScenarios') }}</h4>
-                <ul class="job-list">
-                    <li v-for="job in ensembleJobs" :key="job.id">
-                        <div>
-                            <strong :title="job.jobID">{{job.name}}</strong>
-                            <button
-                                class="btn btn-link"
-                                @click="this.showJobDetails(job.jobID)"
-                                :title="$t('additional:modules.tools.simulationTool.scenarioDetails')"
-                            >
-                                <i class="bi bi-box-arrow-up-right"></i>
-                            </button>
-                        </div>
-                        <div class="status" :class="job.status">
-                            {{ job.status }}
-                        </div>
-                    </li>
-                </ul>
+                <div class="job-table-wrapper">
+                    <table class="job-list-table">
+                        <thead>
+                            <tr>
+                                <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
+                                <th>{{ $t('additional:modules.tools.simulationTool.model') }}</th>
+                                <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
+                                <th>{{ $t('additional:modules.tools.simulationTool.status') }}</th>
+                                <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="job in ensembleJobs">
+                                <td>
+                                    <div>
+                                        <button
+                                            class="btn btn-link"
+                                            @click="onJobClick(job)"
+                                        >
+                                            {{this.getJobName(job)}}
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        {{this.getModelName(job)}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        {{this.formatDateTime(job.started)}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="status" :class="job.status">
+                                        {{job.status}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        {{job.user}}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="toolbar">
                 <button
@@ -196,6 +236,8 @@ export default {
                 "graphs notes"
                 "toolbar toolbar";
             grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto auto auto;
+            overflow: hidden;
 
             ul {
                 list-style: none;
@@ -208,37 +250,67 @@ export default {
                         margin-right: .25rem;
                     }
                 }
-
-                &.job-list {
-                    li {
-                    display: flex;
-                    align-items: center;
-                    }
-                }
             }
 
-            div.status {
-                display: inline-block;
-                padding: .25rem .5rem;
-                border-radius: .5rem;
-                font-size: .875rem;
-                font-weight: 500;
-                color: white;
+            .job-table-wrapper {
+                overflow: auto;
+                max-height: 100%;
+            }
 
-                &.accepted {
-                    background-color: var(--bs-info);
+            .job-list-table {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+
+                th, td {
+                    padding: .5rem;
+                    text-align: left;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+
+                    &:not(:last-child) {
+                        border-right: 2px solid var(--bs-default);
+                    }
                 }
-                &.running {
-                    background-color: var(--bs-warning);
+
+                th {
+                    white-space: nowrap;
                 }
-                &.successful {
-                    background-color: var(--bs-success);
+
+                td > div {
+                    white-space: normal;
+                    display: -webkit-box;
+                    line-clamp: 2;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    word-break: break-word;
                 }
-                &.dismissed {
-                    background-color: var(--bs-secondary);
-                }
-                &.failed {
-                    background-color: var(--bs-danger);
+
+                div.status {
+                    display: inline-block;
+                    padding: .25rem .5rem;
+                    border-radius: .5rem;
+                    font-size: .875rem;
+                    font-weight: 500;
+                    color: white;
+
+                    &.accepted {
+                        background-color: var(--bs-info);
+                    }
+                    &.running {
+                        background-color: var(--bs-warning);
+                    }
+                    &.successful {
+                        background-color: var(--bs-success);
+                    }
+                    &.dismissed {
+                        background-color: var(--bs-secondary);
+                    }
+                    &.failed {
+                        background-color: var(--bs-danger);
+                    }
                 }
             }
 
@@ -247,10 +319,12 @@ export default {
             }
 
             .models {
+                overflow: hidden;
                 grid-area: models;
             }
 
             .jobs {
+                overflow: hidden;
                 grid-area: jobs;
             }
 
