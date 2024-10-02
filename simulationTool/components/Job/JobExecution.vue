@@ -20,6 +20,10 @@ export default {
             requestState: {
                 loading: false,
                 error: null
+            },
+            executionRequestState: {
+                loading: false,
+                error: null
             }
         };
     },
@@ -39,7 +43,6 @@ export default {
     },
     watch: {
         selectedProcessId: function(newProcessId) {
-            console.log(newProcessId);
             if (newProcessId === null) {
                 this.process = null;
                 return;
@@ -118,7 +121,7 @@ export default {
                 }
 
                 try {
-                    this.requestState.loading = true;
+                    this.executionRequestState.loading = true;
                     const response = await fetch(`/api/processes/${this.selectedProcessId}/execution`, {
                         method: "POST",
                         body: JSON.stringify({
@@ -132,7 +135,7 @@ export default {
                     });
                     const result = await response.json();
                     if (!response.ok) {
-                        this.requestState.error = result.error_message || response.status + ': unknown errror';
+                        this.executionRequestState.error = result.error_message || response.status + ': unknown errror';
                     } else {
                         this.resetExecutionValues();
 
@@ -143,9 +146,9 @@ export default {
                     }
 
                 } catch (error) {
-                    this.requestState.error = error;
+                    this.executionRequestState.error = error;
                 } finally {
-                    this.requestState.loading = false;
+                    this.executionRequestState.loading = false;
                 }
 
             }
@@ -167,51 +170,51 @@ export default {
                 this.setSelectedProcessId(selectedProcessess[0]?.id);
             }"
         />
-        <form
-            v-else
-            ref="form"
-            class="execution-form"
-        >
-            <label for="name_input">{{ $t('additional:modules.tools.simulationTool.scenarioName') }}:</label>
-            <input
-                id="name_input"
-                class="form-control"
-                type="text"
-                v-model="executionValues.job_name"
-                required
-            />
-            <h4>{{ $t('additional:modules.tools.simulationTool.inputParameters') }}</h4>
-            <div v-if="process" class="inputs">
-                <template
-                    v-for="(input, key) in process.inputs"
-                    :key="`label_${key}`"
-                >
-                    <label
-                        :title="input.description"
-                        :for="`input_${key}`"
+        <AsyncWrapper :asyncState="requestState" >
+            <form
+                ref="form"
+                class="execution-form"
+            >
+                <label for="name_input">{{ $t('additional:modules.tools.simulationTool.scenarioName') }}:</label>
+                <input
+                    id="name_input"
+                    class="form-control"
+                    type="text"
+                    v-model="executionValues.job_name"
+                    required
+                />
+                <h4>{{ $t('additional:modules.tools.simulationTool.inputParameters') }}</h4>
+                <div v-if="process" class="inputs">
+                    <template
+                        v-for="(input, key) in process.inputs"
+                        :key="`label_${key}`"
                     >
-                        {{ input.title }}:
-                    </label>
-                    <JobExecutionInput
-                        :input-key="key"
-                        :data="input"
-                        :value="executionValues[key]"
-                        @change="updateExecutionValue(key, $event)"
-                    />
-                </template>
-            </div>
+                        <label
+                            :title="input.description"
+                            :for="`input_${key}`"
+                        >
+                            {{ input.title }}:
+                        </label>
+                        <JobExecutionInput
+                            :input-key="key"
+                            :data="input"
+                            :value="executionValues[key]"
+                            @change="updateExecutionValue(key, $event)"
+                        />
+                    </template>
+                </div>
 
-            <AsyncWrapper :asyncState="requestState" >
-                <button
-                    class="btn btn-primary btn-lg"
-                    type="submit"
-                    @click="execute"
-                >
-                    <i class="bi bi-box-fill">&nbsp;</i>
-                    {{ $t('additional:modules.tools.simulationTool.executeScenario') }}
-                </button>
-            </AsyncWrapper>
-        </form>
+                <AsyncWrapper :asyncState="executionRequestState" />
+                    <button
+                        class="btn btn-primary btn-lg"
+                        type="submit"
+                        @click="execute"
+                    >
+                        <i class="bi bi-box-fill">&nbsp;</i>
+                        {{ $t('additional:modules.tools.simulationTool.executeScenario') }}
+                    </button>
+            </form>
+        </AsyncWrapper>
     </div>
 </template>
 
