@@ -56,7 +56,7 @@ export default {
                 if (!response.ok) {
                     this.jobRequestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
-                    this.job = job;
+                    this.job = result;
                 }
             } catch (error) {
                 this.jobRequestState.error = error || 'unknown error';
@@ -89,7 +89,6 @@ export default {
                 if (!response.ok) {
                     this.resultRequestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
-                    const result = await response.json();
                     this.setJobResultData(result);
                 }
             } catch (error) {

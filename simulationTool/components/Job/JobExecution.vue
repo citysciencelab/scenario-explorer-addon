@@ -3,12 +3,14 @@ import { mapMutations, mapGetters, mapActions } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import JobExecutionInput from "./JobExecutionInput.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
+import ProcessSelect from "../Process/ProcessSelect.vue";
 
 export default {
     name: "JobExecution",
     components: {
         AsyncWrapper,
         SectionHeader,
+        ProcessSelect,
         JobExecutionInput
     },
     data() {
@@ -30,12 +32,25 @@ export default {
             "loggedIn"
         ])
     },
-    mounted() {
-        this.fetchProcess(this.selectedProcessId);
+    mounted: function () {
+        if (this.selectedProcessId) {
+            this.fetchProcess(this.selectedProcessId);
+        }
+    },
+    watch: {
+        selectedProcessId: function(newProcessId) {
+            console.log(newProcessId);
+            if (newProcessId === null) {
+                this.process = null;
+                return;
+            }
+            this.fetchProcess(newProcessId);
+        }
     },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
             "setSelectedJobId",
+            "setSelectedProcessId",
             "setMode"
         ]),
         ...mapActions("Modules/SimulationTool", [
@@ -65,6 +80,7 @@ export default {
                 if (!response.ok) {
                     this.requestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
+                    this.process = result;
                 }
             } catch (error) {
                 this.requestState.error = error;
@@ -145,7 +161,14 @@ export default {
             icon="bi-box-fill"
         />
         <h3>{{ $t('additional:modules.tools.simulationTool.model') }}: {{ process?.title }}</h3>
+        <ProcessSelect
+            v-if="!process"
+            @update:modelValue="(selectedProcessess) => {
+                this.setSelectedProcessId(selectedProcessess[0]?.id);
+            }"
+        />
         <form
+            v-else
             ref="form"
             class="execution-form"
         >
