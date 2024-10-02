@@ -4,10 +4,12 @@ import SectionHeader from "../SectionHeader.vue";
 import ProcessSelect from "../Process/ProcessSelect.vue";
 import Config from "../../../../portal/simulation/config";
 import EnsembleInput from "./EnsembleInput.vue";
+import AsyncWrapper from "../AsyncWrapper.vue";
 
 export default {
     name: "EnsembleCreation",
     components: {
+        AsyncWrapper,
         EnsembleInput,
         SectionHeader,
         ProcessSelect
@@ -18,7 +20,11 @@ export default {
             selectedProcesses: [],
             processDetails: [],
             creationValues: {},
-            requestState: {
+            processexecutionRequestState: {
+                loading: false,
+                error: null
+            },
+            executionRequestState: {
                 loading: false,
                 error: null
             },
@@ -27,28 +33,41 @@ export default {
     },
     watch: {
         async selectedProcesses() {
-            this.processDetails = await Promise.all(
-                this.selectedProcesses.map((process) => {
-                    return this.fetchProcess(process.id);
-                })
-            );
-            // add default values for sample size and sampling method
-            for (const process of this.processDetails) {
-                if (!this.creationValues?.[process.id]?.sample_size) {
-                    this.updateExecutionValue(process.id, 'sample_size', 10);
-                }
-                if (!this.creationValues?.[process.id]?.sampling_method) {
-                    this.updateExecutionValue(process.id, 'sampling_method', 'lhs');
-                }
+            this.processexecutionRequestState.error = null;
+            if (!this.selectedProcesses || this.selectedProcesses.length === 0) {
+                this.processDetails = [];
+                this.creationValues = {
+                    name: this.creationValues.name || '',
+                    description: this.creationValues.description || ''
+                };
+                return;
             }
-            // remove values for processes that are not selected anymore
-            Object.keys(this.creationValues)
-                .filter(key => !['name', 'description'].includes(key))
-                .forEach((processId) => {
-                    if (!this.selectedProcesses.find((process) => process.id === processId)) {
-                        delete this.creationValues[processId];
+            try {
+                this.processDetails = (await Promise.all(
+                    this.selectedProcesses.map((process) => {
+                        return this.fetchProcess(process.id);
+                    })
+                )).filter(process => process);
+                // add default values for sample size and sampling method
+                for (const process of this.processDetails) {
+                    if (!this.creationValues?.[process.id]?.sample_size) {
+                        this.updateExecutionValue(process.id, 'sample_size', 10);
                     }
-                });
+                    if (!this.creationValues?.[process.id]?.sampling_method) {
+                        this.updateExecutionValue(process.id, 'sampling_method', 'lhs');
+                    }
+                }
+                // remove values for processes that are not selected anymore
+                Object.keys(this.creationValues)
+                    .filter(key => !['name', 'description'].includes(key))
+                    .forEach((processId) => {
+                        if (!this.selectedProcesses.find((process) => process.id === processId)) {
+                            delete this.creationValues[processId];
+                        }
+                    });
+            } catch (error) {
+                this.processexecutionRequestState.error = error;
+            }
         }
     },
     computed: {
@@ -56,8 +75,6 @@ export default {
             "accessToken",
             "loggedIn"
         ])
-    },
-    mounted() {
     },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
@@ -76,6 +93,9 @@ export default {
          * @param {String} processId
          */
         async fetchProcess (processId) {
+            if (!processId || this.processexecutionRequestState.error) {
+                return;
+            }
             let additionalHeaders = {};
             if (this.loggedIn) {
                 additionalHeaders = {
@@ -83,7 +103,7 @@ export default {
                 };
             }
             try {
-                this.requestState.loading = true;
+                this.processexecutionRequestState.loading = true;
                 const response = await fetch(`/api/processes/${processId}`,{
                     headers: {
                         "Content-Type": "application/json",
@@ -92,14 +112,14 @@ export default {
                 });
                 const result = await response.json();
                 if (!response.ok) {
-                    this.requestState.error = result.error_message || response.status + ': unknown errror';
+                    this.processexecutionRequestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
                     return result
                 }
             } catch (error) {
-                this.requestState.error = error;
+                this.processexecutionRequestState.error = error;
             } finally {
-                this.requestState.loading = false;
+                this.processexecutionRequestState.loading = false;
             }
         },
         async create (event) {
@@ -136,7 +156,7 @@ export default {
                 });
 
                 try {
-                    this.requestState.loading = true;
+                    this.executionRequestState.loading = true;
                     const response = await fetch('/api/ensembles', {
                         method: "POST",
                         body: JSON.stringify({
@@ -152,16 +172,16 @@ export default {
 
                     const result = await response.json();
                     if (!response.ok) {
-                        this.requestState.error = result.error_message || response.status + ': unknown errror';
+                        this.executionRequestState.error = result.error_message || response.status + ': unknown errror';
                     } else {
                         this.setMode("ensemble-details");
                         this.setSelectedEnsembleId(result.id);
                         this.fetchEnsembles();
                     }
                 } catch (error) {
-                    this.requestState.error = error;
+                    this.executionRequestState.error = error;
                 } finally {
-                    this.requestState.loading = false;
+                    this.executionRequestState.loading = false;
                 }
             }
         }
@@ -219,69 +239,71 @@ export default {
                     v-model="selectedProcesses"
                 />
             </div>
-            <div class="process-details-container">
-                <div
-                    class="process-details"
-                    v-for="process in processDetails"
-                    :key="process.id"
-                >
-                    <h4>{{ process.title }}</h4>
-                    <p>{{ process.description }}</p>
-                    <div v-if="process" class="inputs">
-                        <h4>{{ $t('additional:modules.tools.simulationTool.settings') }}</h4>
-                        <div class="settings">
-                            <label :for="`size_input-${process.id}`">
-                                {{ $t('additional:modules.tools.simulationTool.scenarioAmount') }}:
-                            </label>
-                            <input
-                                :id="`size_input-${process.id}`"
-                                class="form-control"
-                                type="number"
-                                min="1"
-                                max="1000"
-                                :value="creationValues?.[process.id]?.sample_size"
-                                @change="(evt) => updateExecutionValue(process.id, 'sample_size', evt.target.value)"
-                                required
-                            />
-                            <label :for="`sampling_method_input-${process.id}`">
-                                {{ $t('additional:modules.tools.simulationTool.samplingMethod') }}:
-                            </label>
-                            <select
-                                :id="`sampling_method_input-${process.id}`"
-                                class="form-control"
-                                :value="creationValues?.[process.id]?.sampling_method"
-                                @change="(evt) => updateExecutionValue(process.id, 'sampling_method', evt.target.value)"
-                                required
-                                disabled
-                            >
-                                <option value="lhs" selected>
-                                    {{ $t('additional:modules.tools.simulationTool.latinHyperCube') }}
-                                </option>
-                            </select>
-                        </div>
-                        <h4>{{ $t('additional:modules.tools.simulationTool.inputParameters') }}</h4>
-                        <template
-                            v-for="(input, key) in process.inputs"
-                            :key="`label_${key}`"
-                        >
-                            <div class="input-wrapper">
-                                <label
-                                    :title="input.description"
-                                    :for="`input_${key}`"
-                                >
-                                    {{ `${input.title} ${input.required || input.minOccurs > 0 ? '*' : ''}` }}
+            <AsyncWrapper :asyncState="processexecutionRequestState">
+                <div class="process-details-container">
+                    <div
+                        class="process-details"
+                        v-for="process in processDetails"
+                        :key="process.id"
+                    >
+                        <h4>{{ process.title }}</h4>
+                        <p>{{ process.description }}</p>
+                        <div v-if="process" class="inputs">
+                            <h4>{{ $t('additional:modules.tools.simulationTool.settings') }}</h4>
+                            <div class="settings">
+                                <label :for="`size_input-${process.id}`">
+                                    {{ $t('additional:modules.tools.simulationTool.scenarioAmount') }}:
                                 </label>
-                                <EnsembleInput
-                                    :id="`input_${key}`"
-                                    :data="input"
-                                    :modelValue="creationValues?.[process.id]?.[key]"
-                                    @update:modelValue="(value) => updateExecutionValue(process.id, key, value)"
+                                <input
+                                    :id="`size_input-${process.id}`"
+                                    class="form-control"
+                                    type="number"
+                                    min="1"
+                                    max="1000"
+                                    :value="creationValues?.[process.id]?.sample_size"
+                                    @change="(evt) => updateExecutionValue(process.id, 'sample_size', evt.target.value)"
+                                    required
                                 />
+                                <label :for="`sampling_method_input-${process.id}`">
+                                    {{ $t('additional:modules.tools.simulationTool.samplingMethod') }}:
+                                </label>
+                                <select
+                                    :id="`sampling_method_input-${process.id}`"
+                                    class="form-control"
+                                    :value="creationValues?.[process.id]?.sampling_method"
+                                    @change="(evt) => updateExecutionValue(process.id, 'sampling_method', evt.target.value)"
+                                    required
+                                    disabled
+                                >
+                                    <option value="lhs" selected>
+                                        {{ $t('additional:modules.tools.simulationTool.latinHyperCube') }}
+                                    </option>
+                                </select>
                             </div>
-                        </template>
+                            <h4>{{ $t('additional:modules.tools.simulationTool.inputParameters') }}</h4>
+                            <template
+                                v-for="(input, key) in process.inputs"
+                                :key="`label_${key}`"
+                            >
+                                <div class="input-wrapper">
+                                    <label
+                                        :title="input.description"
+                                        :for="`input_${key}`"
+                                    >
+                                        {{ `${input.title} ${input.required || input.minOccurs > 0 ? '*' : ''}` }}
+                                    </label>
+                                    <EnsembleInput
+                                        :id="`input_${key}`"
+                                        :data="input"
+                                        :modelValue="creationValues?.[process.id]?.[key]"
+                                        @update:modelValue="(value) => updateExecutionValue(process.id, key, value)"
+                                    />
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </AsyncWrapper>
             <button
                 class="btn btn-primary btn-lg"
                 type="submit"
@@ -290,6 +312,7 @@ export default {
                 <i class="bi bi-collection-fill">&nbsp;</i>
                 {{ $t('additional:modules.tools.simulationTool.createEnsemble') }}
             </button>
+            <AsyncWrapper :asyncState="executionRequestState" />
         </form>
     </div>
 </template>
