@@ -61,8 +61,11 @@ export default {
             return ensemble.name || ensemble.id;
         },
         getScenarioStatus(ensemble) {
-            const passed = "TODO in Backend";
-            return `${passed} / ${ensemble?.scenario_configs?.length}`;
+            const sum = ensemble.jobs_metadata ? Object
+                .values(ensemble.jobs_metadata)
+                .reduce((acc, amount) => acc + amount, 0) : 0;
+            const successful = ensemble?.jobs_metadata?.successful || 0;
+            return `${successful} / ${sum}`;
         },
         onEnsembleClick(ensemble) {
             this.setSelectedEnsembleId(ensemble.id);

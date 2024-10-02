@@ -49,6 +49,7 @@
         "notes": "Notizen",
         "parameters": "Parameter",
         "refresh": "Aktualisieren",
+        "removeJob": "Job aus Ensemble entfernen",
         "samplingMethod": "Sampling Methode",
         "scenario": "Szenario",
         "scenarioAmount": "Anzahl der Szenarien",

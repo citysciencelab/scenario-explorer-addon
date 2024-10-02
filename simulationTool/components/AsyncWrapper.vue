@@ -37,13 +37,15 @@ export default {
             </p>
             <p>{{ asyncState.error }}</p>
         </div>
-        <div v-else>
-            <slot></slot>
-        </div>
+        <slot v-else></slot>
     </div>
 </template>
 
 <style lang="scss" scoped>
+    .async-wrapper {
+        display: contents;
+    }
+
     .loading-mask {
         border-radius: var(--bs-border-radius-lg);
     }

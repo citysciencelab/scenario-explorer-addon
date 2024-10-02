@@ -58,7 +58,7 @@ const actions = {
 
         try {
             const response = await fetch(
-                `/api/jobs/`,
+                `/api/jobs/?include_ensembles`,
                 {
                     headers: {
                         "content-type": "application/json",

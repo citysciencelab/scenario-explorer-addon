@@ -149,6 +149,35 @@ export default {
                 this.ensembleExecutionRequestState.loading = false;
             }
         },
+        async removeJobFromEnsemble(jobId) {
+            let additionalHeaders = {};
+            if (this.loggedIn) {
+                additionalHeaders = {
+                    Authorization: `Bearer ${this.accessToken}`
+                };
+            }
+
+            try {
+                this.ensembleJobsRequestState.loading = true;
+                    const response = await fetch(`/api/ensembles/${this.selectedEnsembleId}/jobs/${jobId}`,{
+                        method: 'DELETE',
+                        headers: {
+                            "Content-Type": "application/json",
+                            ...additionalHeaders
+                        }
+                    });
+                const result = await response.json();
+                if (!response.ok) {
+                    this.ensembleJobsRequestState.error = result.error_message || response.status + ': unknown errror';
+                } else {
+                    this.fetchEnsembleJobs();
+                }
+            } catch (error) {
+                this.ensembleJobsRequestState.error = error;
+            } finally {
+                this.ensembleJobsRequestState.loading = false;
+            }
+        },
         formatDateTime(dateTime) {
             return new Date(dateTime).toLocaleString({
                 year: "numeric",
@@ -207,54 +236,65 @@ export default {
                         </li>
                     </ul>
                 </div>
-                <AsyncWrapper :asyncState="ensembleJobsRequestState" class="jobs">
-                    <h4>{{ $t('additional:modules.tools.simulationTool.includedScenarios') }}</h4>
-                    <div class="job-table-wrapper">
-                        <table class="job-list-table">
-                            <thead>
-                                <tr>
-                                    <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
-                                    <th>{{ $t('additional:modules.tools.simulationTool.model') }}</th>
-                                    <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
-                                    <th>{{ $t('additional:modules.tools.simulationTool.status') }}</th>
-                                    <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="job in ensembleJobs">
-                                    <td>
-                                        <div>
+                <AsyncWrapper :asyncState="ensembleJobsRequestState">
+                    <div class="jobs">
+                        <h4>{{ $t('additional:modules.tools.simulationTool.includedScenarios') }}</h4>
+                        <div class="job-table-wrapper">
+                            <table class="job-list-table">
+                                <thead>
+                                    <tr>
+                                        <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
+                                        <th>{{ $t('additional:modules.tools.simulationTool.model') }}</th>
+                                        <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
+                                        <th>{{ $t('additional:modules.tools.simulationTool.status') }}</th>
+                                        <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="job in ensembleJobs">
+                                        <td>
+                                            <div>
+                                                <button
+                                                    class="btn btn-link"
+                                                    @click="onJobClick(job)"
+                                                >
+                                                    {{this.getJobName(job)}}
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {{this.getModelName(job)}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {{this.formatDateTime(job.started)}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="status" :class="job.status">
+                                                {{job.status}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {{job.user}}
+                                            </div>
+                                        </td>
+                                        <td>
                                             <button
-                                                class="btn btn-link"
-                                                @click="onJobClick(job)"
+                                                class="btn btn-link link-danger"
+                                                @click="this.removeJobFromEnsemble(job.jobID)"
+                                                :title="$t('additional:modules.tools.simulationTool.removeJob')"
                                             >
-                                                {{this.getJobName(job)}}
+                                                <i class="bi bi-trash"></i>
                                             </button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {{this.getModelName(job)}}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {{this.formatDateTime(job.started)}}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="status" :class="job.status">
-                                            {{job.status}}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {{job.user}}
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </AsyncWrapper>
                 <div class="toolbar">
