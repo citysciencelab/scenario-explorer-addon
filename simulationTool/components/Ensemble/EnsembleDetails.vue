@@ -1,17 +1,30 @@
 <script>
 import { mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
+import AsyncWrapper from "../AsyncWrapper.vue";
 
 export default {
     name: "EnsembleDetails",
     components: {
+        AsyncWrapper,
         SectionHeader
     },
     data() {
         return {
             ensemble: null,
             ensembleJobs: [],
-            executionResult: null
+            ensembleRequestState: {
+                loading: false,
+                error: null
+            },
+            ensembleJobsRequestState: {
+                loading: false,
+                error: null
+            },
+            ensembleExecutionRequestState: {
+                loading: false,
+                error: null
+            }
         };
     },
     computed: {
@@ -61,12 +74,25 @@ export default {
                     Authorization: `Bearer ${this.accessToken}`
                 };
             }
-            this.ensemble = await fetch(`/api/ensembles/${ensembleId}`,{
-                headers: {
-                    "Content-Type": "application/json",
-                    ...additionalHeaders
+            try {
+                this.ensembleRequestState.loading = true;
+                const response = await fetch(`/api/ensembles/${ensembleId}`,{
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    this.ensembleRequestState.error = result.error_message || response.status + ': unknown errror';
+                } else {
+                    this.ensemble = result;
                 }
-            }).then((res) => res.json());
+            } catch (error) {
+                this.ensembleRequestState.error = error;
+            } finally {
+                this.ensembleRequestState.loading = false;
+            }
         },
         async fetchEnsembleJobs () {
             let additionalHeaders = {};
@@ -75,12 +101,25 @@ export default {
                     Authorization: `Bearer ${this.accessToken}`
                 };
             }
-            this.ensembleJobs = await fetch(`/api/ensembles/${this.selectedEnsembleId}/jobs`,{
-                headers: {
-                    "Content-Type": "application/json",
-                    ...additionalHeaders
+            try {
+                this.ensembleJobsRequestState.loading = true;
+                const response = await fetch(`/api/ensembles/${this.selectedEnsembleId}/jobs`,{
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    this.ensembleJobsRequestState.error = result.error_message || response.status + ': unknown errror';
+                } else {
+                    this.ensembleJobs = result;
                 }
-            }).then((res) => res.json());
+            } catch (error) {
+                this.ensembleJobsRequestState.error = error;
+            } finally {
+                this.ensembleJobsRequestState.loading = false;
+            }
         },
         async executeEnsemble() {
             let additionalHeaders = {};
@@ -89,15 +128,25 @@ export default {
                     Authorization: `Bearer ${this.accessToken}`
                 };
             }
-            const response = await fetch(`/api/ensembles/${this.selectedEnsembleId}/execute`,{
-                headers: {
-                    "Content-Type": "application/json",
-                    ...additionalHeaders
+
+            try {
+                this.ensembleExecutionRequestState.loading = true;
+                const response = await fetch(`/api/ensembles/${this.selectedEnsembleId}/execute`,{
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                })
+                const result = await response.json();
+                if (!response.ok) {
+                    this.ensembleExecutionRequestState.error = result.error_message || response.status + ': unknown errror';
+                } else {
+                    this.fetchEnsemble(this.selectedEnsembleId);
                 }
-            })
-            if (response.ok) {
-                this.executionResult = await response.json();
-                this.fetchEnsemble(this.selectedEnsembleId);
+            } catch (error) {
+                this.ensembleExecutionRequestState.error = error;
+            } finally {
+                this.ensembleExecutionRequestState.loading = false;
             }
         },
         formatDateTime(dateTime) {
@@ -129,93 +178,96 @@ export default {
             :title="$t('additional:modules.tools.simulationTool.ensembleDetails')"
             icon="bi-box-fill"
         />
-        <div v-if="this.ensemble" class="details-body">
-            <div class="details-header">
-                <h3 :title="ensemble.id">{{ ensemble.name }}</h3>
-                <div>
-                    <strong>
-                        {{ $t('additional:modules.tools.simulationTool.created') }}:
-                    </strong>
-                    {{ this.formatDateTime(ensemble.created) }}
+        <AsyncWrapper :asyncState="ensembleRequestState">
+            <div v-if="this.ensemble" class="details-body">
+                <div class="details-header">
+                    <h3 :title="ensemble.id">{{ ensemble.name }}</h3>
+                    <div>
+                        <strong>
+                            {{ $t('additional:modules.tools.simulationTool.created') }}:
+                        </strong>
+                        {{ this.formatDateTime(ensemble.created) }}
+                    </div>
+                    <div class="status" :class="ensemble.status">
+                        {{ensemble.description}}
+                    </div>
                 </div>
-                <div class="status" :class="ensemble.status">
-                    {{ensemble.description}}
+                <div class="models">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.includedModels') }}</h4>
+                    <ul class="scenario-list">
+                        <li v-for="scenario in scenarios" :key="scenario.id">
+                            <strong>{{scenario.process_id}}</strong>
+                            <button
+                                class="btn btn-link"
+                                @click="this.showProcessDetails(scenario.process_id)"
+                                :title="$t('additional:modules.tools.simulationTool.modelDetails')"
+                            >
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-            <div class="models">
-                <h4>{{ $t('additional:modules.tools.simulationTool.includedModels') }}</h4>
-                <ul class="scenario-list">
-                    <li v-for="scenario in scenarios" :key="scenario.id">
-                        <strong>{{scenario.process_id}}</strong>
-                        <button
-                            class="btn btn-link"
-                            @click="this.showProcessDetails(scenario.process_id)"
-                            :title="$t('additional:modules.tools.simulationTool.modelDetails')"
+                <AsyncWrapper :asyncState="ensembleJobsRequestState" class="jobs">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.includedScenarios') }}</h4>
+                    <div class="job-table-wrapper">
+                        <table class="job-list-table">
+                            <thead>
+                                <tr>
+                                    <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
+                                    <th>{{ $t('additional:modules.tools.simulationTool.model') }}</th>
+                                    <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
+                                    <th>{{ $t('additional:modules.tools.simulationTool.status') }}</th>
+                                    <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="job in ensembleJobs">
+                                    <td>
+                                        <div>
+                                            <button
+                                                class="btn btn-link"
+                                                @click="onJobClick(job)"
+                                            >
+                                                {{this.getJobName(job)}}
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {{this.getModelName(job)}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {{this.formatDateTime(job.started)}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="status" :class="job.status">
+                                            {{job.status}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {{job.user}}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </AsyncWrapper>
+                <div class="toolbar">
+                    <button
+                        class="btn btn-primary"
+                        @click="executeEnsemble"
                         >
-                            <i class="bi bi-box-arrow-up-right"></i>
-                        </button>
-                    </li>
-                </ul>
-            </div>
-            <div class="jobs">
-                <h4>{{ $t('additional:modules.tools.simulationTool.includedScenarios') }}</h4>
-                <div class="job-table-wrapper">
-                    <table class="job-list-table">
-                        <thead>
-                            <tr>
-                                <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
-                                <th>{{ $t('additional:modules.tools.simulationTool.model') }}</th>
-                                <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
-                                <th>{{ $t('additional:modules.tools.simulationTool.status') }}</th>
-                                <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="job in ensembleJobs">
-                                <td>
-                                    <div>
-                                        <button
-                                            class="btn btn-link"
-                                            @click="onJobClick(job)"
-                                        >
-                                            {{this.getJobName(job)}}
-                                        </button>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>
-                                        {{this.getModelName(job)}}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>
-                                        {{this.formatDateTime(job.started)}}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="status" :class="job.status">
-                                        {{job.status}}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>
-                                        {{job.user}}
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        {{ $t('additional:modules.tools.simulationTool.executeEnsemble') }}
+                    </button>
                 </div>
+                <AsyncWrapper :asyncState="ensembleExecutionRequestState" class="execution-feedback"/>
             </div>
-            <div class="toolbar">
-                <button
-                    class="btn btn-primary"
-                    @click="executeEnsemble"
-                >
-                    {{ $t('additional:modules.tools.simulationTool.executeEnsemble') }}
-                </button>
-            </div>
-        </div>
+        </AsyncWrapper>
     </div>
 </template>
 
@@ -233,8 +285,8 @@ export default {
                 "header header"
                 "models models"
                 "jobs jobs"
-                "graphs notes"
-                "toolbar toolbar";
+                "toolbar toolbar"
+                "empty feedback";
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto auto auto auto auto;
             overflow: hidden;
@@ -328,18 +380,14 @@ export default {
                 grid-area: jobs;
             }
 
-            .graphs {
-                grid-area: graphs;
-            }
-
-            .notes {
-                grid-area: notes;
-            }
-
             .toolbar {
                 grid-area: toolbar;
                 display: flex;
                 justify-content: flex-end;
+            }
+
+            .execution-feedback {
+                grid-area: feedback;
             }
         }
 

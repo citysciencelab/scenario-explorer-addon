@@ -2,17 +2,23 @@
 import { mapMutations, mapGetters, mapActions } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import JobExecutionInput from "./JobExecutionInput.vue";
+import AsyncWrapper from "../AsyncWrapper.vue";
 
 export default {
     name: "JobExecution",
     components: {
+        AsyncWrapper,
         SectionHeader,
         JobExecutionInput
     },
     data() {
         return {
             process: null,
-            executionValues: {}
+            executionValues: {},
+            requestState: {
+                loading: false,
+                error: null
+            }
         };
     },
     computed: {
@@ -47,12 +53,24 @@ export default {
                 };
             }
 
-            this.process = await fetch(`/api/processes/${processId}`,{
-                headers: {
-                    "Content-Type": "application/json",
-                    ...additionalHeaders
+            try {
+                this.requestState.loading = true;
+                const response = await fetch(`/api/processes/${processId}`,{
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    this.requestState.error = result.error_message || response.status + ': unknown errror';
+                } else {
                 }
-            }).then((res) => res.json());
+            } catch (error) {
+                this.requestState.error = error;
+            } finally {
+                this.requestState.loading = false;
+            }
         },
         updateExecutionValue (key, value) {
             this.executionValues[key] = value;
@@ -83,24 +101,37 @@ export default {
                     };
                 }
 
-                const result = await fetch(`/api/processes/${this.selectedProcessId}/execution`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        job_name,
-                        inputs
-                    }),
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...additionalHeaders
+                try {
+                    this.requestState.loading = true;
+                    const response = await fetch(`/api/processes/${this.selectedProcessId}/execution`, {
+                        method: "POST",
+                        body: JSON.stringify({
+                            job_name,
+                            inputs
+                        }),
+                        headers: {
+                            "Content-Type": "application/json",
+                            ...additionalHeaders
+                        }
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        this.requestState.error = result.error_message || response.status + ': unknown errror';
+                    } else {
+                        this.resetExecutionValues();
+
+                        this.setMode("job-details");
+                        this.setSelectedJobId(result.jobID);
+
+                        this.fetchJobs();
                     }
-                }).then((res) => res.json());
 
-                this.resetExecutionValues();
+                } catch (error) {
+                    this.requestState.error = error;
+                } finally {
+                    this.requestState.loading = false;
+                }
 
-                this.setMode("job-details");
-                this.setSelectedJobId(result.jobID);
-
-                this.fetchJobs();
             }
         }
     }
@@ -147,14 +178,16 @@ export default {
                 </template>
             </div>
 
-            <button
-                class="btn btn-primary btn-lg"
-                type="submit"
-                @click="execute"
-            >
-                <i class="bi bi-box-fill">&nbsp;</i>
-                {{ $t('additional:modules.tools.simulationTool.executeScenario') }}
-            </button>
+            <AsyncWrapper :asyncState="requestState" >
+                <button
+                    class="btn btn-primary btn-lg"
+                    type="submit"
+                    @click="execute"
+                >
+                    <i class="bi bi-box-fill">&nbsp;</i>
+                    {{ $t('additional:modules.tools.simulationTool.executeScenario') }}
+                </button>
+            </AsyncWrapper>
         </form>
     </div>
 </template>

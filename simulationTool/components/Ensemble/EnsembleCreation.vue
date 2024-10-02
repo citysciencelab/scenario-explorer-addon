@@ -18,6 +18,10 @@ export default {
             selectedProcesses: [],
             processDetails: [],
             creationValues: {},
+            requestState: {
+                loading: false,
+                error: null
+            },
             apiUrl: Config.simulationApiUrl
         };
     },
@@ -78,12 +82,25 @@ export default {
                     Authorization: `Bearer ${this.accessToken}`
                 };
             }
-            return await fetch(`/api/processes/${processId}`,{
-                headers: {
-                    "Content-Type": "application/json",
-                    ...additionalHeaders
+            try {
+                this.requestState.loading = true;
+                const response = await fetch(`/api/processes/${processId}`,{
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    this.requestState.error = result.error_message || response.status + ': unknown errror';
+                } else {
+                    return result
                 }
-            }).then((res) => res.json());
+            } catch (error) {
+                this.requestState.error = error;
+            } finally {
+                this.requestState.loading = false;
+            }
         },
         async create (event) {
             event.preventDefault();
@@ -118,24 +135,34 @@ export default {
                     };
                 });
 
-                const result = await fetch('/api/ensembles', {
-                    method: "POST",
-                    body: JSON.stringify({
-                        name,
-                        description,
-                        scenario_configs
-                    }),
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...additionalHeaders
+                try {
+                    this.requestState.loading = true;
+                    const response = await fetch('/api/ensembles', {
+                        method: "POST",
+                        body: JSON.stringify({
+                            name,
+                            description,
+                            scenario_configs
+                        }),
+                        headers: {
+                            "Content-Type": "application/json",
+                            ...additionalHeaders
+                        }
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) {
+                        this.requestState.error = result.error_message || response.status + ': unknown errror';
+                    } else {
+                        this.setMode("ensemble-details");
+                        this.setSelectedEnsembleId(result.id);
+                        this.fetchEnsembles();
                     }
-                }).then((res) => res.json());
-
-                // TODO: Handle errors
-
-                this.setMode("ensemble-details");
-                this.setSelectedEnsembleId(result.id);
-                this.fetchEnsembles();
+                } catch (error) {
+                    this.requestState.error = error;
+                } finally {
+                    this.requestState.loading = false;
+                }
             }
         }
     }
