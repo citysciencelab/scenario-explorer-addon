@@ -58,6 +58,7 @@ export default {
         ...mapMutations("Modules/SimulationTool", [
             "setMode",
             "setSelectedJobId",
+            "setSelectedProcessId",
             "setSelectedEnsembleId"
         ]),
         ...mapActions("Modules/SimulationTool", [
@@ -102,7 +103,10 @@ export default {
             <template #actions>
                 <button
                     class="btn btn-primary"
-                    @click="() => this.setMode('job-execution')"
+                    @click="() => {
+                        this.setMode('job-execution')
+                        this.setSelectedProcessId(null)
+                    }"
                 >
                     <i class="bi bi-plus-lg">&nbsp;</i>
                     <span>{{ $t('additional:modules.tools.simulationTool.newScenario') }}</span>

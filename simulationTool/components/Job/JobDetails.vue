@@ -2,17 +2,26 @@
 import { mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import Diagramm from "../Diagramm/Diagramm.vue";
-import JobResultMockData from "../../mock_data/job_result.json"
+import AsyncWrapper from "../AsyncWrapper.vue";
 
 export default {
     name: "JobDetails",
     components: {
         SectionHeader,
+        AsyncWrapper,
         Diagramm
     },
     data() {
         return {
-            job: null
+            job: null,
+            jobRequestState: {
+                loading: false,
+                error: null
+            },
+            resultRequestState: {
+                loading: false,
+                error: null
+            }
         };
     },
     computed: {
@@ -27,10 +36,6 @@ export default {
     },
     methods: {
         ...mapMutations("Modules/SimulationTool", ["setMode", "setJobResultData"]),
-        /**
-         * Fetches a job from the simulation backend
-         * @param {String} jobId
-         */
         async fetchJob(jobId) {
             let additionalHeaders = {};
             if (this.loggedIn) {
@@ -39,12 +44,58 @@ export default {
                 };
             }
 
-            this.job = await fetch(`/api/jobs/${jobId}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    ...additionalHeaders
+            try {
+                this.jobRequestState.loading = true;
+                const response = await fetch(`/api/jobs/${jobId}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                })
+                const result = await response.json();
+                if (!response.ok) {
+                    this.jobRequestState.error = result.error_message || response.status + ': unknown errror';
+                } else {
+                    this.job = result;
                 }
-            }).then((res) => res.json());
+            } catch (error) {
+                this.jobRequestState.error = error || 'unknown error';
+            } finally {
+                this.jobRequestState.loading = false;
+            }
+
+        },
+        async fetchJobResultData() {
+            const url = this.job?.links?.[0]?.href;
+            if (!url) {
+                return;
+            }
+            let additionalHeaders = {};
+            if (this.loggedIn) {
+                additionalHeaders = {
+                    Authorization: `Bearer ${this.accessToken}`
+                };
+            }
+
+            try {
+                this.resultRequestState.loading = true;
+                const response = await fetch(url, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    this.resultRequestState.error = result.error_message || response.status + ': unknown errror';
+                } else {
+                    this.setJobResultData(result);
+                }
+            } catch (error) {
+                this.resultRequestState.error = error || 'unknown error';
+            } finally {
+                this.resultRequestState.loading = false;
+            }
         },
         formatDateTime(dateTime) {
             return new Date(dateTime).toLocaleString({
@@ -54,29 +105,6 @@ export default {
                 hour: "2-digit",
                 minute: "2-digit"
             });
-        },
-        async fetchJobResultData() {
-            try {
-                const url = this.job?.links?.[0]?.href;
-                if (!url) {
-                    return;
-                }
-                let additionalHeaders = {};
-                if (this.loggedIn) {
-                    additionalHeaders = {
-                        Authorization: `Bearer ${this.accessToken}`
-                    };
-                }
-                const result = await fetch(url, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...additionalHeaders
-                    }
-                }).then((res) => res.json());
-                this.setJobResultData(result);
-            } catch (error) {
-                console.error("Fehler beim Laden der Daten", error);
-            }
         },
     }
 };
@@ -88,58 +116,62 @@ export default {
             :title="$t('additional:modules.tools.simulationTool.scenarioDetails')"
             icon="bi-box-fill"
         />
-        <div v-if="this.job" class="details-body">
-            <div class="details-header">
-                <h3 :title="job.jobID">{{ job.process_title }} -> {{ job.name }}</h3>
-                <div>
-                    <strong>
-                        {{ $t('additional:modules.tools.simulationTool.started') }}:
-                    </strong>
-                    {{ this.formatDateTime(job.started) }}
+        <AsyncWrapper :asyncState="jobRequestState">
+            <div v-if="job" class="details-body">
+                <div class="details-header">
+                    <h3 :title="job?.jobID">{{ job?.process_title }} -> {{ job?.name }}</h3>
+                    <div>
+                        <strong>
+                            {{ $t('additional:modules.tools.simulationTool.started') }}:
+                        </strong>
+                        {{ this.formatDateTime(job?.started) }}
+                    </div>
+                    <div>
+                        <strong>
+                            {{ $t('additional:modules.tools.simulationTool.completed') }}:
+                        </strong>
+                        {{ this.formatDateTime(job?.finished) }}
+                    </div>
+                    <div class="status" :class="job?.status">
+                        {{ job?.status }}
+                    </div>
                 </div>
-                <div>
-                    <strong>
-                        {{ $t('additional:modules.tools.simulationTool.completed') }}:
-                    </strong>
-                    {{ this.formatDateTime(job.finished) }}
-                </div>
-                <div class="status" :class="job.status">
-                    {{ job.status }}
-                </div>
-            </div>
 
-            <div class="links">
-                <h4>{{ $t('additional:modules.tools.simulationTool.links') }}</h4>
-                <ul>
-                    <li v-for="(link, index) in job.links" :key="link.rel">
-                        <i class="bi bi-link"></i>
-                        <a :href="link.href" target="_blank">{{link.title}}</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="parameter">
-                <h4>{{ $t('additional:modules.tools.simulationTool.parameters') }}</h4>
-                <ul>
-                    <li v-for="(value, key) in job.parameters.inputs" :key="key">
-                        <strong>{{key}}</strong>: {{value}}
-                    </li>
-                </ul>
-            </div>
-            <div class="filter">
-                <h4>{{ $t('additional:modules.tools.simulationTool.filter') }}</h4>
-            </div>
+                <div class="links">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.links') }}</h4>
+                    <ul>
+                        <li v-for="(link, index) in job?.links" :key="link.rel">
+                            <i class="bi bi-link"></i>
+                            <a :href="link.href" target="_blank">{{link.title}}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="parameter">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.parameters') }}</h4>
+                    <ul>
+                        <li v-for="(value, key) in job?.parameters.inputs" :key="key">
+                            <strong>{{key}}</strong>: {{value}}
+                        </li>
+                    </ul>
+                </div>
+                <div class="filter">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.filter') }}</h4>
+                </div>
 
-            <div class="charts">
-                <h4>{{ $t('additional:modules.tools.simulationTool.charts') }}</h4>
-                <div class="wrapper">
-                    <Diagramm />
+                <div class="charts">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.charts') }}</h4>
+                    <AsyncWrapper :asyncState="resultRequestState">
+                        <div class="wrapper">
+                            <Diagramm />
+                        </div>
+                    </AsyncWrapper>
+                </div>
+
+                <div class="notes">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
                 </div>
             </div>
-
-            <div class="notes">
-                <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
-            </div>
-        </div>
+        </AsyncWrapper>
     </div>
 </template>
 
@@ -252,19 +284,11 @@ export default {
             background-color: var(--bs-danger);
         }
 
-        .graphs-and-settings {
-            display: contents;
-        }
-
         .wrapper {
             border: 1px solid #ccc;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
             padding: 20px;
-        }
-
-        .notes {
-            grid-area: notes;
         }
     }
 }

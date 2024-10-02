@@ -24,6 +24,7 @@
         "ensembleName": "Name des Ensembles",
         "ensembles": "Ensembles",
         "ensemblesRequireLogin": "Ensembles benötigen eine Anmeldung",
+        "errorLoadingData": "Fehler beim Laden der Daten",
         "executeEnsemble": "Ensemble ausführen",
         "executeScenario": "Szenario ausführen",
         "filter": "Filter",

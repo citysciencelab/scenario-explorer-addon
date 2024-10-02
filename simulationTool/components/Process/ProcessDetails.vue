@@ -1,16 +1,21 @@
 <script>
 import { mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
-import Config from "../../../../portal/simulation/config";
+import AsyncWrapper from "../AsyncWrapper.vue";
 
 export default {
     name: "ProcessDetails",
     components: {
+        AsyncWrapper,
         SectionHeader
     },
     data() {
         return {
-            process: null
+            process: null,
+            requestState: {
+                loading: false,
+                error: null
+            }
         };
     },
     computed: {
@@ -37,12 +42,27 @@ export default {
                 };
             }
 
-            this.process = await fetch(`/api/processes/${processId}`,{
-                headers: {
-                    "Content-Type": "application/json",
-                    ...additionalHeaders
+            try {
+                this.requestState.loading = true;
+                const response = await fetch(`/api/processes/${processId}`,{
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                });
+
+                const result = await response.json();
+                if (!response.ok) {
+                    this.requestState.error = result.error_message || response.status + ': unknown errror';
+                } else {
+                    this.process = result;
                 }
-            }).then((res) => res.json());
+            } catch (error) {
+                this.requestState.error = error;
+            } finally {
+                this.requestState.loading = false;
+            }
+
         },
         getProcessImageSource (process) {
             const image = process?.links?.find(({type}) => type === "image");
@@ -58,6 +78,7 @@ export default {
             :title="$t('additional:modules.tools.simulationTool.modelDetails')"
             icon="bi-box-fill"
         />
+        <AsyncWrapper :asyncState="requestState">
         <div v-if="this.process" class="details-body">
             <div class="title-wrapper">
                 <div class="title">
@@ -127,6 +148,7 @@ export default {
                 </button>
             </div>
         </div>
+        </AsyncWrapper>
     </div>
 
 </template>
