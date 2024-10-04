@@ -101,6 +101,34 @@ const actions = {
         }
 
     },
+
+    async fetchUserName({state, commit, rootGetters}, user_id) {
+        if (!rootGetters["Modules/Login/loggedIn"]) {
+            return null;
+        }
+
+        if (state.userNameCache[user_id]) {
+            return state.userNameCache[user_id];
+        }
+
+        const newUserNameCache = {...state.userNameCache};
+
+        const accessToken = rootGetters["Modules/Login/accessToken"];
+        const response = await fetch(`/api/users/${user_id}/name`,{
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+        const result = await response.json();
+        if (response.ok) {
+            newUserNameCache[user_id] = result;
+            commit("setUserNameCache", newUserNameCache);
+            return result;
+        } else {
+            throw new Error(result);
+        }
+    }
 };
 
 export default actions;
