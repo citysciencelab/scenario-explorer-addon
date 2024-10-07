@@ -170,7 +170,6 @@ export default {
                             ...additionalHeaders
                         }
                     });
-                const result = await response.json();
                 if (!response.ok) {
                     this.ensembleJobsRequestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
