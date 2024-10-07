@@ -2,12 +2,16 @@
 import { mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
+import CommentsPanel from "../Comments/CommentsPanel.vue"
+import UserDisplay from "../UserDisplay.vue";
 
 export default {
     name: "EnsembleDetails",
     components: {
         AsyncWrapper,
-        SectionHeader
+        CommentsPanel,
+        SectionHeader,
+        UserDisplay
     },
     data() {
         return {
@@ -248,6 +252,7 @@ export default {
                                         <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
                                         <th>{{ $t('additional:modules.tools.simulationTool.status') }}</th>
                                         <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
+                                        <th class="action-column"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -278,11 +283,9 @@ export default {
                                             </div>
                                         </td>
                                         <td>
-                                            <div>
-                                                {{job.user}}
-                                            </div>
+                                            <UserDisplay :user_id="job.user_id" />
                                         </td>
-                                        <td>
+                                        <td class="action-column">
                                             <button
                                                 class="btn btn-link link-danger"
                                                 @click="this.removeJobFromEnsemble(job.jobID)"
@@ -297,6 +300,13 @@ export default {
                         </div>
                     </div>
                 </AsyncWrapper>
+                <div class="notes">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
+                    <CommentsPanel
+                        endPoint="ensembles"
+                        :entityId="ensemble.id"
+                    />
+                </div>
                 <div class="toolbar">
                     <button
                         class="btn btn-primary"
@@ -325,8 +335,8 @@ export default {
                 "header header"
                 "models models"
                 "jobs jobs"
-                "toolbar toolbar"
-                "empty feedback";
+                "notes empty"
+                "toolbar toolbar";
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto auto auto auto auto;
             overflow: hidden;
@@ -346,7 +356,7 @@ export default {
 
             .job-table-wrapper {
                 overflow: auto;
-                max-height: 100%;
+                max-height: calc(100% - 2.5rem);;
             }
 
             .job-list-table {
@@ -362,6 +372,11 @@ export default {
 
                     &:not(:last-child) {
                         border-right: 2px solid var(--bs-default);
+                    }
+
+                    &.action-column {
+                        width: 40px;
+                        padding: 0;
                     }
                 }
 
@@ -426,8 +441,10 @@ export default {
                 justify-content: flex-end;
             }
 
-            .execution-feedback {
-                grid-area: feedback;
+            .notes {
+                grid-area: notes;
+                overflow: hidden;
+                display: inherit;
             }
         }
 
