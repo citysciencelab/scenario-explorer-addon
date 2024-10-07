@@ -3,10 +3,12 @@ import { mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import Diagramm from "../Diagramm/Diagramm.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
+import CommentsPanel from "../Comments/CommentsPanel.vue"
 
 export default {
     name: "JobDetails",
     components: {
+        CommentsPanel,
         SectionHeader,
         AsyncWrapper,
         Diagramm
@@ -161,7 +163,7 @@ export default {
                 <div class="charts">
                     <h4>{{ $t('additional:modules.tools.simulationTool.charts') }}</h4>
                     <AsyncWrapper :asyncState="resultRequestState">
-                        <div class="wrapper">
+                        <div class="diagram-wrapper">
                             <Diagramm />
                         </div>
                     </AsyncWrapper>
@@ -169,6 +171,10 @@ export default {
 
                 <div class="notes">
                     <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
+                    <CommentsPanel
+                        endPoint="jobs"
+                        :entityId="job.jobID"
+                    />
                 </div>
             </div>
         </AsyncWrapper>
@@ -181,9 +187,10 @@ export default {
     display: flex;
     flex-direction: column;
     padding: 1rem;
-    overflow-y: auto;
+    overflow: hidden;
 
         .details-body {
+            overflow: hidden;
             display: grid;
             gap: 1rem;
             grid-template-areas:
@@ -229,62 +236,40 @@ export default {
             .failed {
                 background-color: var(--bs-danger);
             }
-
-            .links {
-                grid-area: links;
-            }
-
-            .header {
-                grid-area: header;
-            }
-
-            .parameter {
-                grid-area: parameter;
-            }
-
-            .filter {
-                grid-area: filter;
-            }
-
-            .charts {
-                grid-area: charts;
-            }
-
-            .notes {
-                grid-area: notes;
-            }
         }
 
-        div.status {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: white;
+        .links {
+            overflow: hidden;
+            grid-area: links;
         }
 
-        .accepted {
-            background-color: var(--bs-info);
+        .header {
+            grid-area: header;
+            overflow: hidden;
         }
 
-        .running {
-            background-color: var(--bs-warning);
+        .parameter {
+            grid-area: parameter;
+            overflow: hidden;
         }
 
-        .successful {
-            background-color: var(--bs-success);
+        .filter {
+            grid-area: filter;
+            overflow: hidden;
         }
 
-        .dismissed {
-            background-color: var(--bs-secondary);
+        .charts {
+            grid-area: charts;
+            overflow: hidden;
         }
 
-        .failed {
-            background-color: var(--bs-danger);
+        .notes {
+            grid-area: notes;
+            overflow: hidden;
+            display: inherit;
         }
 
-        .wrapper {
+        .diagram-wrapper {
             border: 1px solid #ccc;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 10px;

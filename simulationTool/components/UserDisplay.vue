@@ -1,4 +1,5 @@
 <script>
+import { mapActions, mapGetters } from "vuex";
 import LoadingMask from "./LoadingMask.vue";
 
 export default {
@@ -9,7 +10,7 @@ export default {
     props: {
         user_id: {
             type: String,
-            required: true
+            default: null
         }
     },
     data: () => ({
@@ -19,32 +20,22 @@ export default {
             error: null
         }
     }),
+    computed: {
+        ...mapGetters("Modules/Login", ["accessToken", "loggedIn"]),
+    },
     mounted() {
-        this.getUser();
+        this.getUserName();
     },
     methods: {
-        async getUser() {
-          let additionalHeaders = {};
-            if (this.loggedIn) {
-                additionalHeaders = {
-                    Authorization: `Bearer ${this.accessToken}`
-                };
+        ...mapActions("Modules/SimulationTool", ["fetchUserName"]),
+        async getUserName() {
+            if (!this.loggedIn || !this.user_id) {
+                return 'Anonymous*';
             }
 
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`/auth/admin/realms/ump-client/users/${this.user_id}`,{
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...additionalHeaders
-                    }
-                })
-                const result = await response.json();
-                if (!response.ok) {
-                    this.requestState.error = result.error_message || response.status + ': unknown errror';
-                } else {
-                  this.user = result;
-                }
+                this.user = await this.fetchUserName(this.user_id);
             } catch (error) {
                 this.requestState.error = error;
             } finally {
@@ -59,15 +50,16 @@ export default {
 </script>
 
 <template>
-    <div>
-        <LoadingMask v-if="requestState.loading" />
-        <div v-else>
-            <div v-if="requestState.error">
-                <p>Error: {{ requestState.error }}</p>
-            </div>
-            <div v-else>
-                <p>User: {{ user }}</p>
-            </div>
-        </div>
+    <div v-if="requestState.loading">
+        Loading ...
+    </div>
+    <div
+        v-else-if="user"
+        class="user-display"
+    >
+        {{ user.username }}
+    </div>
+    <div v-else>
+        User not found
     </div>
 </template>
