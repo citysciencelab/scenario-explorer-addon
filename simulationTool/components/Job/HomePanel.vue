@@ -45,7 +45,7 @@ export default {
                 <div class="segment-header">
                     {{ $t("additional:modules.tools.simulationTool.continue") }}
                 </div>
-                <ProcessList :isVisible=false />
+                <ProcessList :headerIsVisible=false />
             </div>
             <div class="element-wrapper">
                 <div class="segment-header">

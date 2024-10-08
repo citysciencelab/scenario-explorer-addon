@@ -20,7 +20,7 @@ export default {
             required: true,
             default: []
         },
-        isVisible: {
+        headerIsVisible: {
             type: Boolean,
             required: false,
             default: true
@@ -94,7 +94,7 @@ export default {
 
 <template>
     <div class="process-list">
-        <SectionHeader v-if="isVisible" :title="$t('additional:modules.tools.simulationTool.models')" icon="bi-cpu-fill" />
+        <SectionHeader v-if="headerIsVisible" :title="$t('additional:modules.tools.simulationTool.models')" icon="bi-cpu-fill" />
         <div class="process-list-toolbar">
             <div class="input-group search-wrapper">
                 <input
