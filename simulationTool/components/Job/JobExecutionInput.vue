@@ -1,6 +1,6 @@
 <script>
 export default {
-    name: "SimulationJobExecutionInput",
+    name: "JobExecutionInput",
     props: {
         "inputKey": {
             type: [String, Number],
@@ -49,7 +49,6 @@ export default {
         :required="data.schema.required || data.required || data.minOccurs > 0"
         @input="$emit('change', $event.target.value)"
     >
-
     <input
         v-else-if="data.schema.type === 'number'"
         :id="`input_${inputKey}`"
@@ -65,7 +64,6 @@ export default {
         :required="data.schema.required || data.required || data.minOccurs > 0"
         @input="$emit('change', Number($event.target.value))"
     >
-
     <input
         v-else-if="data.schema.type === 'boolean'"
         :id="`input_${inputKey}`"
@@ -77,7 +75,6 @@ export default {
         :value="value"
         @input="$emit('change', $event.target.checked)"
     >
-
     <div
         v-else-if="data.schema.type === 'array'"
         :key="`input_${inputKey}_${value?.length}`"
@@ -88,7 +85,7 @@ export default {
             :key="`input_${inputKey}_${index}`"
             class="d-flex align-items-center gap-2"
         >
-            <SimulationJobExecutionInput
+            <JobExecutionInput
                 :input-key="index"
                 :data="{
                     schema: {
@@ -99,16 +96,14 @@ export default {
                 :value="value[index]"
                 @change="handleArrayValueChange(index, $event)"
             />
-
             <button
                 v-if="value.length > 1"
                 class="bootstrap-icon"
                 @click="handleArrayValueDeletion(index)"
             >
-                <i class="bi-x-lg" />
+                <i class="bi-x-lg" ></i>
             </button>
         </div>
-
         <button
             v-if="!data.schema.maxItems || value?.length < data.schema.maxItems"
             :key="`input_${inputKey}_array_add_button`"
@@ -116,7 +111,8 @@ export default {
             class="btn btn-sm btn-secondary"
             @click="$emit('change', [...value, ''])"
         >
-            <i class="bi-plus-circle" /> Add {{ data.title }} value
+            <i class="bi-plus-circle" ></i>
+            {{ $t("additional:modules.tools.simulationTool.inputArrayAddButton", { title: data.title }) }}
         </button>
     </div>
 </template>

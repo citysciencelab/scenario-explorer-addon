@@ -15,53 +15,35 @@ const actions = {
             };
         }
 
-        const response = await fetch(`/api/processes/`, {
-                headers: {
-                    "content-type": "application/json",
-                    ...additionalHeaders
-                }
-            }).then((res) => res.json()),
-            layers = rawLayerList.getLayerList().filter(layer => layer.isSimulationLayer);
+        commit("setProcessesLoading", true);
 
-        if (layers.length === 0) {
-            throw new Error(
-                "SimulationTool: no simulation layers found in config"
-            );
-        }
-
-        // filter by defined layers
-        const processes = response.processes.filter((process) => {
-            return layers.some(layer => layer.simModelId === process.id || layer.simModelId === '*');
-        });
-
-        commit("setProcesses", processes);
-    },
-
-    /**
-     * Increases the count state.
-     *
-     * @param {Object} context actions context object.
-     * @returns {void}
-     */
-    async fetchProcess ({state, commit, rootGetters}, processIndex) {
-        let additionalHeaders = {};
-        if (rootGetters["Modules/Login/loggedIn"]) {
-            additionalHeaders = {
-                Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
-            };
-        }
-        const process = state.processes[processIndex],
-            response = await fetch(
-                `/api/processes/${process.id}/`,
-                {
+        try {
+            const response = await fetch(`/api/processes/`, {
                     headers: {
                         "content-type": "application/json",
                         ...additionalHeaders
                     }
-                }
-            ).then((res) => res.json());
+                }).then((res) => res.json()),
+                layers = rawLayerList.getLayerList().filter(layer => layer.isSimulationLayer);
 
-        commit("setProcess", response);
+            if (layers.length === 0) {
+                throw new Error(
+                    "SimulationTool: no simulation layers found in config"
+                );
+            }
+
+            // filter by defined layers
+            const processes = response.processes.filter((process) => {
+                return layers.some(layer => layer.simModelId === process.id || layer.simModelId === '*');
+            });
+
+            commit("setProcesses", processes);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            commit("setProcessesLoading", false);
+        }
+
     },
 
     async fetchJobs ({state, commit, rootGetters}) {
@@ -71,17 +53,92 @@ const actions = {
                 Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
             };
         }
-        const response = await fetch(
-            `/api/jobs/`,
-            {
-                headers: {
-                    "content-type": "application/json",
-                    ...additionalHeaders
-                }
-            }).then((res) => res.json());
 
-        commit("setJobs", response.jobs);
+        commit("setJobsLoading", true);
+
+        try {
+            const response = await fetch(
+                `/api/jobs/?include_ensembles`,
+                {
+                    headers: {
+                        "content-type": "application/json",
+                        ...additionalHeaders
+                    }
+                }).then((res) => res.json());
+
+            commit("setJobs", response.jobs);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            commit("setJobsLoading", false);
+        }
+
     },
+
+    async fetchEnsembles ({state, commit, rootGetters}) {
+        if (!rootGetters["Modules/Login/loggedIn"]) {
+            return;
+        }
+
+        commit("setEnsemblesLoading", true);
+
+        try {
+            const response = await fetch(
+                `/api/ensembles/`,
+                {
+                    headers: {
+                        "content-type": "application/json",
+                        Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
+                    }
+                }).then((res) => res.json());
+
+            // TODO: this might changed in the backend
+            commit("setEnsembles", response);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            commit("setEnsemblesLoading", false);
+        }
+
+    },
+
+    async fetchUserName({ state, commit, rootGetters }, user_id) {
+        if (!rootGetters["Modules/Login/loggedIn"]) {
+            return null;
+        }
+
+        if (state.userNameCache[user_id]) {
+            return state.userNameCache[user_id];
+        }
+
+        const fetchPromise = (async () => {
+            const accessToken = rootGetters["Modules/Login/accessToken"];
+            const response = await fetch(`/api/users/${user_id}/name`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`
+                }
+            });
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result);
+            }
+
+            commit("setUserNameCache", {
+                ...state.userNameCache,
+                [user_id]: result
+            });
+            return result;
+        })();
+
+        commit("setUserNameCache", {
+            ...state.userNameCache,
+            [user_id]: fetchPromise
+        });
+
+        return fetchPromise
+    }
 };
 
 export default actions;

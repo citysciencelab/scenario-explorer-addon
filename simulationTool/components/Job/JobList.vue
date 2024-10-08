@@ -1,20 +1,17 @@
 <script>
-import { mapMutations } from "vuex";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 import Multiselect from "vue-multiselect";
 import SectionHeader from "../SectionHeader.vue";
+import LoadingMask from "../LoadingMask.vue";
+import UserDisplay from "../UserDisplay.vue";
 
 export default {
     name: "JobList",
     components: {
+        UserDisplay,
+        LoadingMask,
         Multiselect,
         SectionHeader
-    },
-    props: {
-        "jobs": {
-            type: Array,
-            required: true,
-            default: []
-        }
     },
     data () {
         return {
@@ -30,6 +27,10 @@ export default {
         }
     },
     computed: {
+        ...mapGetters("Modules/SimulationTool", [
+            "jobs",
+            "jobsLoading"
+        ]),
         filteredJobs: {
             get() {
                 let filteredJobs = this.jobs;
@@ -58,7 +59,12 @@ export default {
     methods: {
         ...mapMutations("Modules/SimulationTool", [
             "setMode",
-            "setSelectedJobId"
+            "setSelectedJobId",
+            "setSelectedProcessId",
+            "setSelectedEnsembleId"
+        ]),
+        ...mapActions("Modules/SimulationTool", [
+            "fetchJobs"
         ]),
         clearSearch() {
             this.searchString = '';
@@ -81,21 +87,28 @@ export default {
         onJobClick(job) {
             this.setSelectedJobId(job.jobID);
             this.setMode("job-details");
-        }
+        },
+        onEnsembleClick(ensembleId) {
+            this.setSelectedEnsembleId(ensembleId);
+            this.setMode("ensemble-details");
+        },
     },
 };
 </script>
 
 <template>
     <div class="job-list">
-        <SectionHeader title="Szenarien" icon="bi-box-fill">
+        <SectionHeader :title="$t('additional:modules.tools.simulationTool.scenarios')" icon="bi-box-fill">
             <template #actions>
                 <button
                     class="btn btn-primary"
-                    @click="() => this.setMode('job-execution')"
+                    @click="() => {
+                        this.setMode('job-execution')
+                        this.setSelectedProcessId(null)
+                    }"
                 >
                     <i class="bi bi-plus-lg">&nbsp;</i>
-                    <span>Neues Szenario</span>
+                    <span>{{ $t('additional:modules.tools.simulationTool.newScenario') }}</span>
                 </button>
             </template>
         </SectionHeader>
@@ -139,60 +152,68 @@ export default {
                     </span>
                 </template>
             </multiselect>
+            <button
+                class="btn btn-primary btn-sm"
+                @click="this.fetchJobs"
+                :title="$t('additional:modules.tools.simulationTool.refresh')"
+            >
+                <i class="bi-arrow-clockwise"></i>
+            </button>
         </div>
-        <table class="job-list-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Modell</th>
-                    <th>Datum</th>
-                    <th>Status</th>
-                    <th>User</th>
-                    <th>Ensembles</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="job in filteredJobs">
-                    <td>
-                        <div>
+        <LoadingMask
+            v-if="jobsLoading"
+            :label="$t('additional:modules.tools.simulationTool.loadingScenarios') + '...'"
+        />
+        <div v-else class="table-wrapper">
+            <table class="job-list-table">
+                <thead>
+                    <tr>
+                        <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
+                        <th>{{ $t('additional:modules.tools.simulationTool.model') }}</th>
+                        <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
+                        <th>{{ $t('additional:modules.tools.simulationTool.status') }}</th>
+                        <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
+                        <th>{{ $t('additional:modules.tools.simulationTool.ensembles') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="job in filteredJobs">
+                        <td>
                             <button
                                 class="btn btn-link"
                                 @click="onJobClick(job)"
                             >
                                 {{this.getJobName(job)}}
                             </button>
-                        </div>
-                    </td>
-                    <td>
-                        <div>
+                        </td>
+                        <td>
                             {{this.getModelName(job)}}
-                        </div>
-                    </td>
-                    <td>
-                        <div>
+                        </td>
+                        <td>
                             {{this.formatDateTime(job.started)}}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="status" :class="job.status">
-                            {{job.status}}
-                        </div>
-                    </td>
-                    <td>
-                        <div>
-                            {{job.user}}
-                        </div>
-                    </td>
-                    <td>
-                        <div>
-                            {{job.ensembles}}
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        </td>
+                        <td>
+                            <div class="status" :class="job.status">
+                                {{job.status}}
+                            </div>
+                        </td>
+                        <td>
+                            <UserDisplay :user_id="job.user_id" />
+                        </td>
+                        <td>
+                            <button
+                                v-for="ensemble in job.ensembles"
+                                class="btn btn-link"
+                                @click="onEnsembleClick(ensemble.id)"
+                            >
+                                {{ensemble.name}}
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-
 </template>
 
 <style lang="scss" scoped>
@@ -200,6 +221,12 @@ export default {
         height: 100%;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
+
+        .table-wrapper {
+            flex: 1;
+            overflow: auto;
+        }
 
         .accepted {
             background-color: var(--bs-info);
@@ -235,6 +262,10 @@ export default {
                     top: 50%;
                     transform: translate(0, -50%);
                 }
+            }
+
+            >button {
+                align-self: center;
             }
         }
 

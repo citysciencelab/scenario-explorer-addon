@@ -5,6 +5,8 @@ import actions from "../store/actions";
 import getters from "../store/getters";
 import mutations from "../store/mutations";
 
+import EnsembleDetails from "./Ensemble/EnsembleDetails.vue";
+import EnsembleCreation from "./Ensemble/EnsembleCreation.vue";
 import EnsembleList from "./Ensemble/EnsembleList.vue";
 import HomePanel from "./Job/HomePanel.vue";
 import JobDetails from "./Job/JobDetails.vue";
@@ -13,14 +15,14 @@ import JobList from "./Job/JobList.vue";
 import ProcessDetails from "./Process/ProcessDetails.vue";
 import ProcessList from "./Process/ProcessList.vue";
 import SideMenu from "./SideMenu.vue";
-import SimulationProcess from "./SimulationProcess.vue";
-import SimulationProcessJob from "./SimulationProcessJob.vue";
 
 const MIN_WIDTH = 900;
 
 export default {
     name: "SimulationTool",
     components: {
+        EnsembleDetails,
+        EnsembleCreation,
         EnsembleList,
         HomePanel,
         JobDetails,
@@ -28,9 +30,7 @@ export default {
         JobList,
         ProcessDetails,
         ProcessList,
-        SideMenu,
-        SimulationProcess,
-        SimulationProcessJob
+        SideMenu
     },
     computed: {
         ...mapGetters("Modules/SimulationTool", Object.keys(getters))
@@ -40,6 +40,7 @@ export default {
         this.maximizeDrawer();
         this.fetchProcesses();
         this.fetchJobs();
+        this.fetchEnsembles();
     },
     /**
      * Put initialize here if mounting occurs after config parsing
@@ -78,7 +79,7 @@ export default {
             this.setSelectedJobId(typeof id === "string" ? id : null);
         },
         navigate(evt) {
-            const key = evt.target.dataset.key;
+            const kensemblesey = evt.target.dataset.key;
             if (key) {
                 this.setMode(key);
             }
@@ -92,7 +93,6 @@ export default {
         <div class="content">
             <ProcessList
                 v-if="mode === 'process-list'"
-                :processes="processes"
                 @selected="selectProcess"
                 @close="() => setMode('home-panel')"
             />
@@ -135,6 +135,14 @@ export default {
                 v-if="mode === 'ensemble-list'"
                 @close="() => setMode('home-panel')"
                 :ensembles="ensembles"
+            />
+            <EnsembleCreation
+                v-if="mode === 'ensemble-creation'"
+                @close="() => setMode('home-panel')"
+            />
+            <EnsembleDetails
+                v-if="mode === 'ensemble-details'"
+                @close="() => setMode('home-panel')"
             />
         </div>
         <SideMenu />

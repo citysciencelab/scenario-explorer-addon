@@ -19,10 +19,18 @@ const state = {
     id: "simulationTool",
     // 'process-list' | 'process-details' | 'job' | 'job-details' | 'job-execution' | 'ensemble-list'
     mode: "home-panel",
+    ensembles: [],
+    ensemblesLoading: false,
+    userNameCache: {},
+    process: null,
     processes: [],
+    processesLoading: false,
     jobs: [],
+    jobsLoading: false,
     selectedProcessId: null,
     selectedJobId: null,
+    selectedEnsembleId: null,
+    jobResultData: null,
     // defaults for config.json parameters
     name: "Sim Tool",
     icon: "bi-sliders2",

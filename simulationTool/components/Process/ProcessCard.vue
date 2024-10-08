@@ -7,15 +7,17 @@ export default {
             required: true
         }
     },
-    emits: ["selected"],
+    emits: [
+      "selected",
+      "tag-clicked"
+    ],
     methods: {
         getProcessLink (process) {
-            const link = process.links.find(({rel}) => rel === "about");
-
+            const link = process?.links?.find(({rel}) => rel === "about");
             return link ? link.href : "";
         },
         getProcessImageSource (process) {
-            const image = process.links.find(({type}) => type === "image");
+            const image = process?.links?.find(({type}) => type === "image");
             return image ? image : "resources/img/DALLE_Placeholder2.png";
         }
     }
@@ -44,6 +46,7 @@ export default {
                 class="tag"
                 v-for="keyword in process.keywords"
                 :key="keyword"
+                @click="$emit('tag-clicked', keyword)"
               >
                 #{{keyword}}
               </span>
@@ -87,6 +90,7 @@ export default {
       margin-bottom: 1rem;
 
       .tag {
+          cursor: pointer;
           background: var(--bs-gray-200);
           color: var(--bs-dark);
           padding: 0.25rem 0.5rem;
