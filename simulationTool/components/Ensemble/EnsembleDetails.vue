@@ -4,6 +4,7 @@ import SectionHeader from "../SectionHeader.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
 import CommentsPanel from "../Comments/CommentsPanel.vue"
 import UserDisplay from "../UserDisplay.vue";
+import PopConfirm from "../PopConfirm.vue";
 
 export default {
     name: "EnsembleDetails",
@@ -11,6 +12,7 @@ export default {
         AsyncWrapper,
         CommentsPanel,
         SectionHeader,
+        PopConfirm,
         UserDisplay
     },
     data() {
@@ -285,13 +287,17 @@ export default {
                                             <UserDisplay :user_id="job.user_id" />
                                         </td>
                                         <td class="action-column">
-                                            <button
-                                                class="btn btn-link link-danger"
-                                                @click="this.removeJobFromEnsemble(job.jobID)"
-                                                :title="$t('additional:modules.tools.simulationTool.removeJob')"
+                                            <PopConfirm
+                                                :onConfirm="() => this.removeJobFromEnsemble(job.jobID)"
+                                                confirmText="Bist du sicher, dass du fortfahren möchtest?"
                                             >
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                                <button
+                                                    class="btn btn-link link-danger"
+                                                    :title="$t('additional:modules.tools.simulationTool.removeJob')"
+                                                >
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </PopConfirm>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -303,7 +309,7 @@ export default {
                     <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
                     <CommentsPanel
                         endPoint="ensembles"
-                        :entityId="ensemble.id"
+                        :entityId="ensemble.id?.toString()"
                     />
                 </div>
                 <div class="toolbar">
