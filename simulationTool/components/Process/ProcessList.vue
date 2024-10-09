@@ -139,7 +139,7 @@ export default {
     </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 @import "~variables";
 @import "~bootstrap/scss/card";
 
