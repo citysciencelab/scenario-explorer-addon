@@ -138,8 +138,9 @@ export default {
                 :aria-label="$t('additional:modules.tools.simulationTool.filter')"
                 label="name"
                 track-by="code"
-                :options="options"
+                :options="this.options"
                 :multiple="true"
+                :open="true"
             >
                 <template #tag="{ option, remove }">
                     <span class="multiselect__tag" :class="option.code" >
@@ -150,6 +151,13 @@ export default {
                             @click="remove(option)"
                         ></i>
                     </span>
+                </template>
+                <template #option="p">
+                    <div class="option__desc">
+                        <span class="option__title" :class="p.option.name">
+                            {{ p.option.name }}
+                        </span>
+                    </div>
                 </template>
             </multiselect>
             <button
@@ -216,7 +224,7 @@ export default {
     </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
     .job-list {
         height: 100%;
         display: flex;
@@ -230,18 +238,23 @@ export default {
 
         .accepted {
             background-color: var(--bs-info);
+            color: black;
         }
         .running {
             background-color: var(--bs-warning);
+            color: black;
         }
         .successful {
             background-color: var(--bs-success);
+            color: white;
         }
         .dismissed {
             background-color: var(--bs-secondary);
+            color: white;
         }
         .failed {
             background-color: var(--bs-danger);
+            color: white;
         }
 
         .job-list-toolbar {
@@ -306,7 +319,6 @@ export default {
                 border-radius: .5rem;
                 font-size: .875rem;
                 font-weight: 500;
-                color: white;
             }
         }
     }

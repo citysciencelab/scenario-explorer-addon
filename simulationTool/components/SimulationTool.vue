@@ -170,6 +170,26 @@ export default {
             flex: 1;
             padding: 1rem;
         }
+    }
+</style>
 
+<style lang="scss">
+    .multiselect__option {
+        background-color: unset;
+
+        .option__desc .option__title {
+            padding: .25rem .5rem;
+            border-radius: .5rem;
+        }
+    }
+
+    .multiselect__option--highlight,
+    .multiselect__option--highlight:after {
+        background-color: var(--bs-primary);
+        color: var(--bs-primary-text-emphasis);
+    }
+
+    .multiselect__tag-icon::after {
+        color: unset;
     }
 </style>
