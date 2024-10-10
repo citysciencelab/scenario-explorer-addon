@@ -4,7 +4,7 @@ import AsyncWrapper from '../AsyncWrapper.vue';
 import UserDisplay from "../UserDisplay.vue";
 
 export default {
-    name: "CommentsPanel",
+    name: "SharingPanel",
     components: {
         AsyncWrapper,
         UserDisplay
@@ -20,8 +20,8 @@ export default {
         }
     },
     data: () => ({
-        comments: [],
-        comment: '',
+        email: '',
+        users: [],
         requestState: {
             loading: false,
             error: null
@@ -35,10 +35,10 @@ export default {
         }
     },
     mounted() {
-        this.fetchComments();
+        this.fetchUsers();
     },
     methods: {
-        async fetchComments() {
+        async fetchUsers() {
             let additionalHeaders = {};
             if (this.loggedIn) {
                 additionalHeaders = {
@@ -47,7 +47,7 @@ export default {
             }
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`/api/${this.endPoint}/${this.entityId}/comments`,{
+                const response = await fetch(`/api/${this.endPoint}/${this.entityId}/users`,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -57,7 +57,7 @@ export default {
                 if (!response.ok) {
                     this.requestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
-                    this.comments = result;
+                    this.users = result;
                 }
             } catch (error) {
                 this.requestState.error = error;
@@ -65,33 +65,28 @@ export default {
                 this.requestState.loading = false;
             }
         },
-        async sendComment() {
+        async addUser() {
             if (!this.loggedIn) {
                 return;
             }
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`/api/${this.endPoint}/${this.entityId}/comments`,{
-                    method: 'POST',
+                const response = await fetch(`/api/${this.endPoint}/${this.entityId}/share/${this.email}`,{
                     headers: {
-                        "Content-Type": "application/json",
                         Authorization: `Bearer ${this.accessToken}`
-                    },
-                    body: JSON.stringify({
-                        comment: this.comment
-                    })
+                    }
                 });
-                const result = await response.json();
                 if (!response.ok) {
                     this.requestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
-                    this.comment = '';
-                    this.fetchComments();
+                    this.sharing = '';
+                    this.fetchUsers();
                 }
             } catch (error) {
                 this.requestState.error = error;
             } finally {
                 this.requestState.loading = false;
+                this.email = '';
             }
         }
     }
@@ -99,40 +94,35 @@ export default {
 </script>
 
 <template>
-    <div class="comments-panel">
+    <div class="sharing-panel">
+        <span>{{ $t('additional:modules.tools.simulationTool.currentlySharedWith')}}:</span>
         <AsyncWrapper :asyncState="requestState">
-            <ul class="comments">
+            <ul class="users">
                 <li
-                    v-for="comment in comments"
-                    :key="comment.id"
-                    class="comment"
-                    :class="{'my-comment': comment.user_id === ownUserId }"
+                    v-for="user in users"
+                    :key="user.user_id"
+                    class="user"
                 >
-                    <span class="user-name">
-                        <UserDisplay :user_id="comment.user_id" />
-                    </span>
-                    <span class="comment-text">
-                        {{comment.comment}}
-                    </span>
+                    <UserDisplay :user_id="user.user_id" />
                 </li>
             </ul>
         </AsyncWrapper>
         <form
             v-if="loggedIn"
-            @submit.prevent="sendComment"
+            @submit.prevent="addUser"
         >
             <div class="input-group">
                 <input
                     class="form-control form-control-sm"
-                    v-model="comment"
-                    type="text"
-                    :placeholder="$t('additional:modules.tools.simulationTool.enterComment')"
+                    v-model="email"
+                    type="email"
+                    :placeholder="$t('additional:modules.tools.simulationTool.enterUserEmail')"
                 >
                 <button
                     type="submit"
                     class="btn btn-primary btn-sm"
                 >
-                    {{ $t("additional:modules.tools.simulationTool.send")}}
+                    {{ $t("additional:modules.tools.simulationTool.shareWithUser") }}
                 </button>
             </div>
         </form>
@@ -140,45 +130,12 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    .comments-panel {
+    .sharing-panel {
         overflow: hidden;
         display: flex;
         flex-direction: column;
-
-        ul.comments {
-            list-style-type: none;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            overflow: auto;
-
-            li.comment {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 0.5rem;
-                border-radius: 5px;
-                margin-bottom: 0.5rem;
-                background-color: var(--bs-primary-bg-subtle);
-                max-width: 80%;
-
-                &.my-comment {
-                    background-color: var(--bs-primary);
-                    align-self: flex-end;
-                    align-items: flex-end;
-                }
-
-                .user-name {
-                    font-weight: bold;
-                    margin-bottom: 0.25rem;
-                    font-size: 0.875rem;
-                }
-
-                .comment-text {
-                }
-            }
-        }
+        justify-content: space-between;
+        gap: 1rem;
 
         form {
             input {
