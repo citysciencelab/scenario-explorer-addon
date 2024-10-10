@@ -15,11 +15,6 @@ export default {
         SectionHeader
     },
     props: {
-        "processes": {
-            type: Array,
-            required: true,
-            default: []
-        },
         headerIsVisible: {
             type: Boolean,
             required: false,

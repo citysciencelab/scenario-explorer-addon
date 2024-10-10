@@ -2,7 +2,7 @@
 import ProcessList from "../Process/ProcessList.vue";
 import SectionHeader from "../SectionHeader.vue";
 
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 
 export default {
     name: "HomePanel",
@@ -20,6 +20,9 @@ export default {
     watch: {
     },
     methods: {
+        ...mapMutations("Modules/SimulationTool", [
+            "setMode"
+        ]),
     }
 };
 
@@ -35,8 +38,7 @@ export default {
                 <p class="segment-header">
                     {{ $t("additional:modules.tools.simulationTool.areYouNew") }}
                 </p>
-                <!-- ToDo: add onClick once component is finised -->
-                <button class="segment-wrapper" @click="console.log('Open tutorial')">
+                <button class="segment-wrapper btn-light" @click="() => this.setMode('tutorial-panel')">
                     <p>{{ $t("additional:modules.tools.simulationTool.tutorialInfo") }}</p>
                     <i class="bi bi-arrow-right-circle-fill"></i>
                 </button>
@@ -57,12 +59,18 @@ export default {
             </div>
         </div>
         <div class="segment-wrapper" v-else>
-            Um auf die Simulationsdaten zugreifen zu können müssen Sie sich erst im Masterportal einloggen.
+            {{ $t("additional:modules.tools.simulationTool.authRequest") }}
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
+
+.home-panel {
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
 .welcome-user {
     font-weight: 600;
     font-size: 24px;
@@ -83,7 +91,7 @@ export default {
     flex-direction: column;
     border: 0px;
     border-radius: 8px;
-    box-shadow: rgba(0, 0, 0, 0.12) 0px 2px 8px;
+    box-shadow: var(--bs-box-shadow);
     width: 100%;
     padding: 10px;
     background-color: transparent;
@@ -98,7 +106,7 @@ export default {
         padding: 10px;
 
         &:hover {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: var(--bs-btn-hover-bg);;
         }
 
         p {
@@ -117,6 +125,6 @@ export default {
 }
 
 .bi-arrow-right-circle-fill {
-    color: rgb(201, 201, 201)
+    color: var(--bs-gray-500)
 }
 </style>

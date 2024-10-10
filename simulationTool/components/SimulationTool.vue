@@ -15,6 +15,8 @@ import JobList from "./Job/JobList.vue";
 import ProcessDetails from "./Process/ProcessDetails.vue";
 import ProcessList from "./Process/ProcessList.vue";
 import SideMenu from "./SideMenu.vue";
+import TutorialPanel from "./HelpSection/TutorialPanel.vue";
+import HelpPanel from "./HelpSection/HelpPanel.vue";
 
 const MIN_WIDTH = 900;
 
@@ -25,12 +27,14 @@ export default {
         EnsembleCreation,
         EnsembleList,
         HomePanel,
+        HelpPanel,
         JobDetails,
         JobExecution,
         JobList,
         ProcessDetails,
         ProcessList,
-        SideMenu
+        SideMenu,
+        TutorialPanel
     },
     computed: {
         ...mapGetters("Modules/SimulationTool", Object.keys(getters))
@@ -113,9 +117,12 @@ export default {
                 :process-id="selectedProcessId"
                 @close="() => setMode('home-panel')"
             />
-            <!-- Todo: @close muss noch geändert werden! -->
             <HomePanel
                 v-if="mode === 'home-panel'"
+                @close="() => setMode('home-panel')"    
+            />
+            <HelpPanel
+                v-if="mode === 'help-panel'"
                 @close="() => setMode('home-panel')"    
             />
             <JobList
@@ -143,6 +150,10 @@ export default {
             <EnsembleDetails
                 v-if="mode === 'ensemble-details'"
                 @close="() => setMode('home-panel')"
+            />
+            <TutorialPanel
+                v-if="mode === 'tutorial-panel'"
+                @close="() => setMode('help-panel')"    
             />
         </div>
         <SideMenu />

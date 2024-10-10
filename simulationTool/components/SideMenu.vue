@@ -89,7 +89,7 @@ export default {
         <button
             class="btn btn-link"
             :title="$t('additional:modules.tools.simulationTool.help')"
-            disabled
+            @click="() => this.setMode('help-panel')"
         >
             <i class="bi bi-question-circle-fill"></i>
         </button>
