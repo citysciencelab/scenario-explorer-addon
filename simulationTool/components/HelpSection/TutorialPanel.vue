@@ -62,7 +62,7 @@ export default {
             <div class="element-wrapper">
                 <component :is="views[currentIndex].name" />
             </div>
-            <div class="navigation-buttons">
+            <div class="navigation-buttons btn-light">
                 <button @click="previousView" :disabled="currentIndex === 0" class="arrow-button">
                     <i class="bi bi-chevron-left"></i>
                 </button>
@@ -132,7 +132,7 @@ export default {
             transition: background-color 0.3s;
 
             &:hover {
-                background-color: var(--bs-light);
+                background-color: var(--bs-btn-hover-bg);
             }
         }
         
