@@ -273,10 +273,18 @@ export default {
                                     :value="creationValues?.[process.id]?.sampling_method"
                                     @change="(evt) => updateExecutionValue(process.id, 'sampling_method', evt.target.value)"
                                     required
-                                    disabled
                                 >
                                     <option value="lhs" selected>
                                         {{ $t('additional:modules.tools.simulationTool.latinHyperCube') }}
+                                    </option>
+                                    <option value="uniformlhs" selected>
+                                        {{ $t('additional:modules.tools.simulationTool.uniformlhs') }}
+                                    </option>
+                                    <option value="factorial" selected>
+                                        {{ $t('additional:modules.tools.simulationTool.factorial') }}
+                                    </option>
+                                    <option value="montecarlo" selected>
+                                        {{ $t('additional:modules.tools.simulationTool.montecarlo') }}
                                     </option>
                                 </select>
                             </div>

@@ -20,7 +20,7 @@ const state = {
     mode: "process-list",
     ensembles: [],
     ensemblesLoading: false,
-    userNameCache: {},
+    userDetailsCache: {},
     process: null,
     processes: [],
     processesLoading: false,

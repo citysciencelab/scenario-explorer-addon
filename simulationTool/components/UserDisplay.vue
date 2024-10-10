@@ -27,7 +27,7 @@ export default {
         this.getUserName();
     },
     methods: {
-        ...mapActions("Modules/SimulationTool", ["fetchUserName"]),
+        ...mapActions("Modules/SimulationTool", ["fetchUserDetails"]),
         async getUserName() {
             if (!this.loggedIn || !this.user_id) {
                 return 'Anonymous*';
@@ -35,7 +35,7 @@ export default {
 
             try {
                 this.requestState.loading = true;
-                this.user = await this.fetchUserName(this.user_id);
+                this.user = await this.fetchUserDetails(this.user_id);
             } catch (error) {
                 this.requestState.error = error;
             } finally {
@@ -54,12 +54,29 @@ export default {
         Loading ...
     </div>
     <div
-        v-else-if="user"
+        v-else
         class="user-display"
     >
-        {{ user.username }}
-    </div>
-    <div v-else>
-        User not found
+        <img
+            v-if="user"
+            :src="user.gravatar_url + '?d=monsterid&s=24'"
+            class="gravatar"
+            :title="user.username"
+            :alt="user.username + ' gravatar'"
+        />
+        <div v-else class="user-not-found">
+            User not found
+        </div>
     </div>
 </template>
+
+<style lang="scss" scoped>
+    .user-display {
+        display: flex;
+        align-items: center;
+    }
+
+    .gravatar {
+        border-radius: 50%;
+    }
+</style>
