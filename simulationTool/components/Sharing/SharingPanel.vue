@@ -95,18 +95,20 @@ export default {
 
 <template>
     <div class="sharing-panel">
-        <span>{{ $t('additional:modules.tools.simulationTool.currentlySharedWith')}}:</span>
-        <AsyncWrapper :asyncState="requestState">
-            <ul class="users">
-                <li
-                    v-for="user in users"
-                    :key="user.user_id"
-                    class="user"
-                >
-                    <UserDisplay :user_id="user.user_id" />
-                </li>
-            </ul>
-        </AsyncWrapper>
+        <div>
+            <span>{{ $t('additional:modules.tools.simulationTool.currentlySharedWith')}}:</span>
+            <AsyncWrapper :asyncState="requestState">
+                <ul class="users">
+                    <li
+                        v-for="user in users"
+                        :key="user.user_id"
+                        class="user"
+                    >
+                        <UserDisplay :user_id="user.user_id" />
+                    </li>
+                </ul>
+            </AsyncWrapper>
+        </div>
         <form
             v-if="loggedIn"
             @submit.prevent="addUser"
@@ -132,10 +134,38 @@ export default {
 <style lang="scss" scoped>
     .sharing-panel {
         overflow: hidden;
+        min-height: 100px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         gap: 1rem;
+
+        ul.users {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            li.user {
+                transition: margin-left 0.2s;
+
+                img {
+                    width: 24px;
+                    height: 24px;
+                }
+
+                &:not(:first-child) {
+                    margin-left: -8px;
+                }
+            }
+
+            &:hover {
+                li.user:not(:first-child) {
+                    margin-left: 2px;
+                }
+            }
+        }
 
         form {
             input {

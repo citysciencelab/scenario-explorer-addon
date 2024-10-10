@@ -4,6 +4,7 @@ import SectionHeader from "../SectionHeader.vue";
 import Diagramm from "../Diagramm/Diagramm.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
 import CommentsPanel from "../Comments/CommentsPanel.vue"
+import SharingPanel from "../Sharing/SharingPanel.vue"
 
 export default {
     name: "JobDetails",
@@ -11,7 +12,8 @@ export default {
         CommentsPanel,
         SectionHeader,
         AsyncWrapper,
-        Diagramm
+        Diagramm,
+        SharingPanel
     },
     data() {
         return {
@@ -176,6 +178,13 @@ export default {
                         :entityId="job.jobID"
                     />
                 </div>
+                <div class="sharing">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.sharing') }}</h4>
+                    <SharingPanel
+                        endPoint="jobs"
+                        :entityId="job.jobID?.toString()"
+                    />
+                </div>
             </div>
         </AsyncWrapper>
     </div>
@@ -197,7 +206,8 @@ export default {
                 "header header"
                 "links links"
                 "parameter filter"
-                "charts notes";
+                "charts charts"
+                "notes sharing";
             grid-template-columns: 1fr 1fr;
 
         ul {
@@ -265,6 +275,12 @@ export default {
 
         .notes {
             grid-area: notes;
+            overflow: hidden;
+            display: inherit;
+        }
+
+        .sharing {
+            grid-area: sharing;
             overflow: hidden;
             display: inherit;
         }

@@ -142,8 +142,11 @@ export default {
 <style lang="scss" scoped>
     .comments-panel {
         overflow: hidden;
+        min-height: 100px;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
+        gap: 1rem;
 
         ul.comments {
             list-style-type: none;
@@ -175,8 +178,6 @@ export default {
                     font-size: 0.875rem;
                 }
 
-                .comment-text {
-                }
             }
         }
 

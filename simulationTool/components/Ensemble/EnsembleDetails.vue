@@ -447,6 +447,7 @@ export default {
             .jobs {
                 overflow: hidden;
                 grid-area: jobs;
+                min-height: 200px;
             }
 
             .toolbar {
