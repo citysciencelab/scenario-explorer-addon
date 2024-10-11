@@ -98,62 +98,49 @@ export default {
             <ProcessList
                 v-if="mode === 'process-list'"
                 @selected="selectProcess"
-                @close="() => setMode('home-panel')"
             />
             <ProcessDetails
                 v-if="mode === 'process-details'"
                 @selected="selectProcess"
-                @close="() => setMode('home-panel')"
             />
             <SimulationProcess
                 v-if="mode === 'process'"
                 :process-id="selectedProcessId"
                 @selected="selectJob"
-                @close="() => setMode('home-panel')"
             />
             <SimulationProcessJob
                 v-if="mode === 'job'"
                 :job-id="selectedJobId"
                 :process-id="selectedProcessId"
-                @close="() => setMode('home-panel')"
             />
             <HomePanel
                 v-if="mode === 'home-panel'"
-                @close="() => setMode('home-panel')"    
             />
             <HelpPanel
                 v-if="mode === 'help-panel'"
-                @close="() => setMode('home-panel')"    
             />
             <JobList
                 v-if="mode === 'job-list'"
-                @close="() => setMode('home-panel')"
                 :jobs="jobs"
             />
             <JobExecution
                 v-if="mode === 'job-execution'"
-                @close="() => setMode('job-list')"
             />
             <JobDetails
                 v-if="mode === 'job-details'"
-                @close="() => setMode('job-list')"
             />
             <EnsembleList
                 v-if="mode === 'ensemble-list'"
-                @close="() => setMode('home-panel')"
                 :ensembles="ensembles"
             />
             <EnsembleCreation
                 v-if="mode === 'ensemble-creation'"
-                @close="() => setMode('home-panel')"
             />
             <EnsembleDetails
                 v-if="mode === 'ensemble-details'"
-                @close="() => setMode('home-panel')"
             />
             <TutorialPanel
                 v-if="mode === 'tutorial-panel'"
-                @close="() => setMode('help-panel')"    
             />
         </div>
         <SideMenu />
