@@ -10,14 +10,8 @@ export default {
         SectionHeader,
         ProcessList
     },
-    data() {
-    },
     computed: {
         ...mapGetters("Modules/Login", ["username", "loggedIn"])
-    },
-    mounted() {
-    },
-    watch: {
     },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
