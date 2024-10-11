@@ -32,7 +32,8 @@ export default {
             ensembleExecutionRequestState: {
                 loading: false,
                 error: null
-            }
+            },
+            isOpen: false
         };
     },
     computed: {
@@ -70,6 +71,9 @@ export default {
         showJobDetails(jobId) {
             this.setSelectedJobId(jobId);
             this.setMode('job-details');
+        },
+        toggleSettingDetails() {
+            this.isOpen = !this.isOpen;
         },
         /**
          * Fetches a ensemble from the simulation backend
@@ -240,8 +244,35 @@ export default {
                             >
                                 <i class="bi bi-box-arrow-up-right"></i>
                             </button>
+                            <button @click="toggleSettingDetails" class="btn btn-link"
+                                :title="$t('additional:modules.tools.simulationTool.settings')">
+                                <i class="bi bi-gear"></i>
+                            </button>
                         </li>
                     </ul>
+                    <div v-show="isOpen" class="configuration">
+                        <h4>{{ $t('additional:modules.tools.simulationTool.settings') }}</h4>
+                        <ul class="configuration-list">
+                            <li v-for="config in ensemble.scenario_configs" :key="config.id" class="config-item">
+                                <div>
+                                    <strong>{{ $t('additional:modules.tools.simulationTool.scenarioAmount') }}:</strong>
+                                    {{ config.sample_size }}
+                                </div>
+                                <div>
+                                    <strong>{{ $t('additional:modules.tools.simulationTool.samplingMethod') }}:</strong>
+                                    {{ config.sampling_method }}
+                                </div>
+                                <div>
+                                    <strong>{{ $t('additional:modules.tools.simulationTool.inputParameters') }}:</strong>
+                                    <ul class="parameters-list">
+                                        <li v-for="(value, key) in config.parameters" :key="key" class="parameter-item">
+                                            {{ key }}: {{ value }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <AsyncWrapper :asyncState="ensembleJobsRequestState">
                     <div class="jobs">
@@ -420,15 +451,19 @@ export default {
                     &.accepted {
                         background-color: var(--bs-info);
                     }
+
                     &.running {
                         background-color: var(--bs-warning);
                     }
+
                     &.successful {
                         background-color: var(--bs-success);
                     }
+
                     &.dismissed {
                         background-color: var(--bs-secondary);
                     }
+
                     &.failed {
                         background-color: var(--bs-danger);
                     }
@@ -442,6 +477,11 @@ export default {
             .models {
                 overflow: hidden;
                 grid-area: models;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                overflow: auto;
+                min-height: 0;
             }
 
             .jobs {
@@ -467,7 +507,17 @@ export default {
                 overflow: hidden;
                 display: inherit;
             }
-        }
 
+            .scenario-list {
+
+                strong {
+                    padding-right: 10px;
+                }
+
+                button {
+                    padding: 0px;
+                }
+            }
+        }
     }
 </style>
