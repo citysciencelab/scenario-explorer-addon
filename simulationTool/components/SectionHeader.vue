@@ -9,12 +9,7 @@ export default {
       icon: {
         type: String,
         required: false
-      },
-      isVisible: { 
-        type: Boolean,
-        required: false,
-        default: true
-    }
+      }
     }
 }
 </script>
