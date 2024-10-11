@@ -102,18 +102,18 @@ const actions = {
 
     },
 
-    async fetchUserName({ state, commit, rootGetters }, user_id) {
+    async fetchUserDetails({ state, commit, rootGetters }, user_id) {
         if (!rootGetters["Modules/Login/loggedIn"]) {
             return null;
         }
 
-        if (state.userNameCache[user_id]) {
-            return state.userNameCache[user_id];
+        if (state.userDetailsCache[user_id]) {
+            return state.userDetailsCache[user_id];
         }
 
         const fetchPromise = (async () => {
             const accessToken = rootGetters["Modules/Login/accessToken"];
-            const response = await fetch(`/api/users/${user_id}/name`, {
+            const response = await fetch(`/api/users/${user_id}/details`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`
@@ -125,15 +125,15 @@ const actions = {
                 throw new Error(result);
             }
 
-            commit("setUserNameCache", {
-                ...state.userNameCache,
+            commit("setUserDetailsCache", {
+                ...state.userDetailsCache,
                 [user_id]: result
             });
             return result;
         })();
 
-        commit("setUserNameCache", {
-            ...state.userNameCache,
+        commit("setUserDetailsCache", {
+            ...state.userDetailsCache,
             [user_id]: fetchPromise
         });
 

@@ -2,12 +2,14 @@
 import { mapActions, mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import LoadingMask from "../LoadingMask.vue";
+import UserDisplay from "../UserDisplay.vue";
 
 export default {
     name: "EnsembleList",
     components: {
         LoadingMask,
-        SectionHeader
+        SectionHeader,
+        UserDisplay
     },
     data () {
         return {
@@ -159,7 +161,7 @@ export default {
                     </td>
                     <td>
                         <div>
-                            {{ensemble.user_id}}
+                            <UserDisplay :user_id="ensemble.user_id" />
                         </div>
                     </td>
                 </tr>
