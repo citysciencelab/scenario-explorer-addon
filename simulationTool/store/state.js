@@ -21,7 +21,7 @@ const state = {
     mode: "home-panel",
     ensembles: [],
     ensemblesLoading: false,
-    userNameCache: {},
+    userDetailsCache: {},
     process: null,
     processes: [],
     processesLoading: false,

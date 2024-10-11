@@ -5,15 +5,17 @@ import AsyncWrapper from "../AsyncWrapper.vue";
 import CommentsPanel from "../Comments/CommentsPanel.vue"
 import UserDisplay from "../UserDisplay.vue";
 import PopConfirm from "../PopConfirm.vue";
+import SharingPanel from "../Sharing/SharingPanel.vue";
 
 export default {
     name: "EnsembleDetails",
     components: {
         AsyncWrapper,
         CommentsPanel,
-        SectionHeader,
         PopConfirm,
-        UserDisplay
+        SectionHeader,
+        SharingPanel,
+        UserDisplay,
     },
     data() {
         return {
@@ -312,6 +314,13 @@ export default {
                         :entityId="ensemble.id?.toString()"
                     />
                 </div>
+                <div class="sharing">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.sharing') }}</h4>
+                    <SharingPanel
+                        endPoint="ensembles"
+                        :entityId="ensemble.id?.toString()"
+                    />
+                </div>
                 <div class="toolbar">
                     <button
                         class="btn btn-primary"
@@ -340,7 +349,7 @@ export default {
                 "header header"
                 "models models"
                 "jobs jobs"
-                "notes empty"
+                "notes sharing"
                 "toolbar toolbar";
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto auto auto auto auto;
@@ -438,6 +447,7 @@ export default {
             .jobs {
                 overflow: hidden;
                 grid-area: jobs;
+                min-height: 200px;
             }
 
             .toolbar {
@@ -448,6 +458,12 @@ export default {
 
             .notes {
                 grid-area: notes;
+                overflow: hidden;
+                display: inherit;
+            }
+
+            .sharing {
+                grid-area: sharing;
                 overflow: hidden;
                 display: inherit;
             }
