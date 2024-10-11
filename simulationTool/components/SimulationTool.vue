@@ -103,16 +103,6 @@ export default {
                 v-if="mode === 'process-details'"
                 @selected="selectProcess"
             />
-            <SimulationProcess
-                v-if="mode === 'process'"
-                :process-id="selectedProcessId"
-                @selected="selectJob"
-            />
-            <SimulationProcessJob
-                v-if="mode === 'job'"
-                :job-id="selectedJobId"
-                :process-id="selectedProcessId"
-            />
             <HomePanel
                 v-if="mode === 'home-panel'"
             />
