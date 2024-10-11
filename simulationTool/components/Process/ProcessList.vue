@@ -14,6 +14,13 @@ export default {
         ProcessCard,
         SectionHeader
     },
+    props: {
+        headerIsVisible: {
+            type: Boolean,
+            required: false,
+            default: true
+        }
+    },
     data () {
         return {
             selectedTags: [],
@@ -82,7 +89,7 @@ export default {
 
 <template>
     <div class="process-list">
-        <SectionHeader :title="$t('additional:modules.tools.simulationTool.models')" icon="bi-cpu-fill" />
+        <SectionHeader v-if="headerIsVisible" :title="$t('additional:modules.tools.simulationTool.models')" icon="bi-cpu-fill" />
         <div class="process-list-toolbar">
             <div class="input-group search-wrapper">
                 <input

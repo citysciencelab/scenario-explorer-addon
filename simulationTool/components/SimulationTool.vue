@@ -8,12 +8,15 @@ import mutations from "../store/mutations";
 import EnsembleDetails from "./Ensemble/EnsembleDetails.vue";
 import EnsembleCreation from "./Ensemble/EnsembleCreation.vue";
 import EnsembleList from "./Ensemble/EnsembleList.vue";
+import HomePanel from "./Job/HomePanel.vue";
 import JobDetails from "./Job/JobDetails.vue";
 import JobExecution from "./Job/JobExecution.vue";
 import JobList from "./Job/JobList.vue";
 import ProcessDetails from "./Process/ProcessDetails.vue";
 import ProcessList from "./Process/ProcessList.vue";
 import SideMenu from "./SideMenu.vue";
+import TutorialPanel from "./HelpSection/TutorialPanel.vue";
+import HelpPanel from "./HelpSection/HelpPanel.vue";
 
 const MIN_WIDTH = 900;
 
@@ -23,12 +26,15 @@ export default {
         EnsembleDetails,
         EnsembleCreation,
         EnsembleList,
+        HomePanel,
+        HelpPanel,
         JobDetails,
         JobExecution,
         JobList,
         ProcessDetails,
         ProcessList,
-        SideMenu
+        SideMenu,
+        TutorialPanel
     },
     computed: {
         ...mapGetters("Modules/SimulationTool", Object.keys(getters))
@@ -96,31 +102,45 @@ export default {
             <ProcessDetails
                 v-if="mode === 'process-details'"
                 @selected="selectProcess"
-                @close="() => setMode('process-list')"
+            />
+            <SimulationProcess
+                v-if="mode === 'process'"
+                :process-id="selectedProcessId"
+                @selected="selectJob"
+            />
+            <SimulationProcessJob
+                v-if="mode === 'job'"
+                :job-id="selectedJobId"
+                :process-id="selectedProcessId"
+            />
+            <HomePanel
+                v-if="mode === 'home-panel'"
+            />
+            <HelpPanel
+                v-if="mode === 'help-panel'"
             />
             <JobList
                 v-if="mode === 'job-list'"
-                @close="() => setMode('process-list')"
+                :jobs="jobs"
             />
             <JobExecution
                 v-if="mode === 'job-execution'"
-                @close="() => setMode('job-list')"
             />
             <JobDetails
                 v-if="mode === 'job-details'"
-                @close="() => setMode('job-list')"
             />
             <EnsembleList
                 v-if="mode === 'ensemble-list'"
-                @close="() => setMode('process-list')"
+                :ensembles="ensembles"
             />
             <EnsembleCreation
                 v-if="mode === 'ensemble-creation'"
-                @close="() => setMode('ensemble-list')"
             />
             <EnsembleDetails
                 v-if="mode === 'ensemble-details'"
-                @close="() => setMode('ensemble-list')"
+            />
+            <TutorialPanel
+                v-if="mode === 'tutorial-panel'"
             />
         </div>
         <SideMenu />

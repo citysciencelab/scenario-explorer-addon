@@ -287,7 +287,7 @@ export default {
 
         .diagram-wrapper {
             border: 1px solid #ccc;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--bs-box-shadow);
             border-radius: 10px;
             padding: 20px;
         }

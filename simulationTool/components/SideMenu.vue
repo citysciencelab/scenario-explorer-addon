@@ -55,8 +55,9 @@ export default {
         </button>
         <button
             class="btn btn-link"
+            :class="{ active: mode === 'home-panel' }"
+            @click="() => this.setMode('home-panel')"
             :title="$t('additional:modules.tools.simulationTool.home')"
-            disabled
         >
             <i class="bi bi-house-fill"></i>
         </button>
@@ -88,7 +89,7 @@ export default {
         <button
             class="btn btn-link"
             :title="$t('additional:modules.tools.simulationTool.help')"
-            disabled
+            @click="() => this.setMode('help-panel')"
         >
             <i class="bi bi-question-circle-fill"></i>
         </button>
