@@ -72,12 +72,6 @@ export default {
             ]
         };
     },
-    computed: {
-    },
-    mounted() {
-    },
-    watch: {
-    },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
             "setMode"
