@@ -212,7 +212,6 @@ export default {
                 class="form-control"
                 :placeholder="$t('additional:modules.tools.simulationTool.ensembleDescription')"
                 v-model="creationValues.description"
-                required
             ></textarea>
             <div>
                 <h4 class="title-with-button">

@@ -24,7 +24,7 @@ export default {
       </div>
   
       <div v-for="(section, index) in sections" :key="index">
-        <p v-if="section.type === 'text'">{{ section.content }}</p>
+        <p v-if="section.type === 'text'" v-html="section.content"></p>
         <img v-if="section.type === 'image'" :src="section.src" :alt="section.alt" class="tutorial-image">
       </div>
   
