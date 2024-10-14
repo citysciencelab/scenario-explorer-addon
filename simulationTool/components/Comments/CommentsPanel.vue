@@ -36,6 +36,10 @@ export default {
     },
     mounted() {
         this.fetchComments();
+        this.startPolling();
+    },
+    beforeDestroy() {
+        this.stopPolling();
     },
     methods: {
         async fetchComments() {
@@ -54,6 +58,7 @@ export default {
                     }
                 });
                 const result = await response.json();
+                console.log("result:", result);
                 if (!response.ok) {
                     this.requestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
@@ -93,6 +98,14 @@ export default {
             } finally {
                 this.requestState.loading = false;
             }
+        },
+        startPolling() {
+            this.pollingInterval = setInterval(() => {
+                this.fetchComments();
+            }, 10000);
+          },
+        stopPolling() {
+            clearInterval(this.pollingInterval);
         }
     }
 }
@@ -131,6 +144,7 @@ export default {
                 <button
                     type="submit"
                     class="btn btn-primary btn-sm"
+                    :disabled="requestState.loading"
                 >
                     {{ $t("additional:modules.tools.simulationTool.send")}}
                 </button>
