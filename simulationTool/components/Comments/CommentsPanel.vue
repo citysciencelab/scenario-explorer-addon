@@ -58,7 +58,6 @@ export default {
                     }
                 });
                 const result = await response.json();
-                console.log("result:", result);
                 if (!response.ok) {
                     this.requestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
