@@ -102,6 +102,34 @@ const actions = {
 
     },
 
+    async deleteEnsembleById ({state, commit, rootGetters}, ensembleId) {
+        if (!rootGetters["Modules/Login/loggedIn"]) {
+            return;
+        }
+
+        commit("setEnsemblesLoading", true);
+
+        try {
+            const response = await fetch(`/api/ensembles/${ensembleId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete ensemble");
+            }
+
+            console.log(`Ensemble ${ensembleId} successfully deleted.`);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            commit("setEnsemblesLoading", false);
+        }
+    },
+
     async fetchUserDetails({ state, commit, rootGetters }, user_id) {
         if (!rootGetters["Modules/Login/loggedIn"]) {
             return null;

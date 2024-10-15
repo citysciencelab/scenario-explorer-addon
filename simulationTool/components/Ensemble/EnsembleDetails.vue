@@ -322,7 +322,7 @@ export default {
                                         <td class="action-column">
                                             <PopConfirm
                                                 :onConfirm="() => this.removeJobFromEnsemble(job.jobID)"
-                                                confirmText="Bist du sicher, dass du fortfahren möchtest?"
+                                                :confirmText="$t('additional:modules.tools.simulationTool.confirmDelete')"
                                             >
                                                 <button
                                                     class="btn btn-link link-danger"
