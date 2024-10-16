@@ -12,6 +12,9 @@ export default {
         ]),
         ...mapGetters("Modules/Login", [
             "loggedIn"
+        ]),
+        ...mapGetters("Menu", [
+            "currentComponentName"
         ])
     },
     methods: {
@@ -19,13 +22,17 @@ export default {
             "setMode"
         ]),
         ...mapMutations("Menu", [
-            "setCurrentComponent"
+            "setCurrentComponent",
+            "setCurrentComponentPropsName"
         ]),
         ...mapActions("Menu", [
             "resetMenu"
         ]),
         closeSimulationTool() {
             this.restoreDefaultLayout();
+            if (this.currentComponentName('secondaryMenu') !== 'Simulationen') {
+                this.setCurrentComponentPropsName({side: 'secondaryMenu', name: "Simulationen"})
+            }
             this.resetMenu('secondaryMenu');
         },
         applyCustomLayout() {
