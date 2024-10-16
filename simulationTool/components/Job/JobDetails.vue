@@ -62,6 +62,9 @@ export default {
                 } else {
                     this.job = result;
                 }
+                if (result.status !== 'running') {
+                    this.jobRequestState.loading = false;
+                }
             } catch (error) {
                 this.jobRequestState.error = error || 'unknown error';
             } finally {
@@ -70,6 +73,14 @@ export default {
 
         },
         async fetchJobResultData() {
+            if (this.intervalId) {
+             window.clearInterval(this.intervalId);
+            }
+            if (this.job.status === 'running') {
+                this.intervalId = window.setInterval(() => this.fetchJob(this.selectedJobId), 5000);
+                return;
+            }
+            
             const url = this.job?.links?.[0]?.href;
             if (!url) {
                 return;
