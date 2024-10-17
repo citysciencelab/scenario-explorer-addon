@@ -3,13 +3,15 @@ import { mapActions, mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import LoadingMask from "../LoadingMask.vue";
 import UserDisplay from "../UserDisplay.vue";
+import PopConfirm from "../PopConfirm.vue";
 
 export default {
     name: "EnsembleList",
     components: {
         LoadingMask,
         SectionHeader,
-        UserDisplay
+        UserDisplay,
+        PopConfirm
     },
     data () {
         return {
@@ -45,7 +47,8 @@ export default {
             "setSelectedEnsembleId"
         ]),
         ...mapActions("Modules/SimulationTool", [
-            "fetchEnsembles"
+            "fetchEnsembles",
+            "deleteEnsembleById"
         ]),
         clearSearch() {
             this.searchString = '';
@@ -72,6 +75,14 @@ export default {
         onEnsembleClick(ensemble) {
             this.setSelectedEnsembleId(ensemble.id);
             this.setMode("ensemble-details");
+        },
+        async deleteEnsemble(ensemble) {
+            try {
+                await this.deleteEnsembleById(ensemble.id);
+                await this.fetchEnsembles();
+            } catch (error) {
+                console.error("Fehler beim Löschen des Ensembles:", error);
+            }
         }
     }
 }
@@ -163,6 +174,19 @@ export default {
                         <div>
                             <UserDisplay :user_id="ensemble.user_id" />
                         </div>
+                    </td>
+                    <td class="action-column">
+                        <PopConfirm
+                            :onConfirm="() => this.deleteEnsemble(ensemble)"
+                            :confirmText= "$t('additional:modules.tools.simulationTool.confirmDelete')"
+                        >
+                            <button
+                                class="btn btn-link link-danger"
+                                :title="$t('additional:modules.tools.simulationTool.removeJob')"
+                            >
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </PopConfirm>
                     </td>
                 </tr>
             </tbody>

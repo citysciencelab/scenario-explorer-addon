@@ -20,6 +20,7 @@
         "contact": "Contact",
         "contactInfo": "Do you still have questions? Please write an e-mail to ",
         "confirm": "Confirm",
+        "confirmDelete": "Are you sure you want to continue?",
         "created": "Created",
         "createEnsemble": "Create ensemble",
         "createEnsembleContent": "After you have clicked on \"Add ensemble\" in the ensemble overview, you can create a new ensemble here. Name it as you wish and click on \"Create empty ensemble\" so that it appears in your ensemble overview and is available for further editing.",
