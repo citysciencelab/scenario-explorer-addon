@@ -84,12 +84,28 @@ export default {
                     this.requestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
                     this.process = result;
+                    this.setDefaultExecutionValues(result.inputs);
                 }
             } catch (error) {
                 this.requestState.error = error;
             } finally {
                 this.requestState.loading = false;
             }
+        },
+        setDefaultExecutionValues (inputsConfig) {
+            this.executionValues = {};
+            Object.entries(inputsConfig).forEach(([key, input]) => {
+                let defaultValue
+                if (input.schema.default) {
+                    defaultValue = input.schema.default;
+                } else if (input.schema.type === "boolean") {
+                    const required = input.schema.required || input.required || input.minOccurs > 0;
+                    if (required) {
+                        defaultValue = false;
+                    }
+                }
+                this.executionValues[key] = defaultValue;
+            });
         },
         updateExecutionValue (key, value) {
             this.executionValues[key] = value;
