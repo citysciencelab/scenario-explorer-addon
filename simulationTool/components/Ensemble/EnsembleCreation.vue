@@ -149,7 +149,7 @@ export default {
                     } = inputs[process_id];
                     return {
                         process_id,
-                        sample_size,
+                        sample_size: Number(sample_size),
                         sampling_method,
                         parameters
                     };
