@@ -19,6 +19,9 @@ export default {
         };
     },
     computed: {
+        ...mapGetters("Modules/Login", [
+            "loggedIn"
+        ]),
         ...mapGetters("Modules/SimulationTool", [
             "selectedProcessId"
         ])
@@ -135,7 +138,11 @@ export default {
                 </div>
             </div>
             <div class="actions">
-                <button class="btn btn-secondary">
+                <button
+                    v-if="loggedIn"
+                    class="btn btn-secondary"
+                    @click="() => this.setMode('ensemble-creation')"
+                >
                     <i class="bi bi-collection-fill">&nbsp;</i>
                     <span>{{ $t('additional:modules.tools.simulationTool.createEnsemble') }}</span>
                 </button>
