@@ -8,7 +8,7 @@ import mutations from "../store/mutations";
 import EnsembleDetails from "./Ensemble/EnsembleDetails.vue";
 import EnsembleCreation from "./Ensemble/EnsembleCreation.vue";
 import EnsembleList from "./Ensemble/EnsembleList.vue";
-import HomePanel from "./Job/HomePanel.vue";
+import HomePanel from "./HomePanel.vue";
 import JobDetails from "./Job/JobDetails.vue";
 import JobExecution from "./Job/JobExecution.vue";
 import JobList from "./Job/JobList.vue";
@@ -105,6 +105,7 @@ export default {
             />
             <HomePanel
                 v-if="mode === 'home-panel'"
+                @selected="selectProcess"
             />
             <HelpPanel
                 v-if="mode === 'help-panel'"

@@ -1,6 +1,6 @@
 <script>
-import ProcessList from "../Process/ProcessList.vue";
-import SectionHeader from "../SectionHeader.vue";
+import ProcessList from "./Process/ProcessList.vue";
+import SectionHeader from "./SectionHeader.vue";
 
 import { mapGetters, mapMutations } from "vuex";
 
@@ -41,7 +41,10 @@ export default {
                 <div class="segment-header">
                     {{ $t("additional:modules.tools.simulationTool.continue") }}
                 </div>
-                <ProcessList :headerIsVisible=false />
+                <ProcessList
+                    :headerIsVisible=false
+                    @selected="(payload) => $emit('selected', payload)"
+                />
             </div>
             <div class="element-wrapper">
                 <div class="segment-header">

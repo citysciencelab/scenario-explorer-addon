@@ -14,6 +14,7 @@ export default {
         ProcessCard,
         SectionHeader
     },
+    emits: ["selected"],
     props: {
         headerIsVisible: {
             type: Boolean,
