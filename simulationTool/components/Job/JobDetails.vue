@@ -59,6 +59,9 @@ export default {
                 const result = await response.json();
                 if (!response.ok) {
                     this.jobRequestState.error = result.error_message || response.status + ': unknown errror';
+                    if (this.intervalId) {
+                        window.clearInterval(this.intervalId);
+                    }
                 } else {
                     this.job = result;
                 }
@@ -67,20 +70,22 @@ export default {
                 }
             } catch (error) {
                 this.jobRequestState.error = error || 'unknown error';
+                if (this.intervalId) {
+                    window.clearInterval(this.intervalId);
+                }
             } finally {
                 this.jobRequestState.loading = false;
             }
-
         },
         async fetchJobResultData() {
             if (this.intervalId) {
-             window.clearInterval(this.intervalId);
+                window.clearInterval(this.intervalId);
             }
             if (this.job.status === 'running') {
                 this.intervalId = window.setInterval(() => this.fetchJob(this.selectedJobId), 5000);
                 return;
             }
-            
+
             const url = this.job?.links?.[0]?.href;
             if (!url) {
                 return;
@@ -103,11 +108,17 @@ export default {
                 const result = await response.json();
                 if (!response.ok) {
                     this.resultRequestState.error = result.error_message || response.status + ': unknown errror';
+                    if (this.intervalId) {
+                        window.clearInterval(this.intervalId);
+                    }
                 } else {
                     this.setJobResultData(result);
                 }
             } catch (error) {
                 this.resultRequestState.error = error || 'unknown error';
+                if (this.intervalId) {
+                    window.clearInterval(this.intervalId);
+                }
             } finally {
                 this.resultRequestState.loading = false;
             }
