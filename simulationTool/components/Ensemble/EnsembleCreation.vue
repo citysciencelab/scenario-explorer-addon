@@ -104,7 +104,6 @@ export default {
                     if (inputConfig.schema.maximum !== undefined) {
                         defaultValue[1] = inputConfig.schema.maximum;
                     }
-                    console.log(key, defaultValue);
                     this.updateExecutionValue(process.id, key, defaultValue);
                 });
             }
