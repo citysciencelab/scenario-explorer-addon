@@ -3,12 +3,6 @@ import multiselect from "vue-multiselect";
 import RangeSlider from "../RangeSlider.vue";
 import isEqual from "lodash/isEqual";
 
-const DEFAULT_VALUE_MAP = {
-    number: [0, 100],
-    boolean: [],
-    string: []
-};
-
 export default {
     name: "EnsembleInput",
     components: {
@@ -17,17 +11,7 @@ export default {
     },
     props: {
         "modelValue": {
-            type: [Array, Boolean],
-            default: (props) => {
-                const defaultValue = DEFAULT_VALUE_MAP[props.data?.schema?.type] || []
-                if (props.data.schema.minimum !== undefined) {
-                    defaultValue[0] = props.data.schema.minimum;
-                }
-                if (props.data.schema.maximum !== undefined) {
-                    defaultValue[1] = props.data.schema.maximum;
-                }
-                return defaultValue;
-            }
+            type: [Array, Boolean]
         },
         "data": {
             type: Object,
