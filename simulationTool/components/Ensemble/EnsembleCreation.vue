@@ -6,6 +6,12 @@ import Config from "../../../../portal/simulation/config";
 import EnsembleInput from "./EnsembleInput.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
 
+const DEFAULT_VALUE_MAP = {
+    number: [0, 100],
+    boolean: [],
+    string: []
+};
+
 export default {
     name: "EnsembleCreation",
     components: {
@@ -48,15 +54,9 @@ export default {
                         return this.fetchProcess(process.id);
                     })
                 )).filter(process => process);
-                // add default values for sample size and sampling method
-                for (const process of this.processDetails) {
-                    if (!this.creationValues?.[process.id]?.sample_size) {
-                        this.updateExecutionValue(process.id, 'sample_size', 10);
-                    }
-                    if (!this.creationValues?.[process.id]?.sampling_method) {
-                        this.updateExecutionValue(process.id, 'sampling_method', 'lhs');
-                    }
-                }
+
+                this.setDefaultExecutionValues();
+
                 // remove values for processes that are not selected anymore
                 Object.keys(this.creationValues)
                     .filter(key => !['name', 'description'].includes(key))
@@ -84,6 +84,31 @@ export default {
         ...mapActions("Modules/SimulationTool", [
             "fetchEnsembles"
         ]),
+        setDefaultExecutionValues() {
+            // add default values for sample size and sampling method
+            for (const process of this.processDetails) {
+                if (!this.creationValues?.[process.id]?.sample_size) {
+                    this.updateExecutionValue(process.id, 'sample_size', 10);
+                }
+                if (!this.creationValues?.[process.id]?.sampling_method) {
+                    this.updateExecutionValue(process.id, 'sampling_method', 'lhs');
+                }
+
+                // add default values for input parameters
+                Object.keys(process.inputs).forEach((key) => {
+                    const inputConfig = process.inputs[key];
+                    const defaultValue = DEFAULT_VALUE_MAP[inputConfig?.schema?.type] || []
+                    if (inputConfig.schema.minimum !== undefined) {
+                        defaultValue[0] = inputConfig.schema.minimum;
+                    }
+                    if (inputConfig.schema.maximum !== undefined) {
+                        defaultValue[1] = inputConfig.schema.maximum;
+                    }
+                    this.updateExecutionValue(process.id, key, defaultValue);
+                });
+            }
+
+        },
         updateExecutionValue(processId, key, value) {
             this.creationValues[processId] = this.creationValues[processId] || {};
             this.creationValues[processId][key] = value;
