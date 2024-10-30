@@ -170,4 +170,33 @@ export default {
     .multiselect__tag-icon::after {
         color: unset;
     }
+
+    .status {
+        display: inline-block;
+        padding: .25rem .5rem;
+        border-radius: .5rem;
+        font-size: .875rem;
+        font-weight: 500;
+    }
+
+    .accepted {
+        background-color: var(--bs-info);
+        color: black;
+    }
+    .running {
+        background-color: var(--bs-warning);
+        color: black;
+    }
+    .successful {
+        background-color: var(--bs-success);
+        color: white;
+    }
+    .dismissed {
+        background-color: var(--bs-secondary);
+        color: white;
+    }
+    .failed {
+        background-color: var(--bs-danger);
+        color: white;
+    }
 </style>
