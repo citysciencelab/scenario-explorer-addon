@@ -30,7 +30,7 @@ export default {
     },
     computed: {
         ...mapGetters(["layerConfigById"]),
-        ...mapGetters("Modules/SimulationTool", ["selectedJobId"]),
+        ...mapGetters("Modules/SimulationTool", ["selectedJobId", "jobResultData"]),
         ...mapGetters("Modules/Login", ["accessToken", "loggedIn"])
     },
     mounted() {
@@ -171,6 +171,20 @@ export default {
                 await this.addLayerToLayerConfig({layerConfig: layerObject, parentKey: 'subjectlayer'});
             }
         },
+        async downloadJobResultData() {
+            if (!this.jobResultData) {
+                return;
+            }
+            const blob = new Blob([JSON.stringify(this.jobResultData, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = this.job.jobID + '_result.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        },
         formatDateTime(dateTime) {
             return new Date(dateTime).toLocaleString({
                 year: "numeric",
@@ -192,8 +206,10 @@ export default {
         />
         <AsyncWrapper :asyncState="jobRequestState">
             <div v-if="job" class="details-body">
-                <div class="details-header">
+                <div class="title">
                     <h3 :title="job?.jobID">{{ job?.process_title }} -> {{ job?.name }}</h3>
+                </div>
+                <div class="subtitle">
                     <div>
                         <strong>
                             {{ $t('additional:modules.tools.simulationTool.started') }}:
@@ -206,17 +222,25 @@ export default {
                         </strong>
                         {{ this.formatDateTime(job?.finished) }}
                     </div>
+                </div>
+                <div class="status-wrapper">
                     <div class="status" :class="job?.status">
                         {{ job?.status }}
                     </div>
                 </div>
-
                 <div class="links">
                     <h4>{{ $t('additional:modules.tools.simulationTool.links') }}</h4>
                     <ul>
                         <li v-for="(link, index) in job?.links" :key="link.rel">
-                            <i class="bi bi-link"></i>
-                            <a :href="link.href" target="_blank">{{link.title}}</a>
+                            <button
+                                v-if="jobResultData"
+                                title="Download"
+                                class="btn btn-link"
+                                @click="downloadJobResultData"
+                            >
+                                <i class="bi bi-download"></i>
+                            </button>
+                            {{link.title}}
                         </li>
                     </ul>
                 </div>
@@ -268,63 +292,42 @@ export default {
     padding: 1rem;
     overflow: hidden;
 
-        .details-body {
-            overflow: hidden;
-            display: grid;
-            gap: 1rem;
-            grid-template-areas:
-                "header header"
-                "links links"
-                "parameter filter"
-                "charts charts"
-                "notes sharing";
-            grid-template-columns: 1fr 1fr;
-
-        ul {
-            list-style: none;
-            padding-left: 0.5rem;
-
-            li {
-                margin-bottom: 0.5rem;
-
-                i {
-                    margin-right: 0.25rem;
-                }
-            }
-
-            div.status {
-                display: inline-block;
-                padding: .25rem .5rem;
-                border-radius: .5rem;
-                font-size: .875rem;
-                font-weight: 500;
-                color: white;
-            }
-
-            .accepted {
-                background-color: var(--bs-info);
-            }
-            .running {
-                background-color: var(--bs-warning);
-            }
-            .successful {
-                background-color: var(--bs-success);
-            }
-            .dismissed {
-                background-color: var(--bs-secondary);
-            }
-            .failed {
-                background-color: var(--bs-danger);
-            }
-        }
+    .details-body {
+        overflow: hidden;
+        display: grid;
+        gap: 1rem;
+        grid-template-areas:
+            "title title"
+            "subtitle status"
+            "links links"
+            "parameter filter"
+            "charts charts"
+            "notes sharing";
+        grid-template-columns: 1fr 1fr;
 
         .links {
             overflow: hidden;
             grid-area: links;
+
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
         }
 
-        .header {
-            grid-area: header;
+        .title {
+            grid-area: title;
+            overflow: hidden;
+        }
+
+        .subtitle {
+            grid-area: subtitle;
+            overflow: hidden;
+        }
+
+        .status-wrapper {
+            grid-area: status;
             overflow: hidden;
         }
 
