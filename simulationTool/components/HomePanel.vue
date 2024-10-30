@@ -25,9 +25,11 @@ export default {
 <template>
     <div class="home-panel">
         <SectionHeader title="Startseite" icon="bi bi-person-fill" />
-        <div class="segment-wrapper" v-if="loggedIn">
-            <div v-show="username" class="welcome-user">{{ $t("additional:modules.tools.simulationTool.welcome") }}, {{
-                username }}!</div>
+        <div class="segment-wrapper">
+            <div v-show="username" class="welcome-user">
+                <span>{{ $t("additional:modules.tools.simulationTool.welcome") }}</span>
+                <span v-if="loggedIn">, {{ username }}</span>
+            </div>
             <div class="element-wrapper">
                 <p class="segment-header">
                     {{ $t("additional:modules.tools.simulationTool.areYouNew") }}
@@ -46,7 +48,7 @@ export default {
                     @selected="(payload) => $emit('selected', payload)"
                 />
             </div>
-            <div class="element-wrapper">
+            <div class="element-wrapper" v-if="loggedIn">
                 <div class="segment-header">
                     {{ $t("additional:modules.tools.simulationTool.news") }}
                 </div>
@@ -54,9 +56,6 @@ export default {
                     {{ $t("additional:modules.tools.simulationTool.newsCards") }}
                 </div>
             </div>
-        </div>
-        <div class="segment-wrapper" v-else>
-            {{ $t("additional:modules.tools.simulationTool.authRequest") }}
         </div>
     </div>
 </template>

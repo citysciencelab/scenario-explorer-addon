@@ -131,7 +131,7 @@ export default {
                 <button
                     type="submit"
                     class="btn btn-primary btn-sm"
-                    :disabled="requestState.loading"
+                    :disabled="!comment || requestState.loading"
                 >
                     {{ $t("additional:modules.tools.simulationTool.send")}}
                 </button>
