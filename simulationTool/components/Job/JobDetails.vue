@@ -147,7 +147,7 @@ export default {
         async fetchJobLayer(job) {
             // check if layer exists on geoserver
             const response = await fetch('/geoserver/CUT/wms?service=WMS&version=1.1.1&request=DescribeLayer&layers=CUT:' + job.jobID);
-            if (!response.ok) {
+            if (!response.ok || !(await response.text()).includes("WMS_DescribeLayerResponse")) {
                 return;
             }
 
