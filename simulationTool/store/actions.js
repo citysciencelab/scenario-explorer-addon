@@ -23,21 +23,9 @@ const actions = {
                         "content-type": "application/json",
                         ...additionalHeaders
                     }
-                }).then((res) => res.json()),
-                layers = rawLayerList.getLayerList().filter(layer => layer.isSimulationLayer);
+                }).then((res) => res.json());
 
-            if (layers.length === 0) {
-                throw new Error(
-                    "SimulationTool: no simulation layers found in config"
-                );
-            }
-
-            // filter by defined layers
-            const processes = response.processes.filter((process) => {
-                return layers.some(layer => layer.simModelId === process.id || layer.simModelId === '*');
-            });
-
-            commit("setProcesses", processes);
+            commit("setProcesses", response.processes);
         } catch (error) {
             console.error(error);
         } finally {
