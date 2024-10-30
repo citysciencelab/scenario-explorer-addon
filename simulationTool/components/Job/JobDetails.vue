@@ -1,5 +1,5 @@
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import Diagramm from "../Diagramm/Diagramm.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
@@ -29,16 +29,37 @@ export default {
         };
     },
     computed: {
+        ...mapGetters(["layerConfigById"]),
         ...mapGetters("Modules/SimulationTool", ["selectedJobId"]),
         ...mapGetters("Modules/Login", ["accessToken", "loggedIn"])
     },
     mounted() {
         this.fetchJob(this.selectedJobId);
     },
+    unmounted() {
+        if (this.intervalId) {
+            window.clearInterval(this.intervalId);
+        }
+        if (this.job) {
+            let layerObject = this.layerConfigById(this.job.jobID);
+            if (layerObject) {
+                this.addOrReplaceLayer({
+                    layerId: this.job.jobID,
+                    visibility: false
+                });
+            }
+        }
+    },
     watch: {
-        job: 'fetchJobResultData'
+        job: function(newJob) {
+            if (newJob) {
+                this.fetchJobResultData();
+                this.fetchJobLayer(newJob);
+            }
+        }
     },
     methods: {
+        ...mapActions(["addLayerToLayerConfig", "addOrReplaceLayer"]),
         ...mapMutations("Modules/SimulationTool", ["setMode", "setJobResultData"]),
         async fetchJob(jobId) {
             let additionalHeaders = {};
@@ -121,6 +142,33 @@ export default {
                 }
             } finally {
                 this.resultRequestState.loading = false;
+            }
+        },
+        async fetchJobLayer(job) {
+            // check if layer exists on geoserver
+            const response = await fetch('/geoserver/CUT/wms?service=WMS&version=1.1.1&request=DescribeLayer&layers=CUT:' + job.jobID);
+            if (!response.ok) {
+                return;
+            }
+
+            // set visible if already in map
+            let layerObject = this.layerConfigById(job.jobID);
+            if (layerObject) {
+                this.addOrReplaceLayer({layerId: job.jobID, visibility: true});
+            // otherwise add to map
+            } else {
+                layerObject = {
+                    id: job.jobID,
+                    name: "Szenario - " + job.name,
+                    typ: "WMS",
+                    layers: ['CUT:' + job.jobID],
+                    url: '/geoserver/CUT/wms',
+                    version: '1.1.1',
+                    visibility: true,
+                    type: "layer",
+                    showInLayerTree: true
+                };
+                await this.addLayerToLayerConfig({layerConfig: layerObject, parentKey: 'subjectlayer'});
             }
         },
         formatDateTime(dateTime) {

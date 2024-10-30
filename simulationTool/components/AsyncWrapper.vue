@@ -15,11 +15,6 @@ export default {
                 error: null
             })
         },
-    },
-    watch: {
-        asyncState: function(newVal) {
-            console.log(newVal)
-        }
     }
 };
 </script>

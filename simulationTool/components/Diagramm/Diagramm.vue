@@ -19,16 +19,6 @@ export default {
       activePanel: 'settings'
     };
   },
-  watch: {
-    jobResultData: {
-      handler(newData) {
-        if (newData && newData.length > 0) {
-          console.log('Daten wurden geladen:', newData);
-        }
-      },
-      immediate: true,
-    }
-  },
   methods: {
     togglePanel() {
       this.activePanel = this.activePanel === 'settings' ? 'chart' : 'settings';
