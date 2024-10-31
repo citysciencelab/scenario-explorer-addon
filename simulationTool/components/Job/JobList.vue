@@ -31,6 +31,9 @@ export default {
             "jobs",
             "jobsLoading"
         ]),
+        ...mapGetters("Modules/Login", [
+            "loggedIn"
+        ]),
         filteredJobs: {
             get() {
                 let filteredJobs = this.jobs;
@@ -48,6 +51,19 @@ export default {
                             .toLowerCase()
                             .includes(this.searchString.toLowerCase());
                     });
+                }
+                if (!this.loggedIn) {
+                    const jobs = localStorage.getItem('jobs');
+                    if (!jobs) {
+                        return [];
+                    }
+                    let ids = jobs.split(',');
+                    const otherIds = filteredJobs.map(job => job.jobID);
+                    filteredJobs = filteredJobs.filter(job => {
+                        return ids.includes(job.jobID);
+                    });
+                    ids = ids.filter(id => otherIds.includes(id));
+                    localStorage.setItem('jobs', ids);
                 }
                 return filteredJobs;
             },

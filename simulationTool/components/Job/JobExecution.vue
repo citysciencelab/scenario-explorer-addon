@@ -151,12 +151,19 @@ export default {
                     });
                     const result = await response.json();
                     if (!response.ok) {
-                        this.executionRequestState.error = result.error_message || response.status + ': unknown errror';
+                        this.executionRequestState.error = result.error_message || response.status + ': unknown error';
                     } else {
                         this.resetExecutionValues();
 
                         this.setMode("job-details");
                         this.setSelectedJobId(result.jobID);
+                        if (!this.loggedIn) {
+                            if (!localStorage.getItem('jobs')) {
+                                localStorage.setItem('jobs', result.jobID);
+                            } else {
+                                localStorage.setItem('jobs', `${localStorage.getItem('jobs')},${result.jobID}`);
+                            }
+                        }
 
                         this.fetchJobs();
                     }
