@@ -86,7 +86,7 @@ export default {
         </button>
         <button
             class="btn btn-link"
-            :class="{ active: mode === 'ensemble-list' || mode === 'ensemble-details' || mode === 'ensemble-creation' }"
+            :class="{ active: mode.includes('ensemble')}"
             @click="() => this.setMode('ensemble-list')"
             v-if="this.loggedIn"
             :title="$t('additional:modules.tools.simulationTool.ensembles')"
