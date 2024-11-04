@@ -266,20 +266,21 @@ export default {
                         </div>
                     </AsyncWrapper>
                 </div>
-
-                <div class="notes" v-if="this.loggedIn">
-                    <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
-                    <CommentsPanel
-                        endPoint="jobs"
-                        :entityId="job.jobID"
-                    />
-                </div>
-                <div class="sharing" v-if="this.loggedIn">
-                    <h4>{{ $t('additional:modules.tools.simulationTool.sharing') }}</h4>
-                    <SharingPanel
-                        endPoint="jobs"
-                        :entityId="job.jobID?.toString()"
-                    />
+                <div class="panel-container">
+                    <div class="notes" v-if="this.loggedIn">
+                        <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
+                        <CommentsPanel
+                            endPoint="jobs"
+                            :entityId="job.jobID"
+                        />
+                    </div>
+                    <div class="sharing" v-if="this.loggedIn">
+                        <h4>{{ $t('additional:modules.tools.simulationTool.sharing') }}</h4>
+                        <SharingPanel
+                            endPoint="jobs"
+                            :entityId="job.jobID?.toString()"
+                        />
+                    </div>
                 </div>
             </div>
         </AsyncWrapper>
@@ -292,72 +293,21 @@ export default {
     display: flex;
     flex-direction: column;
     padding: 1rem;
-    overflow: hidden;
 
     .details-body {
-        overflow: hidden;
-        display: grid;
+        display: flex;
+        flex-direction: column;
         gap: 1rem;
-        grid-template-areas:
-            "title title"
-            "subtitle status"
-            "links links"
-            "parameter filter"
-            "charts charts"
-            "notes sharing";
-        grid-template-columns: 1fr 1fr;
+        flex: 1;
+        overflow: hidden;
 
         .links {
-            overflow: hidden;
-            grid-area: links;
 
             ul {
                 list-style: none;
                 padding: 0;
                 margin: 0;
             }
-        }
-
-        .title {
-            grid-area: title;
-            overflow: hidden;
-        }
-
-        .subtitle {
-            grid-area: subtitle;
-            overflow: hidden;
-        }
-
-        .status-wrapper {
-            grid-area: status;
-            overflow: hidden;
-        }
-
-        .parameter {
-            grid-area: parameter;
-            overflow: hidden;
-        }
-
-        .filter {
-            grid-area: filter;
-            overflow: hidden;
-        }
-
-        .charts {
-            grid-area: charts;
-            overflow: hidden;
-        }
-
-        .notes {
-            grid-area: notes;
-            overflow: hidden;
-            display: inherit;
-        }
-
-        .sharing {
-            grid-area: sharing;
-            overflow: hidden;
-            display: inherit;
         }
 
         .diagram-wrapper {
@@ -367,5 +317,21 @@ export default {
             padding: 20px;
         }
     }
+
+    .panel-container {
+            display: flex;
+            gap: 1rem;
+            overflow: hidden;
+            flex: 1;
+            align-items: stretch;
+        }
+
+    .notes, .sharing {
+            flex: 1;
+            min-height: 0;            
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
 }
 </style>

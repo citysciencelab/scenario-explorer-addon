@@ -148,6 +148,7 @@ export default {
         flex-direction: column;
         justify-content: space-between;
         gap: 1rem;
+        height: 100%;
 
         ul.comments {
             list-style-type: none;

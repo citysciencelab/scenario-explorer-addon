@@ -96,7 +96,7 @@ export default {
 <template>
     <div class="sharing-panel">
         <div>
-            <span>{{ $t('additional:modules.tools.simulationTool.currentlySharedWith')}}:</span>
+            <span v-show="users.length">{{ $t('additional:modules.tools.simulationTool.currentlySharedWith')}}:</span>
             <AsyncWrapper :asyncState="requestState">
                 <ul class="users">
                     <li
@@ -139,6 +139,7 @@ export default {
         flex-direction: column;
         justify-content: space-between;
         gap: 1rem;
+        height: 100%;
 
         ul.users {
             display: flex;
