@@ -88,7 +88,7 @@ export default {
             class="btn btn-link"
             :class="{ active: mode === 'ensemble-list' }"
             @click="() => this.setMode('ensemble-list')"
-            :disabled="!loggedIn"
+            v-if="this.loggedIn"
             :title="$t('additional:modules.tools.simulationTool.ensembles')"
         >
             <i class="bi bi-collection-fill"></i>

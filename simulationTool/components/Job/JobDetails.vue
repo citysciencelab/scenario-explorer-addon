@@ -265,14 +265,14 @@ export default {
                     </AsyncWrapper>
                 </div>
 
-                <div class="notes">
+                <div class="notes" v-if="this.loggedIn">
                     <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
                     <CommentsPanel
                         endPoint="jobs"
                         :entityId="job.jobID"
                     />
                 </div>
-                <div class="sharing">
+                <div class="sharing" v-if="this.loggedIn">
                     <h4>{{ $t('additional:modules.tools.simulationTool.sharing') }}</h4>
                     <SharingPanel
                         endPoint="jobs"
