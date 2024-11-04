@@ -4,6 +4,7 @@
       "simulationTool": {
         "additionalInfo": "More information",
         "addOrSelectValue": "Select or add value...",
+        "addScenarios": "Add scenarios",
         "addThisValue": "Add this value",
         "application": "Application",
         "authRequest": "To get access to the full functionality you have to log in to the master portal first.",
@@ -100,6 +101,7 @@
         "scenarioOverviewHint": "A scenario is one of several hypothetical consequences of certain events. This results in causal links between causes and effects, whereby the smallest changes in the causes can lead to varying degrees of change in the effects (butterfly effect).",
         "scenarios": "Scenarios",
         "search": "Search",
+        "searchJobs": "Search scenarios",
         "searchModels": "Search models",
         "send": "Send",
         "settings": "Settings",
