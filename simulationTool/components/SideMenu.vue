@@ -70,7 +70,7 @@ export default {
         </button>
         <button
             class="btn btn-link"
-            :class="{ active: mode === 'process-list' }"
+            :class="{ active: mode === 'process-list' || mode === 'process-details' }"
             @click="() => this.setMode('process-list')"
             :title="$t('additional:modules.tools.simulationTool.models')"
         >
@@ -78,7 +78,7 @@ export default {
         </button>
         <button
             class="btn btn-link"
-            :class="{ active: mode === 'job-list' }"
+            :class="{ active: mode === 'job-list' || mode === 'job' || mode === 'job-details' || mode === 'job-execution' }"
             @click="() => this.setMode('job-list')"
             :title="$t('additional:modules.tools.simulationTool.scenarios')"
         >
@@ -86,7 +86,7 @@ export default {
         </button>
         <button
             class="btn btn-link"
-            :class="{ active: mode === 'ensemble-list' }"
+            :class="{ active: mode === 'ensemble-list' || mode === 'ensemble-details' || mode === 'ensemble-creation' }"
             @click="() => this.setMode('ensemble-list')"
             v-if="this.loggedIn"
             :title="$t('additional:modules.tools.simulationTool.ensembles')"
@@ -95,6 +95,7 @@ export default {
         </button>
         <button
             class="btn btn-link"
+            :class="{ active: mode === 'help-panel' }"
             :title="$t('additional:modules.tools.simulationTool.help')"
             @click="() => this.setMode('help-panel')"
         >
