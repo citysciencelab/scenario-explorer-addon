@@ -54,7 +54,9 @@ export default {
         job: function(newJob) {
             if (newJob) {
                 this.fetchJobResultData();
-                this.fetchJobLayer(newJob);
+                setTimeout(() => {
+                    this.fetchJobLayer(newJob);
+                }, 3000);
             }
         }
     },
