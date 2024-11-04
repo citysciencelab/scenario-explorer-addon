@@ -6,10 +6,17 @@ import Config from "../../../../portal/simulation/config";
 import EnsembleInput from "./EnsembleInput.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
 
-const DEFAULT_VALUE_MAP = {
-    number: [0, 100],
-    boolean: [],
-    string: []
+const getDefaultValue = (type, minOccurs) => {
+    switch (type) {
+        case 'number':
+            return [0, 100];
+        case 'boolean':
+            return minOccurs > 0 ? [true, false] : [];
+        case 'string':
+            return [];
+        default:
+            return undefined;
+    }
 };
 
 export default {
@@ -97,7 +104,7 @@ export default {
                 // add default values for input parameters
                 Object.keys(process.inputs).forEach((key) => {
                     const inputConfig = process.inputs[key];
-                    const defaultValue = DEFAULT_VALUE_MAP[inputConfig?.schema?.type] || []
+                    const defaultValue = getDefaultValue(inputConfig?.schema.type, inputConfig.minOccurs) || []
                     if (inputConfig.schema.minimum !== undefined) {
                         defaultValue[0] = inputConfig.schema.minimum;
                     }
@@ -107,7 +114,6 @@ export default {
                     this.updateExecutionValue(process.id, key, defaultValue);
                 });
             }
-
         },
         updateExecutionValue(processId, key, value) {
             this.creationValues[processId] = this.creationValues[processId] || {};

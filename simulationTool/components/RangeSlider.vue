@@ -45,6 +45,7 @@
       type="number"
       class="form-control"
       v-model="internalValue[0]"
+      :min="min"
     />
     <Slider
       v-model="internalValue"
@@ -56,6 +57,7 @@
       type="number"
       class="form-control"
       v-model="internalValue[1]"
+      :max="max"
     />
   </div>
 </template>
