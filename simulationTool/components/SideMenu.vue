@@ -70,7 +70,7 @@ export default {
         </button>
         <button
             class="btn btn-link"
-            :class="{ active: mode === 'process-list' || mode === 'process-details' }"
+            :class="{ active: mode.includes('process' }"
             @click="() => this.setMode('process-list')"
             :title="$t('additional:modules.tools.simulationTool.models')"
         >
