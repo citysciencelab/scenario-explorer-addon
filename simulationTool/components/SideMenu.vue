@@ -78,7 +78,7 @@ export default {
         </button>
         <button
             class="btn btn-link"
-            :class="{ active: mode === 'job-list' || mode === 'job' || mode === 'job-details' || mode === 'job-execution' }"
+            :class="{ active: mode.includes('job')}"
             @click="() => this.setMode('job-list')"
             :title="$t('additional:modules.tools.simulationTool.scenarios')"
         >
