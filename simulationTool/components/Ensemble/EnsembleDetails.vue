@@ -153,6 +153,7 @@ export default {
                 if (!response.ok) {
                     this.ensembleExecutionRequestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
+                    this.ensembleExecutionRequestState.error = undefined;
                     this.fetchEnsemble(this.selectedEnsembleId);
                 }
             } catch (error) {
