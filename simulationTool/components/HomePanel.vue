@@ -26,10 +26,14 @@ export default {
     <div class="home-panel">
         <SectionHeader title="Startseite" icon="bi bi-person-fill" />
         <div class="segment-wrapper">
-            <div v-show="username" class="welcome-user">
+            <div v-if="username" class="welcome-user">
                 <span>{{ $t("additional:modules.tools.simulationTool.welcome") }}</span>
                 <span v-if="loggedIn">, {{ username }}</span>
             </div>
+            <span v-else>
+                <span class="welcome-user">{{ $t("additional:modules.tools.simulationTool.notLoggedIn") }}</span>
+                <div class="not-authenticated">{{ $t("additional:modules.tools.simulationTool.authRequest") }}</div>
+            </span>
             <div class="element-wrapper">
                 <p class="segment-header">
                     {{ $t("additional:modules.tools.simulationTool.areYouNew") }}
@@ -70,6 +74,10 @@ export default {
 .welcome-user {
     font-weight: 600;
     font-size: 24px;
+    padding: 10px;
+}
+
+.not-authenticated {
     padding: 10px;
 }
 
