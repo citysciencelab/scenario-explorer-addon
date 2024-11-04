@@ -6,10 +6,12 @@ import CommentsPanel from "../Comments/CommentsPanel.vue"
 import UserDisplay from "../UserDisplay.vue";
 import PopConfirm from "../PopConfirm.vue";
 import SharingPanel from "../Sharing/SharingPanel.vue";
+import JobSelect from "../Job/JobSelect.vue";
 
 export default {
     name: "EnsembleDetails",
     components: {
+        JobSelect,
         AsyncWrapper,
         CommentsPanel,
         PopConfirm,
@@ -33,12 +35,15 @@ export default {
                 loading: false,
                 error: null
             },
-            isOpen: false
+            isOpen: false,
+            jobSelectVisible: false,
+            selectedJobs: []
         };
     },
     computed: {
         ...mapGetters("Modules/SimulationTool", [
-            "selectedEnsembleId"
+            "selectedEnsembleId",
+            "jobs"
         ]),
         ...mapGetters("Modules/Login", [
             "accessToken",
@@ -46,6 +51,18 @@ export default {
         ]),
         scenarios: function() {
             return this.ensemble ? this.ensemble.scenario_configs : [];
+        },
+        filteredJobs: {
+            get() {
+                if (!this.ensembleJobs || !this.jobs) {
+                    return [];
+                }
+                const ids = this.ensembleJobs.map(j => j.jobID);
+                return this.jobs.filter(j => !ids.includes(j.jobID));
+            },
+            set(newJobs) {
+                this.filteredJobs = newJobs;
+            }
         }
     },
     watch: {
@@ -208,6 +225,22 @@ export default {
         onJobClick(job) {
             this.setSelectedJobId(job.jobID);
             this.setMode("job-details");
+        },
+        async addJobs() {
+            const additionalHeaders = {
+                Authorization: `Bearer ${this.accessToken}`
+            };
+            for (const job of this.selectedJobs) {
+                await fetch(`/api/ensembles/${this.ensemble.id}/addjob/${job.jobID}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...additionalHeaders
+                    }
+                });
+            }
+            this.fetchEnsembleJobs();
+            this.jobSelectVisible = false;
+            this.selectedJobs = [];
         }
     }
 };
@@ -277,7 +310,34 @@ export default {
                 </div>
                 <AsyncWrapper :asyncState="ensembleJobsRequestState">
                     <div class="jobs">
-                        <h4>{{ $t('additional:modules.tools.simulationTool.includedScenarios') }}</h4>
+                        <h4>
+                            {{ $t('additional:modules.tools.simulationTool.includedScenarios') }}
+                            <button
+                                tabindex="0"
+                                class="btn btn-light"
+                                type="button"
+                                @click="jobSelectVisible = !jobSelectVisible"
+                            >
+                                <i
+                                    class="bi-plus-circle"
+                                    role="img"
+                                ></i>
+                            </button>
+                            <JobSelect
+                                v-if="this.jobSelectVisible"
+                                v-model="selectedJobs"
+                                :filteredJobs="filteredJobs"
+                            />
+                            <div class="toolbar">
+                                <button
+                                    class="btn btn-primary"
+                                    v-if="this.jobSelectVisible"
+                                    @click="addJobs"
+                                    >
+                                    {{ $t('additional:modules.tools.simulationTool.addScenarios') }}
+                                </button>
+                            </div>
+                        </h4>
                         <div class="job-table-wrapper">
                             <table class="job-list-table">
                                 <thead>

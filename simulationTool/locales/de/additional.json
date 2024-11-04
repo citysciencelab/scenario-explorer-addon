@@ -4,6 +4,7 @@
       "simulationTool": {
         "additionalInfo": "Mehr Informationen",
         "addOrSelectValue": "Wert auswählen oder hinzufügen ...",
+        "addScenarios": "Scenarios hinzufügen",
         "addThisValue": "Diesen Wert hinzufügen",
         "application": "Anwendung",
         "authRequest": "Um Zugriff auf die voll umfassende Funktionalität zu erhalten, müssen Sie sich erst im Masterportal anmelden.",
@@ -100,6 +101,7 @@
         "scenarioOverviewHint": "Unter einem Szenario versteht man eine von mehreren hypothetischen Folgen von bestimmten Ereignissen. Somit entstehen kausale Verkettungen zwischen Ursachen und Wirkungen, wobei die kleinsten Änderungen der Ursachen unterschiedlich große Veränderungen der Auswirkungen hervorrufen können (Butterfly-Effekt).",
         "scenarios": "Szenarien",
         "search": "Suche",
+        "searchJobs": "Nach Szenarios suchen",
         "searchModels": "Nach Modellen suchen",
         "send": "Absenden",
         "settings": "Einstellungen",
