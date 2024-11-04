@@ -339,19 +339,21 @@ export default {
                         </div>
                     </div>
                 </AsyncWrapper>
-                <div class="notes">
-                    <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
-                    <CommentsPanel
-                        endPoint="ensembles"
-                        :entityId="ensemble.id?.toString()"
-                    />
-                </div>
-                <div class="sharing">
-                    <h4>{{ $t('additional:modules.tools.simulationTool.sharing') }}</h4>
-                    <SharingPanel
-                        endPoint="ensembles"
-                        :entityId="ensemble.id?.toString()"
-                    />
+                <div class="panel-container">
+                    <div class="notes">
+                        <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
+                        <CommentsPanel
+                            endPoint="ensembles"
+                            :entityId="ensemble.id?.toString()"
+                        />
+                    </div>
+                    <div class="sharing">
+                        <h4>{{ $t('additional:modules.tools.simulationTool.sharing') }}</h4>
+                        <SharingPanel
+                            endPoint="ensembles"
+                            :entityId="ensemble.id?.toString()"
+                        />
+                    </div>
                 </div>
                 <div class="toolbar">
                     <button
@@ -368,157 +370,126 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    .ensemble-details {
-        max-height: 100%;
+.ensemble-details {
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+
+    .details-body {
         display: flex;
         flex-direction: column;
-        padding: 1rem;
+        gap: 1rem;
+        overflow: hidden;
+        flex: 1;
 
-        .details-body {
-            display: grid;
-            gap: 1rem;
-            grid-template-areas:
-                "header header"
-                "models models"
-                "jobs jobs"
-                "notes sharing"
-                "toolbar toolbar";
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto auto auto auto;
-            overflow: hidden;
+        ul {
+            list-style: none;
+            padding-left: .5rem;
 
-            ul {
-                list-style: none;
-                padding-left: .5rem;
-
-                li {
-                    margin-bottom: .5rem;
-
-                    i {
-                        margin-right: .25rem;
-                    }
-                }
-            }
-
-            .job-table-wrapper {
-                overflow: auto;
-                max-height: calc(100% - 2.5rem);;
-            }
-
-            .job-list-table {
-                width: 100%;
-                table-layout: fixed;
-                border-collapse: collapse;
-
-                th, td {
-                    padding: .5rem;
-                    text-align: left;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-
-                    &:not(:last-child) {
-                        border-right: 2px solid var(--bs-default);
-                    }
-
-                    &.action-column {
-                        width: 40px;
-                        padding: 0;
-                    }
-                }
-
-                th {
-                    white-space: nowrap;
-                }
-
-                td > div {
-                    white-space: normal;
-                    display: -webkit-box;
-                    line-clamp: 2;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    word-break: break-word;
-                }
-
-                div.status {
-                    display: inline-block;
-                    padding: .25rem .5rem;
-                    border-radius: .5rem;
-                    font-size: .875rem;
-                    font-weight: 500;
-                    color: white;
-
-                    &.accepted {
-                        background-color: var(--bs-info);
-                    }
-
-                    &.running {
-                        background-color: var(--bs-warning);
-                    }
-
-                    &.successful {
-                        background-color: var(--bs-success);
-                    }
-
-                    &.dismissed {
-                        background-color: var(--bs-secondary);
-                    }
-
-                    &.failed {
-                        background-color: var(--bs-danger);
-                    }
-                }
-            }
-
-            .details-header {
-                grid-area: header;
-            }
-
-            .models {
-                overflow: hidden;
-                grid-area: models;
-                display: flex;
-                flex-direction: column;
-                flex-grow: 1;
-                overflow: auto;
-                min-height: 0;
-            }
-
-            .jobs {
-                overflow: hidden;
-                grid-area: jobs;
-                min-height: 200px;
-            }
-
-            .toolbar {
-                grid-area: toolbar;
-                display: flex;
-                justify-content: flex-end;
-            }
-
-            .notes {
-                grid-area: notes;
-                overflow: hidden;
-                display: inherit;
-            }
-
-            .sharing {
-                grid-area: sharing;
-                overflow: hidden;
-                display: inherit;
-            }
-
-            .scenario-list {
-
-                strong {
-                    padding-right: 10px;
-                }
-
-                button {
-                    padding: 0px;
+            li {
+                margin-bottom: .5rem;
+                i {
+                    margin-right: .25rem;
                 }
             }
         }
+
+        .details-header {
+            margin-bottom: 1rem;
+        }
+
+        .models {
+            overflow: auto;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .jobs {
+            overflow: auto;
+            min-height: 200px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .job-table-wrapper {
+            overflow: auto;
+            max-height: 100%;
+        }
+
+        .job-list-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+
+            th, td {
+                padding: .5rem;
+                text-align: left;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                &:not(:last-child) {
+                    border-right: 2px solid var(--bs-default);
+                }
+
+                &.action-column {
+                    width: 40px;
+                    padding: 0;
+                }
+            }
+
+            th {
+                white-space: nowrap;
+            }
+
+            td > div {
+                white-space: normal;
+                display: -webkit-box;
+                line-clamp: 2;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                word-break: break-word;
+            }
+
+            .status {
+                display: inline-block;
+                padding: .25rem .5rem;
+                border-radius: .5rem;
+                font-size: .875rem;
+                font-weight: 500;
+                color: white;
+            }
+        }
+
+        .panel-container {
+            display: flex;
+            gap: 1rem;
+            overflow: hidden;
+            flex: 1;
+            align-items: stretch;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .notes, .sharing {
+            flex: 1;
+            min-height: 0;            
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
     }
+}
+
 </style>
