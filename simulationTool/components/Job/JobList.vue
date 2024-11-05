@@ -72,6 +72,9 @@ export default {
             }
         }
     },
+    mounted() {
+        this.fetchJobs();
+    },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
             "setMode",
