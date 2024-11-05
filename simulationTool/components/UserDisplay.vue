@@ -57,13 +57,11 @@ export default {
         v-else
         class="user-display"
     >
-        <img
+        <div
             v-if="user"
-            :src="user.gravatar_url + '?d=monsterid&s=24'"
-            class="gravatar"
-            :title="user.username"
-            :alt="user.username + ' gravatar'"
-        />
+            :title="`${user.email} (${user.firstName} ${user.lastName})`"
+            :alt="`${user.email} (${user.firstName} ${user.lastName})`"
+        >{{ user.firstName.toUpperCase()[0] + user.lastName.toUpperCase()[0] }}</div>
         <div v-else class="user-not-found">
             User not found
         </div>
@@ -74,9 +72,24 @@ export default {
     .user-display {
         display: flex;
         align-items: center;
-    }
 
-    .gravatar {
-        border-radius: 50%;
+        div {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #555;
+            color: white;
+            padding: 5px;
+            min-width: 1em;
+            border-radius: 50%;
+            vertical-align: middle;
+        }
+
+        div:before {
+            content: '';
+            float: left;
+            width: auto;
+            padding-bottom: 100%;
+        }
     }
 </style>
