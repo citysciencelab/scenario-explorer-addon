@@ -95,7 +95,7 @@ export default {
         </button>
         <button
             class="btn btn-link"
-            :class="{ active: mode === 'help-panel' }"
+            :class="{ active: mode === 'help-panel' || mode.includes('tutorial') }"
             :title="$t('additional:modules.tools.simulationTool.help')"
             @click="() => this.setMode('help-panel')"
         >
