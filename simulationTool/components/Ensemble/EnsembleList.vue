@@ -41,6 +41,9 @@ export default {
             }
         }
     },
+    mounted() {
+        this.fetchEnsembles();
+    },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
             "setMode",

@@ -75,6 +75,11 @@ export default {
     mounted() {
         this.fetchEnsemble(this.selectedEnsembleId);
     },
+    unmounted() {
+        if (this.intervalId) {
+            window.clearInterval(this.intervalId);
+        }
+    },
     methods: {
         ...mapMutations("Modules/SimulationTool", [
             "setMode",
@@ -124,28 +129,36 @@ export default {
             }
         },
         async fetchEnsembleJobs () {
-            let additionalHeaders = {};
-            if (this.loggedIn) {
-                additionalHeaders = {
-                    Authorization: `Bearer ${this.accessToken}`
-                };
-            }
+            if (!this.loggedIn) return;
+
             try {
+                if (this.intervalId) {
+                    window.clearInterval(this.intervalId);
+                }
                 this.ensembleJobsRequestState.loading = true;
                 const response = await fetch(`/api/ensembles/${this.selectedEnsembleId}/jobs`,{
                     headers: {
                         "Content-Type": "application/json",
-                        ...additionalHeaders
+                        Authorization: `Bearer ${this.accessToken}`
                     }
                 });
                 const result = await response.json();
                 if (!response.ok) {
                     this.ensembleJobsRequestState.error = result.error_message || response.status + ': unknown errror';
+                    if (this.intervalId) {
+                        window.clearInterval(this.intervalId);
+                    }
                 } else {
+                    const hasRunningJobs = result.some(job => job.status === 'running');
                     this.ensembleJobs = result;
+                    if (hasRunningJobs) {
+                        this.intervalId = window.setInterval(() => this.fetchEnsembleJobs(), 5000);
+                        return;
+                    }
                 }
             } catch (error) {
                 this.ensembleJobsRequestState.error = error;
+                window.clearInterval(this.intervalId);
             } finally {
                 this.ensembleJobsRequestState.loading = false;
             }
@@ -544,7 +557,7 @@ export default {
 
         .notes, .sharing {
             flex: 1;
-            min-height: 0;            
+            min-height: 0;
             display: flex;
             flex-direction: column;
             overflow: auto;
