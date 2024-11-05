@@ -196,8 +196,8 @@ export default {
                         <th>{{ $t('additional:modules.tools.simulationTool.model') }}</th>
                         <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
                         <th>{{ $t('additional:modules.tools.simulationTool.status') }}</th>
-                        <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
-                        <th>{{ $t('additional:modules.tools.simulationTool.ensembles') }}</th>
+                        <th v-if="loggedIn">{{ $t('additional:modules.tools.simulationTool.user') }}</th>
+                        <th v-if="loggedIn">{{ $t('additional:modules.tools.simulationTool.ensembles') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -221,10 +221,10 @@ export default {
                                 {{job.status}}
                             </div>
                         </td>
-                        <td>
+                        <td v-if="loggedIn">
                             <UserDisplay :user_id="job.user_id" />
                         </td>
-                        <td>
+                        <td v-if="loggedIn">
                             <button
                                 v-for="ensemble in job.ensembles"
                                 class="btn btn-link"
