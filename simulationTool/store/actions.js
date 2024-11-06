@@ -1,4 +1,4 @@
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+import Config from "../../../portal/simulation/config";
 
 const actions = {
     /**
@@ -18,7 +18,7 @@ const actions = {
         commit("setProcessesLoading", true);
 
         try {
-            const response = await fetch(`/api/processes/`, {
+            const response = await fetch(`${Config.simulationApiUrl}/processes/`, {
                     headers: {
                         "content-type": "application/json",
                         ...additionalHeaders
@@ -46,7 +46,7 @@ const actions = {
 
         try {
             const response = await fetch(
-                `/api/jobs/?include_ensembles`,
+                `${Config.simulationApiUrl}/jobs/?include_ensembles`,
                 {
                     headers: {
                         "content-type": "application/json",
@@ -72,15 +72,13 @@ const actions = {
 
         try {
             const response = await fetch(
-                `/api/ensembles/`,
+                `${Config.simulationApiUrl}/ensembles/`,
                 {
                     headers: {
                         "content-type": "application/json",
                         Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
                     }
                 }).then((res) => res.json());
-
-            // TODO: this might changed in the backend
             commit("setEnsembles", response);
         } catch (error) {
             console.error(error);
@@ -98,7 +96,7 @@ const actions = {
         commit("setEnsemblesLoading", true);
 
         try {
-            const response = await fetch(`/api/ensembles/${ensembleId}`, {
+            const response = await fetch(`${Config.simulationApiUrl}/ensembles/${ensembleId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -129,7 +127,7 @@ const actions = {
 
         const fetchPromise = (async () => {
             const accessToken = rootGetters["Modules/Login/accessToken"];
-            const response = await fetch(`/api/users/${user_id}/details`, {
+            const response = await fetch(`${Config.simulationApiUrl}/users/${user_id}/details`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`
