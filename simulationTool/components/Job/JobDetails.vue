@@ -135,7 +135,10 @@ export default {
                         window.clearInterval(this.intervalId);
                     }
                 } else {
-                    this.setJobResultData(result);
+                    this.setJobResultData({
+                        ...this.jobResultData,
+                        [this.selectedJobId]: result
+                    });
                 }
             } catch (error) {
                 this.resultRequestState.error = error || 'unknown error';
@@ -257,7 +260,6 @@ export default {
                 <div class="filter">
                     <h4>{{ $t('additional:modules.tools.simulationTool.filter') }}</h4>
                 </div>
-
                 <div class="charts">
                     <h4>{{ $t('additional:modules.tools.simulationTool.charts') }}</h4>
                     <AsyncWrapper :asyncState="resultRequestState">
@@ -328,7 +330,7 @@ export default {
 
     .notes, .sharing {
             flex: 1;
-            min-height: 0;            
+            min-height: 0;
             display: flex;
             flex-direction: column;
             overflow: auto;

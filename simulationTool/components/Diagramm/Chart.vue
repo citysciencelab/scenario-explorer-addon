@@ -9,16 +9,9 @@ export default {
       type: String,
       default: 'bar'
     },
-    rootProp: {
-      type: String,
-      default: 'features'
-    },
-    xProp: {
-      type: String,
-      required: 'true'
-    },
-    yProp: {
-      type: String
+    chartConfigs: {
+      type: Object,
+      default: {}
     }
   },
   watch: {
@@ -32,13 +25,7 @@ export default {
     type() {
       this.drawChart();
     },
-    xProp() {
-      this.drawChart();
-    },
-    yProp() {
-      this.drawChart();
-    },
-    rootProp() {
+    chartConfigs() {
       this.drawChart();
     }
   },
@@ -55,49 +42,65 @@ export default {
       Plotly.newPlot(this.$refs.plotlyChart, plotlyData, layout, config);
     },
     guessLayoutByData() {
+      const firstConfig = this.chartConfigs[Object.keys(this.chartConfigs)[0]];
       return {
         xaxis: {
-          title: this.xProp.split('.').pop()
+          title: firstConfig.xProp.split('.').pop()
         },
         yaxis: {
-          title: this.yProp.split('.').pop()
-        }
+          title: firstConfig.yProp.split('.').pop()
+        },
+        showlegend: Object.keys(this.chartConfigs).length > 1,
+        legend: {
+          x: 1,
+          xanchor: 'right',
+          y: 1
+        },
       };
     },
     getValue(obj, prop) {
-      return prop.split('.').reduce((acc, prop) => acc[prop], obj);
+      try {
+        return prop.split('.').reduce((acc, prop) => acc[prop], obj);
+      } catch {
+        return undefined;
+      }
     },
     getPlotlyData() {
-      if (!this.jobResultData || !this.rootProp || !this.xProp || !this.yProp || !this.type) {
+      if (!this.jobResultData || !this.type || Object.keys(this.chartConfigs).length === 0) {
         return [];
       }
 
-      const root = this.getValue(this.jobResultData, this.rootProp);
+      const unsortedTraces = Object.keys(this.chartConfigs).map(jobId => {
+        const chartConfig = this.chartConfigs[jobId];
 
-      if (!Array.isArray(root)) {
-        return [];
-      }
+        const root = this.getValue(this.jobResultData[jobId], chartConfig.rootProp);
 
-      const x = root.map(item => Number(this.getValue(item, this.xProp)));
-      const y = this.yProp ? root.map(item => Number(this.getValue(item, this.yProp))) : undefined;
+        if (!Array.isArray(root)) {
+          return [];
+        }
 
-      // Currently only one trace supported
-      const unsortedTrace = [{
-        x,
-        y,
-        type: this.type
-      }];
+        const x = root.map(item => Number(this.getValue(item, chartConfig.xProp)));
+        const y = chartConfig.yProp ? root.map(item => Number(this.getValue(item, chartConfig.yProp))) : undefined;
 
-      return unsortedTrace.map(trace => {
-        const sortedIndices = x
+        return {
+          name: jobId,
+          x,
+          y,
+          type: this.type
+        };
+      });
+
+      return unsortedTraces.map(trace => {
+        const sortedIndices = trace.x
           .map((value, index) => ({ value, index }))
           .sort((a, b) => a.value - b.value)
           .map(({ index }) => index);
 
         return {
-          x: sortedIndices.map(i => x[i]),
-          y: y ? sortedIndices.map(i => y[i]) : undefined,
-          type: trace.type
+          x: sortedIndices.map(i => trace.x[i]),
+          y: trace.y ? sortedIndices.map(i => trace.y[i]) : undefined,
+          type: trace.type,
+          name: trace.name
         };
       });
 

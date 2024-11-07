@@ -13,24 +13,29 @@ export default {
     return {
       data: [],
       type: 'bar',
-      xProp: '',
-      yProp: '',
-      rootProp: '',
+      chartConfigs: {
+        // jobId: { xProp: '', yProp: '', rootProp: '' }
+      },
       activePanel: 'settings'
     };
   },
   methods: {
     togglePanel() {
       this.activePanel = this.activePanel === 'settings' ? 'chart' : 'settings';
-    }
+    },
+    chartConfigIsValid(jobId) {
+      const jobConfig = this.chartConfigs?.[jobId];
+      return jobConfig?.xProp && jobConfig?.yProp && jobConfig?.rootProp;
+    },
+    atLeastOneChartIsValid() {
+      const jobIds = Object.keys(this.jobResultData);
+      return jobIds.some(jobId => this.chartConfigIsValid(jobId));
+    },
   },
   computed: {
     ...mapGetters("Modules/SimulationTool", ["jobResultData"]),
-    chartConfigIsValid() {
-      return this.xProp && this.yProp && this.rootProp && this.jobResultData;
-    },
     validationMessage() {
-      if (!this.chartConfigIsValid) {
+      if (!this.atLeastOneChartIsValid()) {
         return this.$t('additional:modules.tools.simulationTool.inValidChartConfig');
       }
       return '';
@@ -48,7 +53,7 @@ export default {
     ></i>
     <button
       class="btn btn-primary btn-sm"
-      :disabled="!chartConfigIsValid && activePanel === 'settings'"
+      :disabled="!atLeastOneChartIsValid && activePanel === 'settings'"
       :title="activePanel === 'settings'
         ? $t('additional:modules.tools.simulationTool.showChart')
         : $t('additional:modules.tools.simulationTool.settings')
@@ -63,16 +68,12 @@ export default {
     <Chart
       v-if="activePanel === 'chart'"
       :type="type"
-      :rootProp="rootProp"
-      :xProp="xProp"
-      :yProp="yProp"
+      v-model:chartConfigs="chartConfigs"
     />
     <ChartSettings
         v-if="activePanel === 'settings'"
+        v-model:chartConfigs="chartConfigs"
         v-model:type="type"
-        v-model:root-prop="rootProp"
-        v-model:xProp="xProp"
-        v-model:yProp="yProp"
     />
   </div>
 </template>

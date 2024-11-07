@@ -84,7 +84,7 @@ export default {
                     this.requestState.error = result.error_message || response.status + ': unknown errror';
                 } else {
                     this.process = result;
-                    this.setDefaultExecutionValues(result.inputs);
+                    this.setDefaultExecutionValues(result);
                 }
             } catch (error) {
                 this.requestState.error = error;
@@ -92,9 +92,9 @@ export default {
                 this.requestState.loading = false;
             }
         },
-        setDefaultExecutionValues (inputsConfig) {
+        setDefaultExecutionValues (result) {
             this.executionValues = {};
-            Object.entries(inputsConfig).forEach(([key, input]) => {
+            Object.entries(result.inputs).forEach(([key, input]) => {
                 let defaultValue
                 if (input.schema.default) {
                     defaultValue = input.schema.default;
@@ -104,8 +104,17 @@ export default {
                         defaultValue = false;
                     }
                 }
-                this.executionValues[key] = defaultValue;
+                if (defaultValue) {
+                    this.executionValues[key] = defaultValue;
+                }
             });
+            // if no default values are set check if there are example values
+            if (
+                Object.values(this.executionValues).length === 0 &&
+                Object.values(result.example.inputs).length > 0
+            ) {
+                this.executionValues = result.example.inputs;
+            }
         },
         updateExecutionValue (key, value) {
             this.executionValues[key] = value;

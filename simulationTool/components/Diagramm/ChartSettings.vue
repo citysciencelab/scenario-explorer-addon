@@ -12,32 +12,13 @@ export default {
       type: String,
       default: 'bar',
     },
-    xProp: {
-      type: String,
-      default: '',
-    },
-    yProp: {
-      type: String,
-      default: '',
-    },
-    rootProp: {
-      type: String,
-      default: '',
-    },
-  },
-  data() {
-    return {
-      localType: this.type,
-      localXProp: this.xProp,
-      localYProp: this.yProp,
-      localRootProp: this.rootProp
-    };
+    chartConfigs: {
+      type: Object,
+      default: {}
+    }
   },
   computed: {
-    ...mapGetters("Modules/SimulationTool", ["jobResultData"]),
-    dataNode() {
-      return this.getValue(this.jobResultData, this.localRootProp + '.0')
-    }
+    ...mapGetters("Modules/SimulationTool", ["jobResultData"])
   },
   methods: {
     getValue(obj, prop) {
@@ -46,22 +27,23 @@ export default {
       } catch {
         return undefined;
       }
+    },
+    getDataNode(jobId) {
+      if (!this.chartConfigs[jobId]?.rootProp) {
+        return this.jobResultData[jobId];
+      }
+      return this.getValue(this.jobResultData[jobId], this.chartConfigs[jobId].rootProp + '.0')
+    },
+    updateChartConfigs: function(jobId, prop, value) {
+      this.$emit('update:chartConfigs', {
+        ...this.chartConfigs,
+        [jobId]: {
+          ...this.chartConfigs[jobId],
+          [prop]: value
+        }
+      });
     }
   },
-  watch: {
-    localType(newVal) {
-      this.$emit('update:type', newVal);
-    },
-    localXProp(newVal) {
-      this.$emit('update:xProp', newVal);
-    },
-    localYProp(newVal) {
-      this.$emit('update:yProp', newVal);
-    },
-    localRootProp(newVal) {
-      this.$emit('update:rootProp', newVal);
-    }
-  }
 };
 </script>
 
@@ -69,33 +51,41 @@ export default {
   <div class="settings">
     <div class="input-wrapper">
       <label>{{ $t('additional:modules.tools.simulationTool.chartType') }}</label>
-      <select v-model="localType">
+      <select
+        :value="this.type"
+        @change="$emit('update:type', $event.target.value)"
+      >
         <option value="line">{{ $t('additional:modules.tools.simulationTool.chart-line') }}</option>
         <option value="bar">{{ $t('additional:modules.tools.simulationTool.chart-bar') }}</option>
       </select>
     </div>
-    <div class="input-wrapper">
-      <label>{{ $t('additional:modules.tools.simulationTool.chartDataRootProperty') }}</label>
-      <PropPathSelector
-        v-if="this.jobResultData"
-        v-model="localRootProp"
-        :node="this.jobResultData"
-      />
-    </div>
-    <div class="input-wrapper" v-if="this.dataNode">
-      <label>{{ $t('additional:modules.tools.simulationTool.chartDataXProperty') }}</label>
-      <PropPathSelector
-        v-model="localXProp"
-        :node="this.dataNode"
-      />
-    </div>
-    <div class="input-wrapper" v-if="this.dataNode">
-      <label>{{ $t('additional:modules.tools.simulationTool.chartDataYProperty') }}</label>
-      <PropPathSelector
-        v-model="localYProp"
-        :node="this.dataNode"
-      />
-    </div>
+    <template v-for="(value, jobId) in this.jobResultData" :key="jobId">
+      <span>{{ jobId }}</span>
+      <div class="input-wrapper prop-path-wrapper">
+        <label>{{ $t('additional:modules.tools.simulationTool.chartDataRootProperty') }}</label>
+        <PropPathSelector
+          :modelValue="this.chartConfigs?.[jobId]?.rootProp || ''"
+          @update:modelValue="(value) => updateChartConfigs(jobId, 'rootProp', value)"
+          :node="this.jobResultData[jobId]"
+        />
+      </div>
+      <div class="input-wrapper prop-path-wrapper" v-if="this.getDataNode(jobId)">
+        <label>{{ $t('additional:modules.tools.simulationTool.chartDataXProperty') }}</label>
+        <PropPathSelector
+          :modelValue="this.chartConfigs?.[jobId]?.xProp || ''"
+          @update:modelValue="(value) => updateChartConfigs(jobId, 'xProp', value)"
+          :node="this.getDataNode(jobId)"
+        />
+      </div>
+      <div class="input-wrapper prop-path-wrapper" v-if="this.getDataNode(jobId)">
+        <label>{{ $t('additional:modules.tools.simulationTool.chartDataYProperty') }}</label>
+        <PropPathSelector
+          :modelValue="this.chartConfigs?.[jobId]?.yProp || ''"
+          @update:modelValue="(value) => updateChartConfigs(jobId, 'yProp', value)"
+          :node="this.getDataNode(jobId)"
+        />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -130,6 +120,15 @@ export default {
   div.input-wrapper {
     display: flex;
     flex-direction: column;
+
+    &.prop-path-wrapper {
+      display: flex;
+      flex-direction: row;
+
+      label {
+        margin: 0 0.5em 0 0;
+      }
+    }
 
     &:last-child {
       margin-bottom: 0;
