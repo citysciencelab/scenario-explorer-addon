@@ -7,6 +7,7 @@ import UserDisplay from "../UserDisplay.vue";
 import PopConfirm from "../PopConfirm.vue";
 import SharingPanel from "../Sharing/SharingPanel.vue";
 import JobSelect from "../Job/JobSelect.vue";
+import Diagramm from "../Diagramm/Diagramm.vue";
 
 export default {
     name: "EnsembleDetails",
@@ -18,6 +19,7 @@ export default {
         SectionHeader,
         SharingPanel,
         UserDisplay,
+        Diagramm
     },
     data() {
         return {
@@ -32,6 +34,10 @@ export default {
                 error: null
             },
             ensembleExecutionRequestState: {
+                loading: false,
+                error: null
+            },
+            jobResultsRequestState: {
                 loading: false,
                 error: null
             },
@@ -84,7 +90,8 @@ export default {
         ...mapMutations("Modules/SimulationTool", [
             "setMode",
             "setSelectedProcessId",
-            "setSelectedJobId"
+            "setSelectedJobId",
+            "setJobResultData"
         ]),
         showProcessDetails(processId) {
             this.setSelectedProcessId(processId);
@@ -155,12 +162,57 @@ export default {
                         this.intervalId = window.setInterval(() => this.fetchEnsembleJobs(), 5000);
                         return;
                     }
+
+                    this.fetchJobResults(result);
                 }
             } catch (error) {
                 this.ensembleJobsRequestState.error = error;
                 window.clearInterval(this.intervalId);
             } finally {
                 this.ensembleJobsRequestState.loading = false;
+            }
+        },
+        async fetchJobResults(jobs) {
+            try {
+                const newJobData = {};
+                for (const job of jobs) {
+                    if (job.status === 'successful') {
+                        this.jobResultsRequestState.loading = true;
+                        const url = job?.links?.[0]?.href;
+                        if (!url) {
+                            return;
+                        }
+                        let additionalHeaders = {};
+                        if (this.loggedIn) {
+                            additionalHeaders = {
+                                Authorization: `Bearer ${this.accessToken}`
+                            };
+                        }
+                        const response = await fetch(url, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                ...additionalHeaders
+                            }
+                        });
+                        const result = await response.json();
+                        if (!response.ok) {
+                            this.jobResultsRequestState.error = result.error_message || response.status + ': unknown errror';
+                        } else {
+                            newJobData[job.jobID] = result;
+                        }
+                    }
+                }
+                this.setJobResultData({
+                    ...this.jobResultData,
+                    ...newJobData
+                });
+            } catch (error) {
+                this.jobResultsRequestState.error = error || 'unknown error';
+                if (this.intervalId) {
+                    window.clearInterval(this.intervalId);
+                }
+            } finally {
+                this.jobResultsRequestState.loading = false;
             }
         },
         async executeEnsemble() {
@@ -412,6 +464,14 @@ export default {
                         </div>
                     </div>
                 </AsyncWrapper>
+                <div class="charts">
+                    <h4>{{ $t('additional:modules.tools.simulationTool.charts') }}</h4>
+                    <AsyncWrapper :asyncState="jobResultsRequestState">
+                        <div class="diagram-wrapper">
+                            <Diagramm />
+                        </div>
+                    </AsyncWrapper>
+                </div>
                 <div class="panel-container">
                     <div class="notes">
                         <h4>{{ $t('additional:modules.tools.simulationTool.notes') }}</h4>
