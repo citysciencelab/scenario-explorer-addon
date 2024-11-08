@@ -129,7 +129,7 @@ export default {
     </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .help-panel {
     max-height: 100vh;
     overflow-y: auto;
@@ -149,15 +149,16 @@ export default {
 
 .segment-wrapper {
     display: flex;
-    justify-content: space-between;
     flex-direction: column;
     border: 0px;
     border-radius: 8px;
     box-shadow: var(--bs-box-shadow);
     width: 100%;
-    padding: 10px;
+    padding: 1rem;
     background-color: transparent;
     margin-bottom: 15px;
+    overflow: auto;
+    box-sizing: border-box;
 
     button.segment-wrapper {
         display: flex;

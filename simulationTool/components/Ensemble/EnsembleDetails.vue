@@ -312,13 +312,13 @@ export default {
 </script>
 
 <template>
-    <div class="ensemble-details">
+    <div class="ensemble-details segment-wrapper">
         <SectionHeader
             :title="$t('additional:modules.tools.simulationTool.ensembleDetails')"
             icon="bi-box-fill"
         />
         <AsyncWrapper :asyncState="ensembleRequestState">
-            <div v-if="this.ensemble" class="details-body">
+            <div v-if="this.ensemble" class="details-body segment-wrapper">
                 <div class="details-header">
                     <h3 :title="ensemble.id">{{ ensemble.name }}</h3>
                     <div>
@@ -331,7 +331,7 @@ export default {
                         {{ensemble.description}}
                     </div>
                 </div>
-                <div class="models">
+                <div class="models segment-wrapper">
                     <h4>{{ $t('additional:modules.tools.simulationTool.includedModels') }}</h4>
                     <ul class="scenario-list">
                         <li v-for="scenario in scenarios" :key="scenario.id">
@@ -349,7 +349,7 @@ export default {
                             </button>
                         </li>
                     </ul>
-                    <div v-show="isOpen" class="configuration">
+                    <div v-if="isOpen" class="configuration segment-wrapper">
                         <h4>{{ $t('additional:modules.tools.simulationTool.settings') }}</h4>
                         <ul class="configuration-list">
                             <li v-for="config in ensemble.scenario_configs" :key="config.id" class="config-item">
@@ -374,7 +374,7 @@ export default {
                     </div>
                 </div>
                 <AsyncWrapper :asyncState="ensembleJobsRequestState">
-                    <div class="jobs">
+                    <div class="jobs segment-wrapper">
                         <h4>
                             {{ $t('additional:modules.tools.simulationTool.includedScenarios') }}
                             <button
@@ -384,23 +384,23 @@ export default {
                                 @click="jobSelectVisible = !jobSelectVisible"
                             >
                                 <i
-                                    class="bi-plus-circle"
+                                    class="bi bi-search"
                                     role="img"
                                 ></i>
                             </button>
-                            <JobSelect
-                                v-if="this.jobSelectVisible"
-                                v-model="selectedJobs"
-                                :filteredJobs="filteredJobs"
-                            />
                             <div class="toolbar">
-                                <button
-                                    class="btn btn-primary"
+                                <JobSelect
                                     v-if="this.jobSelectVisible"
-                                    @click="addJobs"
-                                    >
-                                    {{ $t('additional:modules.tools.simulationTool.addScenarios') }}
-                                </button>
+                                    v-model="selectedJobs"
+                                    :filteredJobs="filteredJobs"
+                                />
+                                    <button
+                                        class="btn btn-primary"
+                                        v-if="this.jobSelectVisible"
+                                        @click="addJobs"
+                                        >
+                                        {{ $t('additional:modules.tools.simulationTool.addScenarios') }}
+                                    </button>
                             </div>
                         </h4>
                         <div class="job-table-wrapper">
@@ -503,126 +503,152 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.ensemble-details {
-    max-height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
+    .ensemble-details {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        overflow: auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
     .details-body {
         display: flex;
         flex-direction: column;
         gap: 1rem;
+        overflow-y: auto;
+        flex: 1 1 auto;
+    }
+
+    .details-header {
+        margin-bottom: 1rem;
         overflow: hidden;
-        flex: 1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-height: 4rem;
+        flex-shrink: 0;
+    }
 
-        ul {
-            list-style: none;
-            padding-left: .5rem;
+    .models, 
+    .jobs, 
+    .job-table-wrapper {
+        overflow-y: auto;
+        flex: 1 1 auto;
+    }
 
-            li {
-                margin-bottom: .5rem;
-                i {
-                    margin-right: .25rem;
-                }
-            }
-        }
+    .models {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-height: 300px;
+        min-height: 50px;
+        flex-shrink: 0;
+    }
 
-        .details-header {
-            margin-bottom: 1rem;
-        }
+    .jobs {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        min-height: 200px;
+        max-height: 300px;
+        flex-shrink: 0;
+    }
 
-        .models {
-            overflow: auto;
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
+    .job-list-table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
 
-        .jobs {
-            overflow: auto;
-            min-height: 200px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .job-table-wrapper {
-            overflow: auto;
-            max-height: 100%;
-        }
-
-        .job-list-table {
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-
-            th, td {
-                padding: .5rem;
-                text-align: left;
-                overflow: hidden;
-                text-overflow: ellipsis;
-
-                &:not(:last-child) {
-                    border-right: 2px solid var(--bs-default);
-                }
-
-                &.action-column {
-                    width: 40px;
-                    padding: 0;
-                }
-            }
-
-            th {
-                white-space: nowrap;
-            }
-
-            td > div {
-                white-space: normal;
-                display: -webkit-box;
-                line-clamp: 2;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                word-break: break-word;
-            }
-
-            .status {
-                display: inline-block;
-                padding: .25rem .5rem;
-                border-radius: .5rem;
-                font-size: .875rem;
-                font-weight: 500;
-                color: white;
-            }
-        }
-
-        .panel-container {
-            display: flex;
-            gap: 1rem;
+        th, td {
+            padding: .5rem;
+            text-align: left;
             overflow: hidden;
-            flex: 1;
-            align-items: stretch;
+            text-overflow: ellipsis;
+
+            &:not(:last-child) {
+                border-right: 2px solid var(--bs-default);
+            }
+
+            &.action-column {
+                width: 40px;
+                padding: 0;
+            }
         }
 
-        .toolbar {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 1rem;
+        th {
+            white-space: nowrap;
         }
 
-        .notes, .sharing {
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            overflow: auto;
+        td > div {
+            white-space: normal;
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-word;
+        }
+
+        .status {
+            display: inline-block;
+            padding: .25rem .5rem;
+            border-radius: .5rem;
+            font-size: .875rem;
+            font-weight: 500;
+            color: white;
         }
     }
-}
 
+    .charts {
+        padding-bottom: 1rem;
+    }
+
+    .panel-container {
+        display: flex;
+        gap: 1rem;
+        flex: 1 1 50%;
+        align-items: stretch;
+        height: 200px;
+    }
+
+    .notes, .sharing {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        flex-shrink: 0;
+    }
+
+    .toolbar {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
+        flex-direction: column;
+
+        button {
+            margin: 10px;
+            align-self: end;
+        }
+    }
+
+    ul {
+        list-style: none;
+        padding-left: .5rem;
+
+        li {
+            margin-bottom: .5rem;
+
+            i {
+                margin-right: .25rem;
+            }
+        }
+    }
+
+    h3, h4 {
+        margin: 0;
+    }
 </style>
+
