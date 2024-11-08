@@ -101,6 +101,11 @@ export default {
             }
         },
         async fetchJobResultData() {
+            // check if data is already in store
+            if (this.jobResultData[this.selectedJobId]) {
+                return;
+            }
+
             if (this.intervalId) {
                 window.clearInterval(this.intervalId);
             }
