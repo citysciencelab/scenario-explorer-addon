@@ -1,12 +1,6 @@
 import Config from "../../../portal/simulation/config";
 
 const actions = {
-    /**
-     * Increases the count state.
-     *
-     * @param {Object} context actions context object.
-     * @returns {void}
-     */
     async fetchProcesses ({state, commit, rootGetters}) {
         let additionalHeaders = {};
         if (rootGetters["Modules/Login/loggedIn"]) {
