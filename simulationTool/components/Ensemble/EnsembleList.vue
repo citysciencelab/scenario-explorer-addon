@@ -139,61 +139,62 @@ export default {
             v-if="ensemblesLoading"
             :text="$t('additional:modules.tools.simulationTool.loadingEnsembles') + '...'"
         />
-        <table
-            v-else
-            class="ensemble-list-table"
-        >
-            <thead>
-                <tr>
-                    <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
-                    <th>{{ $t('additional:modules.tools.simulationTool.scenarios') }}</th>
-                    <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
-                    <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="ensemble in filteredEnsembles">
-                    <td>
-                        <div>
-                            <button
-                                class="btn btn-link"
-                                @click="onEnsembleClick(ensemble)"
+        <div class="ensemble-list-table-wrapper" v-else>
+            <table
+                class="ensemble-list-table"
+            >
+                <thead>
+                    <tr>
+                        <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
+                        <th>{{ $t('additional:modules.tools.simulationTool.scenarios') }}</th>
+                        <th>{{ $t('additional:modules.tools.simulationTool.date') }}</th>
+                        <th>{{ $t('additional:modules.tools.simulationTool.user') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="ensemble in filteredEnsembles">
+                        <td>
+                            <div>
+                                <button
+                                    class="btn btn-link"
+                                    @click="onEnsembleClick(ensemble)"
+                                >
+                                    {{this.getEnsembleName(ensemble)}}
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="scenarios">
+                                {{ this.getScenarioStatus(ensemble) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                {{this.formatDateTime(ensemble.created)}}
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <UserDisplay :user_id="ensemble.user_id" />
+                            </div>
+                        </td>
+                        <td class="action-column">
+                            <PopConfirm
+                                :onConfirm="() => this.deleteEnsemble(ensemble)"
+                                :confirmText= "$t('additional:modules.tools.simulationTool.confirmDelete')"
                             >
-                                {{this.getEnsembleName(ensemble)}}
-                            </button>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="scenarios">
-                            {{ this.getScenarioStatus(ensemble) }}
-                        </div>
-                    </td>
-                    <td>
-                        <div>
-                            {{this.formatDateTime(ensemble.created)}}
-                        </div>
-                    </td>
-                    <td>
-                        <div>
-                            <UserDisplay :user_id="ensemble.user_id" />
-                        </div>
-                    </td>
-                    <td class="action-column">
-                        <PopConfirm
-                            :onConfirm="() => this.deleteEnsemble(ensemble)"
-                            :confirmText= "$t('additional:modules.tools.simulationTool.confirmDelete')"
-                        >
-                            <button
-                                class="btn btn-link link-danger"
-                                :title="$t('additional:modules.tools.simulationTool.removeJob')"
-                            >
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </PopConfirm>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                                <button
+                                    class="btn btn-link link-danger"
+                                    :title="$t('additional:modules.tools.simulationTool.removeJob')"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </PopConfirm>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -227,6 +228,10 @@ export default {
             >button {
                 align-self: center;
             }
+        }
+
+        .ensemble-list-table-wrapper {
+            overflow-y: auto;
         }
 
         .ensemble-list-table {
