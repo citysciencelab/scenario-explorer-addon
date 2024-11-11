@@ -25,7 +25,8 @@ export default {
             resultRequestState: {
                 loading: false,
                 error: null
-            }
+            },
+            jobSelectVisible: false,
         };
     },
     computed: {
@@ -209,7 +210,7 @@ export default {
 </script>
 
 <template>
-    <div class="job-details">
+    <div class="job-details segment-wrapper">
         <SectionHeader
             :title="$t('additional:modules.tools.simulationTool.scenarioDetails')"
             icon="bi-box-fill"
@@ -238,7 +239,7 @@ export default {
                         {{ job?.status }}
                     </div>
                 </div>
-                <div class="links">
+                <div class="links segment-wrapper">
                     <h4>{{ $t('additional:modules.tools.simulationTool.links') }}</h4>
                     <ul>
                         <li v-for="(link, index) in job?.links" :key="link.rel">
@@ -254,18 +255,32 @@ export default {
                         </li>
                     </ul>
                 </div>
-                <div class="parameter">
-                    <h4>{{ $t('additional:modules.tools.simulationTool.parameters') }}</h4>
-                    <ul>
+                <div class="parameter segment-wrapper">
+                    <h4>
+                        {{ $t('additional:modules.tools.simulationTool.parameters') }}
+                        <button
+                                tabindex="0"
+                                class="btn btn-light"
+                                type="button"
+                                @click="jobSelectVisible = !jobSelectVisible"
+                            >
+                                <i
+                                    class="bi-plus-circle"
+                                    role="img"
+                                ></i>
+                            </button>
+                    </h4>
+                    <ul v-if="this.jobSelectVisible">
                         <li v-for="(value, key) in job?.parameters.inputs" :key="key">
                             <strong>{{key}}</strong>: {{value}}
                         </li>
                     </ul>
                 </div>
-                <div class="filter">
+                <div class="filter segment-wrapper">
                     <h4>{{ $t('additional:modules.tools.simulationTool.filter') }}</h4>
                 </div>
-                <div class="charts">
+
+                <div class="charts segment-wrapper">
                     <h4>{{ $t('additional:modules.tools.simulationTool.charts') }}</h4>
                     <AsyncWrapper :asyncState="resultRequestState">
                         <div class="diagram-wrapper">
@@ -295,50 +310,58 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.job-details {
-    max-height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
+    .job-details {
+        max-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        overflow: auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-    .details-body {
+    .flex-container {
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        flex: 1;
-        overflow: hidden;
+        overflow: auto;
+        flex: 0 1 auto;
+    }
 
-        .links {
-
-            ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
-        }
-
-        .diagram-wrapper {
-            border: 1px solid #ccc;
-            box-shadow: var(--bs-box-shadow);
-            border-radius: 10px;
-            padding: 20px;
-        }
+    .details-body, 
+    .panel-container, 
+    .charts, 
+    .links, 
+    .filter, 
+    .parameter,
+    .notes, 
+    .sharing {
+        flex: 0 1 auto;
+        overflow: auto;
+        min-height: 50px;
     }
 
     .panel-container {
-            display: flex;
-            gap: 1rem;
-            overflow: hidden;
-            flex: 1;
-            align-items: stretch;
-        }
+        display: flex;
+        gap: 1rem;
+        overflow: hidden;
+        flex: 1 1 50%;
+        align-items: stretch;
+        height: 200px;
+        padding-bottom: 1rem;
+    }
 
     .notes, .sharing {
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            overflow: auto;
-        }
-}
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        flex-shrink: 0;
+    }
+
+    .charts {
+        width: 100%;
+        box-sizing: border-box; 
+    }
 </style>
