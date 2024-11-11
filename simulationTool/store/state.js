@@ -11,6 +11,8 @@
  * @property {Object|null} process the current process
  * @property {Array.<Object>} processes a list of processes
  * @property {boolean} processesLoading flag indicating if processes are loading
+ * @property {Array.<Object>} providers a list of providers
+ * @property {boolean} providersLoading flag indicating if providers are loading
  * @property {string|null} selectedEnsembleId the selected ensemble id
  * @property {string|null} selectedJobId the selected job id
  * @property {string|null} selectedProcessId the selected process id
@@ -27,6 +29,8 @@ const state = {
     process: null,
     processes: [],
     processesLoading: false,
+    providers: [],
+    providersLoading: false,
     selectedEnsembleId: null,
     selectedJobId: null,
     selectedProcessId: null,
