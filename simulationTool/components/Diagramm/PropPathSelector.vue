@@ -119,7 +119,10 @@ export default {
     }
 
     ul.prop-path-dropdown-list {
-      position: fixed;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 0.5rem;
       z-index: 1000;
       background-color: white;
       border-radius: 5px;
