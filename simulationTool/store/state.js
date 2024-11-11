@@ -1,45 +1,36 @@
 /**
  * User type definition
  * @typedef {Object} SimulationToolState
+ * @property {Array.<Object>} ensembles a list of ensembles
+ * @property {boolean} ensemblesLoading flag indicating if ensembles are loading
  * @property {string} id the ID of the simulation tool
+ * @property {Object} jobResultData data of the job result
+ * @property {Array.<Object>} jobs a list of jobs
+ * @property {boolean} jobsLoading flag indicating if jobs are loading
  * @property {string} mode the current view: 'processes', 'process', 'job' or 'map'
+ * @property {Object|null} process the current process
  * @property {Array.<Object>} processes a list of processes
- * @property {string} selectedProcessId the selected process id
- * @property {string} selectedJobId the selected job id
- * @property {string} name displayed as title (config-param)
- * @property {string} icon icon next to title (config-param)
- * @property {boolean} renderToWindow if true, tool is rendered in a window, else in sidebar (config-param)
- * @property {boolean} resizableWindow if true, window is resizable (config-param)
- * @property {boolean} isVisibleInMenu if true, tool is selectable in menu (config-param)
- * @property {boolean} deactivateGFI flag if tool should deactivate gfi (config-param)
- * @property {Number} initialWidth Size of the sidebar when opening.
- * @property {Number} initialWidthMobile Mobile size of the sidebar when opening.
+ * @property {boolean} processesLoading flag indicating if processes are loading
+ * @property {string|null} selectedEnsembleId the selected ensemble id
+ * @property {string|null} selectedJobId the selected job id
+ * @property {string|null} selectedProcessId the selected process id
+ * @property {Object} userDetailsCache cache for user details
  */
 const state = {
-    id: "simulationTool",
-    // 'process-list' | 'process-details' | 'job' | 'job-details' | 'job-execution' | 'ensemble-list'
-    mode: "home-panel",
     ensembles: [],
     ensemblesLoading: false,
-    userDetailsCache: {},
+    id: "simulationTool",
+    jobResultData: {},
+    jobs: [],
+    jobsLoading: false,
+    mode: "home-panel",
     process: null,
     processes: [],
     processesLoading: false,
-    jobs: [],
-    jobsLoading: false,
-    selectedProcessId: null,
-    selectedJobId: null,
     selectedEnsembleId: null,
-    jobResultData: {},
-    // defaults for config.json parameters
-    name: "Sim Tool",
-    icon: "bi-sliders2",
-    renderToWindow: true,
-    resizableWindow: true,
-    isVisibleInMenu: true,
-    deactivateGFI: false,
-    initialWidth: 500,
-    initialWidthMobile: 300
+    selectedJobId: null,
+    selectedProcessId: null,
+    userDetailsCache: {}
 };
 
 export default state;
