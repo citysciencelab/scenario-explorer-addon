@@ -143,7 +143,6 @@ export default {
                     }
                 } else {
                     this.setJobResultData({
-                        ...this.jobResultData,
                         [this.selectedJobId]: result
                     });
                 }
