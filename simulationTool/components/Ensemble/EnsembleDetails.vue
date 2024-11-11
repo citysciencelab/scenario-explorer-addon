@@ -49,7 +49,8 @@ export default {
     computed: {
         ...mapGetters("Modules/SimulationTool", [
             "selectedEnsembleId",
-            "jobs"
+            "jobs",
+            "jobResultData"
         ]),
         ...mapGetters("Modules/Login", [
             "accessToken",
@@ -177,6 +178,10 @@ export default {
                 const newJobData = {};
                 for (const job of jobs) {
                     if (job.status === 'successful') {
+                        // check if data is already in store
+                        if (this.jobResultData[job.jobID]) {
+                            continue;
+                        }
                         this.jobResultsRequestState.loading = true;
                         const url = job?.links?.[0]?.href;
                         if (!url) {
