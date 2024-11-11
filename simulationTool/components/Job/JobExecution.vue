@@ -4,6 +4,7 @@ import SectionHeader from "../SectionHeader.vue";
 import JobExecutionInput from "./JobExecutionInput.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
 import ProcessSelect from "../Process/ProcessSelect.vue";
+import Config from "../../../../portal/simulation/config";
 
 export default {
     name: "JobExecution",
@@ -73,7 +74,7 @@ export default {
 
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`/api/processes/${processId}`,{
+                const response = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -147,7 +148,7 @@ export default {
 
                 try {
                     this.executionRequestState.loading = true;
-                    const response = await fetch(`/api/processes/${this.selectedProcessId}/execution`, {
+                    const response = await fetch(`${Config.simulationApiUrl}/processes/${this.selectedProcessId}/execution`, {
                         method: "POST",
                         body: JSON.stringify({
                             job_name,

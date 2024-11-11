@@ -2,6 +2,7 @@
 import { mapGetters } from "vuex";
 import AsyncWrapper from '../AsyncWrapper.vue';
 import UserDisplay from "../UserDisplay.vue";
+import Config from "../../../../portal/simulation/config";
 
 export default {
     name: "CommentsPanel",
@@ -47,7 +48,7 @@ export default {
             }
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`/api/${this.endPoint}/${this.entityId}/comments`,{
+                const response = await fetch(`${Config.simulationApiUrl}/${this.endPoint}/${this.entityId}/comments`,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -71,7 +72,7 @@ export default {
             }
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`/api/${this.endPoint}/${this.entityId}/comments`,{
+                const response = await fetch(`${Config.simulationApiUrl}/${this.endPoint}/${this.entityId}/comments`,{
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",

@@ -3,6 +3,7 @@ import { mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
 import CommentsPanel from "../Comments/CommentsPanel.vue"
+import Config from "../../../../portal/simulation/config";
 import UserDisplay from "../UserDisplay.vue";
 import PopConfirm from "../PopConfirm.vue";
 import SharingPanel from "../Sharing/SharingPanel.vue";
@@ -118,7 +119,7 @@ export default {
             }
             try {
                 this.ensembleRequestState.loading = true;
-                const response = await fetch(`/api/ensembles/${ensembleId}`,{
+                const response = await fetch(`${Config.simulationApiUrl}/ensembles/${ensembleId}`,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -144,7 +145,7 @@ export default {
                     window.clearInterval(this.intervalId);
                 }
                 this.ensembleJobsRequestState.loading = true;
-                const response = await fetch(`/api/ensembles/${this.selectedEnsembleId}/jobs`,{
+                const response = await fetch(`${Config.simulationApiUrl}/ensembles/${this.selectedEnsembleId}/jobs`,{
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${this.accessToken}`
@@ -230,7 +231,7 @@ export default {
 
             try {
                 this.ensembleExecutionRequestState.loading = true;
-                const response = await fetch(`/api/ensembles/${this.selectedEnsembleId}/execute`,{
+                const response = await fetch(`${Config.simulationApiUrl}/ensembles/${this.selectedEnsembleId}/execute`,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -259,7 +260,7 @@ export default {
 
             try {
                 this.ensembleJobsRequestState.loading = true;
-                    const response = await fetch(`/api/ensembles/${this.selectedEnsembleId}/jobs/${jobId}`,{
+                    const response = await fetch(`${Config.simulationApiUrl}/ensembles/${this.selectedEnsembleId}/jobs/${jobId}`,{
                         method: 'DELETE',
                         headers: {
                             "Content-Type": "application/json",
@@ -301,7 +302,7 @@ export default {
                 Authorization: `Bearer ${this.accessToken}`
             };
             for (const job of this.selectedJobs) {
-                await fetch(`/api/ensembles/${this.ensemble.id}/addjob/${job.jobID}`, {
+                await fetch(`${Config.simulationApiUrl}/ensembles/${this.ensemble.id}/addjob/${job.jobID}`, {
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders

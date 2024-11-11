@@ -40,8 +40,7 @@ export default {
             executionRequestState: {
                 loading: false,
                 error: null
-            },
-            apiUrl: Config.simulationApiUrl
+            }
         };
     },
     watch: {
@@ -135,7 +134,7 @@ export default {
             }
             try {
                 this.processexecutionRequestState.loading = true;
-                const response = await fetch(`/api/processes/${processId}`,{
+                const response = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -188,7 +187,7 @@ export default {
 
                 try {
                     this.executionRequestState.loading = true;
-                    const response = await fetch('/api/ensembles', {
+                    const response = await fetch(`${Config.simulationApiUrl}/ensembles`, {
                         method: "POST",
                         body: JSON.stringify({
                             name,

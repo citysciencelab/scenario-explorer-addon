@@ -5,6 +5,7 @@ import Diagramm from "../Diagramm/Diagramm.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
 import CommentsPanel from "../Comments/CommentsPanel.vue"
 import SharingPanel from "../Sharing/SharingPanel.vue"
+import Config from "../../../../portal/simulation/config";
 
 export default {
     name: "JobDetails",
@@ -74,7 +75,7 @@ export default {
 
             try {
                 this.jobRequestState.loading = true;
-                const response = await fetch(`/api/jobs/${jobId}`, {
+                const response = await fetch(`${Config.simulationApiUrl}/jobs/${jobId}`, {
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -328,13 +329,13 @@ export default {
         flex: 0 1 auto;
     }
 
-    .details-body, 
-    .panel-container, 
-    .charts, 
-    .links, 
-    .filter, 
+    .details-body,
+    .panel-container,
+    .charts,
+    .links,
+    .filter,
     .parameter,
-    .notes, 
+    .notes,
     .sharing {
         flex: 0 1 auto;
         overflow: auto;
@@ -362,6 +363,6 @@ export default {
 
     .charts {
         width: 100%;
-        box-sizing: border-box; 
+        box-sizing: border-box;
     }
 </style>
