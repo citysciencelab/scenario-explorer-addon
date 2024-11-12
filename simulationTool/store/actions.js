@@ -1,7 +1,23 @@
 import Config from "../../../portal/simulation/config";
 
 const actions = {
-    async fetchProcesses ({state, commit, rootGetters}) {
+    async fetchProviders ({ commit }) {
+        commit("setProvidersLoading", true);
+        try {
+            const response = await fetch(`${Config.simulationApiUrl}/processes/providers`, {
+                    headers: {
+                        "content-type": "application/json"
+                    }
+                }).then((res) => res.json());
+            commit("setProviders", response);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            commit("setProvidersLoading", false);
+        }
+    },
+
+    async fetchProcesses ({ commit, rootGetters}) {
         let additionalHeaders = {};
         if (rootGetters["Modules/Login/loggedIn"]) {
             additionalHeaders = {
@@ -28,7 +44,7 @@ const actions = {
 
     },
 
-    async fetchJobs ({state, commit, rootGetters}) {
+    async fetchJobs ({ commit, rootGetters}) {
         let additionalHeaders = {};
         if (rootGetters["Modules/Login/loggedIn"]) {
             additionalHeaders = {
@@ -57,7 +73,7 @@ const actions = {
 
     },
 
-    async fetchEnsembles ({state, commit, rootGetters}) {
+    async fetchEnsembles ({ commit, rootGetters}) {
         if (!rootGetters["Modules/Login/loggedIn"]) {
             return;
         }
@@ -82,7 +98,7 @@ const actions = {
 
     },
 
-    async deleteEnsembleById ({state, commit, rootGetters}, ensembleId) {
+    async deleteEnsembleById ({ commit, rootGetters}, ensembleId) {
         if (!rootGetters["Modules/Login/loggedIn"]) {
             return;
         }

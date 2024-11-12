@@ -18,7 +18,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters("Modules/SimulationTool", ["jobResultData"])
+    ...mapGetters("Modules/SimulationTool", ["jobResultData", "jobs"])
   },
   methods: {
     getValue(obj, prop) {
@@ -27,6 +27,10 @@ export default {
       } catch {
         return undefined;
       }
+    },
+    getName(jobId) {
+      const job = this.jobs.find(job => job.jobID === jobId);
+      return job ? job.name : jobId;
     },
     getDataNode(jobId) {
       if (!this.chartConfigs[jobId]?.rootProp) {
@@ -60,7 +64,7 @@ export default {
       </select>
     </div>
     <template v-for="(value, jobId) in this.jobResultData" :key="jobId">
-      <span>{{ jobId }}</span>
+      <span>{{ this.getName(jobId) }}</span>
       <div class="input-wrapper prop-path-wrapper">
         <label>{{ $t('additional:modules.tools.simulationTool.chartDataRootProperty') }}</label>
         <PropPathSelector
