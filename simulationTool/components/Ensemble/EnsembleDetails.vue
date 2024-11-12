@@ -209,7 +209,6 @@ export default {
                     }
                 }
                 this.setJobResultData({
-                    ...this.jobResultData,
                     ...newJobData
                 });
             } catch (error) {
@@ -536,8 +535,8 @@ export default {
         flex-shrink: 0;
     }
 
-    .models, 
-    .jobs, 
+    .models,
+    .jobs,
     .job-table-wrapper {
         overflow-y: auto;
         flex: 1 1 auto;
@@ -657,4 +656,3 @@ export default {
         margin: 0;
     }
 </style>
-
