@@ -3,7 +3,7 @@ import Config from "../../../portal/simulation/config";
 const actions = {
     async fetchProviders ({ commit }) {
         commit("setProvidersLoading", true);
-        console.log(${Config.simulationApiUrl});
+        console.log(Config.simulationApiUrl);
         try {
             const response = await fetch(`${Config.simulationApiUrl}/processes/providers`, {
                     headers: {
@@ -27,7 +27,7 @@ const actions = {
         }
 
         commit("setProcessesLoading", true);
-        console.log(${Config.simulationApiUrl});
+        console.log(Config.simulationApiUrl);
 
         try {
             const response = await fetch(`${Config.simulationApiUrl}/processes/`, {
