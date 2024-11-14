@@ -48,7 +48,8 @@ export default {
             }
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/${this.endPoint}/${this.entityId}/users`,{
+                const url = new URL(`${Config.simulationApiUrl}/${this.endPoint}/${this.entityId}/users`);
+                const response = await fetch(url,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -72,7 +73,8 @@ export default {
             }
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/${this.endPoint}/${this.entityId}/share/${this.email}`,{
+                const url = new URL(`${Config.simulationApiUrl}/${this.endPoint}/${this.entityId}/share/${this.email}`);
+                const response = await fetch(url,{
                     headers: {
                         Authorization: `Bearer ${this.accessToken}`
                     }

@@ -119,7 +119,8 @@ export default {
             }
             try {
                 this.ensembleRequestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/ensembles/${ensembleId}`,{
+                const url = new URL(`${Config.simulationApiUrl}/ensembles/${ensembleId}`);
+                const response = await fetch(url,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -145,7 +146,8 @@ export default {
                     window.clearInterval(this.intervalId);
                 }
                 this.ensembleJobsRequestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/ensembles/${this.selectedEnsembleId}/jobs`,{
+                const url = new URL(`${Config.simulationApiUrl}/ensembles/${this.selectedEnsembleId}/jobs`);
+                const response = await fetch(url,{
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${this.accessToken}`
@@ -230,7 +232,8 @@ export default {
 
             try {
                 this.ensembleExecutionRequestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/ensembles/${this.selectedEnsembleId}/execute`,{
+                const url = new URL(`${Config.simulationApiUrl}/ensembles/${this.selectedEnsembleId}/execute`);
+                const response = await fetch(url,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -259,7 +262,8 @@ export default {
 
             try {
                 this.ensembleJobsRequestState.loading = true;
-                    const response = await fetch(`${Config.simulationApiUrl}/ensembles/${this.selectedEnsembleId}/jobs/${jobId}`,{
+                    const url = new URL(`${Config.simulationApiUrl}/ensembles/${this.selectedEnsembleId}/jobs/${jobId}`);
+                    const response = await fetch(url,{
                         method: 'DELETE',
                         headers: {
                             "Content-Type": "application/json",
@@ -301,7 +305,8 @@ export default {
                 Authorization: `Bearer ${this.accessToken}`
             };
             for (const job of this.selectedJobs) {
-                await fetch(`${Config.simulationApiUrl}/ensembles/${this.ensemble.id}/addjob/${job.jobID}`, {
+                const url = new URL(`${Config.simulationApiUrl}/ensembles/${this.ensemble.id}/addjob/${job.jobID}`);
+                await fetch(url, {
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders

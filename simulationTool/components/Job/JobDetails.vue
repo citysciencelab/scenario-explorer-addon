@@ -75,7 +75,8 @@ export default {
 
             try {
                 this.jobRequestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/jobs/${jobId}`, {
+                const url = new URL(`${Config.simulationApiUrl}/jobs/${jobId}`);
+                const response = await fetch(url, {
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders

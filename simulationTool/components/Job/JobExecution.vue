@@ -74,7 +74,8 @@ export default {
 
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
+                const url = new URL(`${Config.simulationApiUrl}/processes/${processId}`);
+                const response = await fetch(url,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -148,7 +149,8 @@ export default {
 
                 try {
                     this.executionRequestState.loading = true;
-                    const response = await fetch(`${Config.simulationApiUrl}/processes/${this.selectedProcessId}/execution`, {
+                    const url = new URL(`${Config.simulationApiUrl}/processes/${this.selectedProcessId}/execution`);
+                    const response = await fetch(url, {
                         method: "POST",
                         body: JSON.stringify({
                             job_name,

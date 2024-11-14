@@ -48,7 +48,8 @@ export default {
             }
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/${this.endPoint}/${this.entityId}/comments`,{
+                const url = new URL(`${Config.simulationApiUrl}/${this.endPoint}/${this.entityId}/comments`);
+                const response = await fetch(url,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -72,7 +73,8 @@ export default {
             }
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/${this.endPoint}/${this.entityId}/comments`,{
+                const url = new URL(`${Config.simulationApiUrl}/${this.endPoint}/${this.entityId}/comments`);
+                const response = await fetch(url,{
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",

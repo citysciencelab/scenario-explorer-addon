@@ -48,7 +48,8 @@ export default {
 
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
+                const url = new URL(`${Config.simulationApiUrl}/processes/${processId}`);
+                const response = await fetch(url,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders

@@ -5,7 +5,8 @@ const actions = {
         commit("setProvidersLoading", true);
         console.log(Config.simulationApiUrl);
         try {
-            const response = await fetch(`${Config.simulationApiUrl}/processes/providers`, {
+            const url = new URL(`${Config.simulationApiUrl}/processes/providers`);
+            const response = await fetch(url, {
                     headers: {
                         "content-type": "application/json"
                     }
@@ -30,7 +31,8 @@ const actions = {
         console.log(Config.simulationApiUrl);
 
         try {
-            const response = await fetch(`${Config.simulationApiUrl}/processes/`, {
+            const url = new URL(`${Config.simulationApiUrl}/processes/`);
+            const response = await fetch(url, {
                     headers: {
                         "content-type": "application/json",
                         ...additionalHeaders
@@ -108,7 +110,8 @@ const actions = {
         commit("setEnsemblesLoading", true);
 
         try {
-            const response = await fetch(`${Config.simulationApiUrl}/ensembles/${ensembleId}`, {
+            const url = new URL(`${Config.simulationApiUrl}/ensembles/${ensembleId}`);
+            const response = await fetch(url, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -139,7 +142,8 @@ const actions = {
 
         const fetchPromise = (async () => {
             const accessToken = rootGetters["Modules/Login/accessToken"];
-            const response = await fetch(`${Config.simulationApiUrl}/users/${user_id}/details`, {
+            const url = new URL(`${Config.simulationApiUrl}/users/${user_id}/details`);
+            const response = await fetch(url, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`
