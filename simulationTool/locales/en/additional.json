@@ -3,6 +3,8 @@
     "tools": {
       "simulationTool": {
         "additionalInfo": "More information",
+        "toolName": "Scenario Explorer",
+        "toolDescription": "Create, simulate and compare scenarios and ensembles",
         "addOrSelectValue": "Select or add value...",
         "addScenarios": "Add scenarios",
         "addThisValue": "Add this value",

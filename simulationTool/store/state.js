@@ -22,6 +22,8 @@ const state = {
     ensembles: [],
     ensemblesLoading: false,
     id: "simulationTool",
+    name: "additional:modules.tools.simulationTool.toolName",
+    description: "additional:modules.tools.simulationTool.toolDescription",
     jobResultData: {},
     jobs: [],
     jobsLoading: false,
