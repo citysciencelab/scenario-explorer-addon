@@ -18,7 +18,7 @@ export default {
         },
         getProcessImageSource (process) {
             const image = process?.links?.find(({type}) => type === "image");
-            return image ? image : "resources/img/Process_placeholder.png";
+            return image ? image : "resources/img/DALLE_Placeholder2.png";
         }
     }
 };
