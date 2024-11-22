@@ -2,7 +2,6 @@
 import { mapMutations, mapGetters } from "vuex";
 import SectionHeader from "../SectionHeader.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
-import Config from "../../../../portal/simulation/config";
 
 export default {
     name: "ProcessDetails",
@@ -48,7 +47,7 @@ export default {
 
             try {
                 this.requestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/processes/${processId}`,{
+                const response = await fetch(`/api/processes/${processId}`,{
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
