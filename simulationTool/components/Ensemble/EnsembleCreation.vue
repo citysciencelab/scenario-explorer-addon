@@ -187,7 +187,7 @@ export default {
 
                 try {
                     this.executionRequestState.loading = true;
-                    const response = await fetch(`${Config.simulationApiUrl}/ensembles`, {
+                    const response = await fetch(`${Config.simulationApiUrl}/ensembles/`, {
                         method: "POST",
                         body: JSON.stringify({
                             name,
