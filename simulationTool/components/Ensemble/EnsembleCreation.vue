@@ -188,7 +188,7 @@ export default {
 
                 try {
                     this.executionRequestState.loading = true;
-                    const response = await fetch('/api/ensembles', {
+                    const response = await fetch('/api/ensembles/', {
                         method: "POST",
                         body: JSON.stringify({
                             name,
