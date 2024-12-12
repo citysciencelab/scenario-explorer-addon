@@ -5,6 +5,8 @@ import Diagramm from "../Diagramm/Diagramm.vue";
 import AsyncWrapper from "../AsyncWrapper.vue";
 import CommentsPanel from "../Comments/CommentsPanel.vue"
 import SharingPanel from "../Sharing/SharingPanel.vue"
+import Config from "../../../../portal/simulation/config";
+import { and, equalTo } from "ol/format/filter";
 
 export default {
     name: "JobDetails",
@@ -26,7 +28,9 @@ export default {
                 loading: false,
                 error: null
             },
-            jobSelectVisible: false,
+            displayMapFilters: [],
+            mapFilters: [],
+            filterOnClient: false
         };
     },
     computed: {
@@ -36,6 +40,8 @@ export default {
     },
     mounted() {
         this.fetchJob(this.selectedJobId);
+        this.initMapFilters();
+        this.updateLayer();
     },
     unmounted() {
         if (this.intervalId) {
@@ -48,18 +54,31 @@ export default {
                     layerId: this.job.jobID,
                     visibility: false
                 });
+                this.initMapFilters();
             }
         }
     },
     watch: {
-        job: function(newJob) {
+        job(newJob) {
             if (newJob) {
                 this.fetchJobResultData();
                 setTimeout(() => {
                     this.fetchJobLayer(newJob);
+                    this.initMapFilters();
                 }, 3000);
-            }
         }
+    },
+    mapFilters: {
+        // watch (deeply) for changes in mapFilters to initiate new WFS requests or filter data in client
+        handler: function (newVal, oldVal) {
+            if (!oldVal.length) {
+                return;
+            }
+
+            this.updateLayer(newVal);
+        },
+        deep: true,
+    },
     },
     methods: {
         ...mapActions(["addLayerToLayerConfig", "addOrReplaceLayer"]),
@@ -204,6 +223,160 @@ export default {
                 minute: "2-digit"
             });
         },
+        /**
+         * Update the layer features, filtered on the server via WFS filter
+         */
+         async updateLayerServer() {
+            const filter = this.getFilterString();
+
+            // at least one filter is required - do not try to fetch all features
+            if (!filter) {
+                return;
+            }
+
+            const url = this.getWFSUrl(filter);
+            const geojson = await fetch(url).then((res) => res.json());
+            const features = new GeoJSON().readFeatures(geojson);
+            this.updateSource(features);
+            this.renderChart();
+        },
+        /**
+         * Returns the XML representation of the given map filters as an XML string
+         * to include into a WFS request.
+         *
+         */
+         getFilterString() {
+            const filters = this.mapFilters.filter((mf) => mf.active);
+
+            let olFilter = undefined;
+
+            if (filters.length) {
+                olFilter =
+                    filters.length < 2
+                        ? equalTo(filters[0].key, filters[0].value)
+                        : and(
+                              ...filters.map((mf) => equalTo(mf.key, mf.value))
+                          );
+            }
+         },
+        /**
+         * Updates the layer features
+         */
+         async updateLayer() {
+            if (this.filterOnClient) {
+                this.updateLayerClient();
+            } else {
+                this.updateLayerServer();
+            }
+        },
+        /**
+         * Update the layer features, loads all data initially and filters on the client
+         */
+         async updateLayerClient() {
+            if (!this.features) {
+                const url = this.getWFSUrl();
+                const geojson = await fetch(url).then((res) => res.json());
+                this.features = new GeoJSON().readFeatures(geojson);
+            }
+
+            // filter features by mapFilters
+            const filteredFeatures = this.features.filter((feature) => {
+                return this.mapFilters.every((mf) => {
+                    if (!mf.active) {
+                        // if filter is not active this check is passed
+                        return true;
+                    }
+
+                    const { key, value } = mf;
+                    const properties = feature.getProperties();
+                    const featureValue =
+                        typeof value === "number"
+                            ? Number(properties[key])
+                            : properties[key];
+
+                    return value === featureValue;
+                });
+            });
+
+            this.updateSource(filteredFeatures);
+            this.renderChart();
+        },
+        /**
+         * Initially set the job's filter values retrieved from the job's config
+         */
+         initMapFilters() {
+       
+            if (!this.job || !this.job.results_metadata || !Array.isArray(this.job.results_metadata.values)) {
+                this.mapFilters = [];
+                this.displayMapFilters = [];
+                return;
+            }
+
+            this.mapFilters = this.job.results_metadata.values
+             .map((filterEntry) => {
+                 const key = Object.keys(filterEntry)[0];
+                 const filterValues = filterEntry[key];
+                 console.log(filterValues)
+                    const { type, min, max, values } = filterValues;
+
+                    // we do not filter for float values
+                    if (type.startsWith("float")) {
+                        return null;
+                    }
+
+                    // we do not filter if there is only one possible value (int)
+                    if (
+                        type.startsWith("int") &&
+                        typeof min === "number" &&
+                        min === max
+                    ) {
+                        return null;
+                    }
+
+                    // we do not filter if there is only one possible value (string)
+                    if (type.startsWith("string") && values.length <= 1) {
+                        return null;
+                    }
+
+                    const value = type === "string" ? values[0] : min;
+                    const filter = {
+                        key,
+                        active: false,
+                        value,
+                    };
+
+                    if (type === "string") {
+                        filter.options = values;
+                    } else {
+                        filter.min = min;
+                        filter.max = max;
+                        filter.step = 1;
+                    }
+
+                    return filter;
+                })
+                .filter(Boolean);
+
+            this.displayMapFilters = JSON.parse(JSON.stringify(this.mapFilters));
+        },
+        /**
+         * Helper function to update a filter value
+         * @param {String} key The filter key
+         * @param {String | Number} value The filter's new value
+         * @param {Boolean} active If the filter is active
+         */
+         setMapFilter(key, value, active) {
+            const filter = this.displayMapFilters.find((mf) => mf.key === key);
+            filter.value = value;
+            filter.active = active;
+        },
+        /**
+         * Commtis the current display filters to the actual applied filter values.
+         * Note that new requests are only fired when the applied filters object changes.
+         */
+         commitMapFilters() {
+            this.mapFilters = JSON.parse(JSON.stringify(this.displayMapFilters));
+        },
     }
 };
 </script>
@@ -277,6 +450,81 @@ export default {
                 </div>
                 <div class="filter segment-wrapper">
                     <h4>{{ $t('additional:modules.tools.simulationTool.filter') }}</h4>
+                <ul>
+                    <li v-for="filter in displayMapFilters" :key="filter.key">
+                        <label :title="filter.key">{{ filter.key }}</label>
+                        <input
+                            type="checkbox"
+                            :checked="filter.active"
+                            @change="
+                                (event) => {
+                                    setMapFilter(
+                                        filter.key,
+                                        filter.value,
+                                        event.target.checked
+                                    );
+                                    commitMapFilters();
+                                }
+                            "
+                        />
+                        <input
+                            v-if="typeof filter.value === 'number'"
+                            type="range"
+                            :min="filter.min ?? 0"
+                            :max="filter.max ?? 0"
+                            :step="filter.step"
+                            :value="filter.value"
+                            :disabled="!filter.active"
+                            @input="
+                                (event) => {
+                                    setMapFilter(
+                                        filter.key,
+                                        Number(event.target.value),
+                                        filter.active
+                                    );
+                                    if (filterOnClient) {
+                                        commitMapFilters();
+                                    }
+                                }
+                            "
+                            @change="
+                                (event) => {
+                                    if (!filterOnClient) {
+                                        commitMapFilters();
+                                    }
+                                }
+                            "
+                        />
+
+                        <select
+                            v-else
+                            class="form-select"
+                            :value="filter.value"
+                            :disabled="!filter.active"
+                            @change="
+                                (event) => {
+                                    setMapFilter(
+                                        filter.key,
+                                        event.target.value,
+                                        filter.active
+                                    );
+                                    commitMapFilters();
+                                }
+                            "
+                        >
+                            <option
+                                v-for="option in filter.options"
+                                :value="option"
+                            >
+                                {{ option }}
+                            </option>
+                        </select>
+
+                        <span v-if="typeof filter.value === 'number'">{{
+                            filter.value
+                        }}</span>
+                    </li>
+                </ul>
                 </div>
 
                 <div class="charts segment-wrapper">
@@ -362,5 +610,32 @@ export default {
     .charts {
         width: 100%;
         box-sizing: border-box; 
+    }
+
+    .job-filter {
+    padding: 1em 0;
+    }
+
+    .filter input {
+        outline: none;
+    }
+
+    .filter ul {
+        padding: 0;
+    }
+
+    .filter li {
+        display: grid;
+        padding: 1em 0;
+        grid-template-columns: 6em auto 1fr minmax(2em, auto);
+        gap: 1em;
+        align-items: center;
+    }
+
+    .filter li label {
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
