@@ -1,7 +1,24 @@
-import Config from "../../../portal/simulation/config";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
 
 const actions = {
-    async fetchProcesses ({state, commit, rootGetters}) {
+    async fetchProviders ({ commit }) {
+        commit("setProvidersLoading", true);
+        console.log(Config.simulationApiUrl);
+        try {
+            const response = await fetch(`${Config.simulationApiUrl}/processes/providers`, {
+                    headers: {
+                        "content-type": "application/json"
+                    }
+                }).then((res) => res.json());
+            commit("setProviders", response);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            commit("setProvidersLoading", false);
+        }
+    },
+
+    async fetchProcesses ({ commit, rootGetters}) {
         let additionalHeaders = {};
         if (rootGetters["Modules/Login/loggedIn"]) {
             additionalHeaders = {
@@ -10,9 +27,10 @@ const actions = {
         }
 
         commit("setProcessesLoading", true);
+        console.log(Config.simulationApiUrl);
 
         try {
-            const response = await fetch(`${Config.simulationApiUrl}/processes/`, {
+            const response = await fetch(`/api/processes/`, {
                     headers: {
                         "content-type": "application/json",
                         ...additionalHeaders
@@ -28,7 +46,7 @@ const actions = {
 
     },
 
-    async fetchJobs ({state, commit, rootGetters}) {
+    async fetchJobs ({ commit, rootGetters}) {
         let additionalHeaders = {};
         if (rootGetters["Modules/Login/loggedIn"]) {
             additionalHeaders = {
@@ -40,7 +58,7 @@ const actions = {
 
         try {
             const response = await fetch(
-                `${Config.simulationApiUrl}/jobs/?include_ensembles`,
+                `/api/jobs/?include_ensembles`,
                 {
                     headers: {
                         "content-type": "application/json",
@@ -57,7 +75,7 @@ const actions = {
 
     },
 
-    async fetchEnsembles ({state, commit, rootGetters}) {
+    async fetchEnsembles ({ commit, rootGetters}) {
         if (!rootGetters["Modules/Login/loggedIn"]) {
             return;
         }
@@ -66,13 +84,15 @@ const actions = {
 
         try {
             const response = await fetch(
-                `${Config.simulationApiUrl}/ensembles/`,
+                `/api/ensembles/`,
                 {
                     headers: {
                         "content-type": "application/json",
                         Authorization: `Bearer ${rootGetters["Modules/Login/accessToken"]}`
                     }
                 }).then((res) => res.json());
+
+            // TODO: this might changed in the backend
             commit("setEnsembles", response);
         } catch (error) {
             console.error(error);
@@ -82,7 +102,7 @@ const actions = {
 
     },
 
-    async deleteEnsembleById ({state, commit, rootGetters}, ensembleId) {
+    async deleteEnsembleById ({ commit, rootGetters}, ensembleId) {
         if (!rootGetters["Modules/Login/loggedIn"]) {
             return;
         }
@@ -90,7 +110,7 @@ const actions = {
         commit("setEnsemblesLoading", true);
 
         try {
-            const response = await fetch(`${Config.simulationApiUrl}/ensembles/${ensembleId}`, {
+            const response = await fetch(`/api/ensembles/${ensembleId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -121,7 +141,7 @@ const actions = {
 
         const fetchPromise = (async () => {
             const accessToken = rootGetters["Modules/Login/accessToken"];
-            const response = await fetch(`${Config.simulationApiUrl}/users/${user_id}/details`, {
+            const response = await fetch(`/api/users/${user_id}/details`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`

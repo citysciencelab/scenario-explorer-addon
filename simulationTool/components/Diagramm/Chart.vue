@@ -66,11 +66,13 @@ export default {
       }
     },
     getPlotlyData() {
-      if (!this.jobResultData || !this.type || Object.keys(this.chartConfigs).length === 0) {
+      const jobIds = Object.keys(this.chartConfigs)
+
+      if (!this.jobResultData || !this.type || jobIds.length === 0) {
         return [];
       }
 
-      const unsortedTraces = Object.keys(this.chartConfigs).map(jobId => {
+      const unsortedTraces = jobIds.map(jobId => {
         const chartConfig = this.chartConfigs[jobId];
 
         const root = this.getValue(this.jobResultData[jobId], chartConfig.rootProp);

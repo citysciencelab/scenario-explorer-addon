@@ -93,7 +93,7 @@ export default {
 
             try {
                 this.jobRequestState.loading = true;
-                const response = await fetch(`${Config.simulationApiUrl}/jobs/${jobId}`, {
+                const response = await fetch(`/api/jobs/${jobId}`, {
                     headers: {
                         "Content-Type": "application/json",
                         ...additionalHeaders
@@ -161,7 +161,6 @@ export default {
                     }
                 } else {
                     this.setJobResultData({
-                        ...this.jobResultData,
                         [this.selectedJobId]: result
                     });
                 }
@@ -576,13 +575,13 @@ export default {
         flex: 0 1 auto;
     }
 
-    .details-body,
-    .panel-container,
-    .charts,
-    .links,
-    .filter,
+    .details-body, 
+    .panel-container, 
+    .charts, 
+    .links, 
+    .filter, 
     .parameter,
-    .notes,
+    .notes, 
     .sharing {
         flex: 0 1 auto;
         overflow: auto;
@@ -610,7 +609,7 @@ export default {
 
     .charts {
         width: 100%;
-        box-sizing: border-box;
+        box-sizing: border-box; 
     }
 
     .job-filter {

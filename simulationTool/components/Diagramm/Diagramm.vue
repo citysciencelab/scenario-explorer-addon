@@ -19,6 +19,32 @@ export default {
       activePanel: 'settings'
     };
   },
+  watch: {
+    jobResultData: {
+      // get configured graph properties from providers
+      handler(newValue) {
+        const jobIds = Object.keys(newValue);
+        const jobs = this.jobs;
+        const providers = this.providers;
+        for (const jobId of jobIds) {
+          if (!this.chartConfigs[jobId]) {
+            this.chartConfigs[jobId] = { xProp: '', yProp: '', rootProp: '' };
+          }
+          const job = jobs.find(job => job.jobID === jobId);
+          if (!job) continue;
+          const [serverName, processName] = job.processID.split(":");
+          const config = providers?.[serverName]?.processes?.[processName]?.["graph-properties"];
+          if (!config) continue;
+          this.chartConfigs[jobId] = {
+            xProp: config["x-path"] || '',
+            yProp: config["y-path"] || '',
+            rootProp: config["root-path"] || ''
+          };
+        }
+      },
+      immediate: true
+    }
+  },
   methods: {
     togglePanel() {
       this.activePanel = this.activePanel === 'settings' ? 'chart' : 'settings';
@@ -33,7 +59,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("Modules/SimulationTool", ["jobResultData"]),
+    ...mapGetters("Modules/SimulationTool", ["jobResultData", "providers", "jobs"]),
     validationMessage() {
       if (!this.atLeastOneChartIsValid()) {
         return this.$t('additional:modules.tools.simulationTool.inValidChartConfig');

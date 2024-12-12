@@ -123,6 +123,7 @@ export default {
       top: 100%;
       left: 0;
       margin-top: 0.5rem;
+      width: 250px;
       z-index: 1000;
       background-color: white;
       border-radius: 5px;

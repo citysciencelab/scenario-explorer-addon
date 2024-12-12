@@ -3,6 +3,8 @@
     "tools": {
       "simulationTool": {
         "additionalInfo": "Mehr Informationen",
+        "toolName": "Scenario Explorer",
+        "toolDescription": "Erstelle mittels digitaler Simulationsmodelle Szenarien und Ensembles, um mögliche zukünftige Entwicklungen zu untersuchen und zu vergleichen.",
         "addOrSelectValue": "Wert auswählen oder hinzufügen ...",
         "addScenarios": "Scenarios hinzufügen",
         "addThisValue": "Diesen Wert hinzufügen",

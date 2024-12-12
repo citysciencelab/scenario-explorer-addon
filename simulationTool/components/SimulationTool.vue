@@ -45,6 +45,7 @@ export default {
         this.fetchProcesses();
         this.fetchJobs();
         this.fetchEnsembles();
+        this.fetchProviders();
     },
     /**
      * Put initialize here if mounting occurs after config parsing
