@@ -35,6 +35,15 @@
         this.$emit('update:modelValue', newValue);
       }
     },
+    methods: {
+      updateFromInput(event, index) {
+        const value = Number(event.target.value);
+        if (isNaN(value)) return;
+        const newArrayValue = [...this.internalValue];
+        newArrayValue[index] = value;
+        this.internalValue = newArrayValue;
+      }
+    },
     emits: ['update:modelValue'],
   }
 </script>
@@ -44,7 +53,8 @@
     <input
       type="number"
       class="form-control"
-      v-model="internalValue[0]"
+      :value="internalValue[0]"
+      @input="updateFromInput($event, 0)"
       :min="min"
     />
     <Slider
@@ -56,7 +66,8 @@
     <input
       type="number"
       class="form-control"
-      v-model="internalValue[1]"
+      :value="internalValue[1]"
+      @input="updateFromInput($event, 1)"
       :max="max"
     />
   </div>
