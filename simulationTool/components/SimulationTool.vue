@@ -18,7 +18,7 @@ import SideMenu from "./SideMenu.vue";
 import TutorialPanel from "./HelpSection/TutorialPanel.vue";
 import HelpPanel from "./HelpSection/HelpPanel.vue";
 
-const MIN_WIDTH = 900;
+const MIN_WIDTH_PERCENT = 40;
 
 export default {
     name: "SimulationTool",
@@ -61,12 +61,10 @@ export default {
         ...mapMutations("Modules/SimulationTool", Object.keys(mutations)),
         ...mapActions("Modules/SimulationTool", Object.keys(actions)),
         maximizeDrawer () {
-            if (window.innerWidth / 4 < MIN_WIDTH) {
-                this.setCurrentMenuWidth({
-                    side: "secondaryMenu",
-                    width: MIN_WIDTH + "px"
-                });
-            }
+            this.setCurrentMenuWidth({
+                side: "secondaryMenu",
+                width: MIN_WIDTH_PERCENT + "dvw"
+            });
         },
         /**
          * Selects a process by id
@@ -141,12 +139,12 @@ export default {
 
 <style lang="scss" scoped>
     #tool-simulationTool {
-        height: 100%;
         overflow: hidden;
         display: flex;
+        flex: 1;
 
         .content {
-            flex: 1;
+            flex: 1 1 0;
             padding: 1rem;
         }
     }
