@@ -1,7 +1,32 @@
-# scenario-explorer-addon
-The Scenario Explorer Masterportal AddOn Code Repository
 
-# Modifying Existing Phrasing
+![Scenario Explorer Kopie](https://github.com/user-attachments/assets/2a8dd17b-1cbd-40be-a067-9e5c901566fc)
+
+# Scenario Explorer
+This repository contains the code for the [Masterportal](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/v3.6.0/) Scenario Explorer AddOn. The AddOn is a dynamic interface to the [Urban Model Platform](https://github.com/citysciencelab/urban-model-platform) and enables users to run simulations and ensembles of various models, retrieve and share results, and visualize them as geo layers and charts. 
+
+## Development Setup
+
+### Requirements
+- A running instance of the [Urban Model Platform](https://github.com/citysciencelab/urban-model-platform)
+- Docker
+
+### Configuration
+Most configuration of the AddOn and takes place in the [portalconfig](./portalconfig) folder. In the [config.js](./portalconfig/config.js) file, the following elements need to be specified:
+
+| Configuration Variable       | Description                                                                                     | Example                                      |
+|------------------------------|-------------------------------------------------------------------------------------------------|----------------------------------------------|
+| `addons`                     | A list of addons to be used in the scenario explorer.                                           | `["simulationTool"]`                       |
+| `simulationApiUrl`           | The URL of the Urban Model Platform API used for simulation.                                    | `https://api.simulation.com`                 |
+| `login`                      | Configuration parameters for login, including sub-variables:                                    |                                              |
+| - `oidcAuthorizationEndpoint`| The URL for the OIDC authorization endpoint.                                                    | `https://auth.example.com/authorize`         |
+| - `oidcTokenEndpoint`        | The URL for the OIDC token endpoint.                                                            | `https://auth.example.com/token`             |
+| - `oidcClientId`             | The client ID for OIDC authentication (typically set up in the Keycloak instance)               | `scenario-explorer`                           |
+| - `oidcRedirectUri`          | The redirect URI for OIDC authentication (localhost when in development)                        | `http://localhost/portal/simulation/`           |
+| - `oidcScope`                | The scope for OIDC authentication.                                                              | `"openid"`                       |
+| - `interceptorUrlRegex`      | A regex pattern to match URLs that should be intercepted.                                       | `^https://api\.example\.com/.*$`             |
+
+
+### Modifying Existing Phrasing
 
 If existing text content from any component in the addon needs to be modified, this must be done in the JSON files from the `locales` folder under `scenario-explorer-addon/simulationTool/locales`. Here you can find a json document for each supported language. The `keys` of the `simulationTool` object are referenced in the application. These must remain unchanged. However, the `values` can be adjusted to change the existing texts.
 
