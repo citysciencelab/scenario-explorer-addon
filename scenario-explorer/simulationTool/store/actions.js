@@ -30,7 +30,7 @@ const actions = {
         console.log(Config.simulationApiUrl);
 
         try {
-            const response = await fetch(`/api/processes/`, {
+            const response = await fetch(`${Config.simulationApiUrl}/processes/`, {
                     headers: {
                         "content-type": "application/json",
                         ...additionalHeaders
@@ -58,7 +58,7 @@ const actions = {
 
         try {
             const response = await fetch(
-                `/api/jobs/?include_ensembles`,
+                `${Config.simulationApiUrl}/jobs/?include_ensembles`,
                 {
                     headers: {
                         "content-type": "application/json",
@@ -84,7 +84,7 @@ const actions = {
 
         try {
             const response = await fetch(
-                `/api/ensembles/`,
+                `${Config.simulationApiUrl}/ensembles/`,
                 {
                     headers: {
                         "content-type": "application/json",
@@ -110,7 +110,7 @@ const actions = {
         commit("setEnsemblesLoading", true);
 
         try {
-            const response = await fetch(`/api/ensembles/${ensembleId}`, {
+            const response = await fetch(`${Config.simulationApiUrl}/ensembles/${ensembleId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -141,7 +141,7 @@ const actions = {
 
         const fetchPromise = (async () => {
             const accessToken = rootGetters["Modules/Login/accessToken"];
-            const response = await fetch(`/api/users/${user_id}/details`, {
+            const response = await fetch(`${Config.simulationApiUrl}/users/${user_id}/details`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`
