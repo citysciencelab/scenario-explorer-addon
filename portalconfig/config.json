@@ -1,0 +1,346 @@
+{
+    "portalConfig": {
+      "map": {
+        "baselayerSwitcher": {
+          "active": true
+        },
+        "controls": {
+          "rotation": {
+            "showResetRotationAlways": false,
+            "showResetRotation": false,
+            "rotationIcons": false,
+            "moveDistance": 2500,
+            "compass2d": true
+          },
+          "zoom": true,
+          "tiltView": true,
+          "totalView": true,
+          "button3d": true,
+          "fullScreen": true
+        },
+        "featureViaURL": {
+          "zoomTo": "42",
+          "epsg": 4326,
+          "layers": [
+            {
+              "id": "42",
+              "geometryType": "Point",
+              "name": "Punkt Feature",
+              "styleId": "location_eventlotse"
+            },
+            {
+              "id": "4200",
+              "geometryType": "LineString",
+              "name": "Übergebene Linien Feature",
+              "styleId": "mapMarkerPolygon_flaecheninfo"
+            },
+            {
+              "id": "4020",
+              "geometryType": "Polygon",
+              "name": "Übergebene Polygon Feature",
+              "styleId": "mapMarkerPolygon_flaecheninfo"
+            }
+          ]
+        },
+        "getFeatureInfo": {
+          "coloredHighlighting3D": {
+            "enabled": true,
+            "color": "PURPLE"
+          },
+          "highlightVectorRules": {
+            "fill": {
+              "color": [215, 102, 41, 0.9]
+            },
+            "image": {
+              "scale": 1.5
+            },
+            "stroke": {
+              "width": 4,
+              "color": [215, 102, 41, 0.9]
+            },
+            "text": {
+              "scale": 2
+            }
+          },
+          "hideMapMarkerOnVectorHighlight": false
+        },
+        "layerPills": {
+          "active": true
+        },
+        "map3dParameter": {
+          "fog": {
+            "enabled": true,
+            "density": 0.0002,
+            "screenSpaceErrorFactor": 2.0
+          },
+          "fxaa": true,
+          "globe": {
+            "enableLighting": true,
+            "maximumScreenSpaceError": 2,
+            "tileCacheSize": 20
+          }
+        },
+        "mapMarker": {
+          "pointStyleId": "mapMarker_geo-alt-fill"
+        },
+        "mapView": {
+          "backgroundImage": "https://geodienste.hamburg.de/lgv-config/img/backgroundCanvas.jpeg",
+          "startZoomLevel": 4,
+          "startCenter": [565874, 5934140],
+          "mapInteractions": {
+            "interactionModes": {
+              "altShiftDragRotate": true,
+              "twoFingerPan": true
+            }
+          }
+        },
+        "mouseHover": {
+          "numFeaturesToShow": 2,
+          "infoText": "Exampletext"
+        },
+        "startingMapMode": "2D",
+        "zoomTo": [
+          {
+            "id": "zoomToGeometry",
+            "layerId": "1692",
+            "property": "bezirk_name",
+            "allowedValues": [
+              "ALTONA",
+              "HARBURG",
+              "HAMBURG-NORD",
+              "BERGEDORF",
+              "EIMSBÜTTEL",
+              "HAMBURG-MITTE",
+              "WANDSBEK"
+            ]
+          },
+          {
+            "id": "zoomToFeatureId",
+            "layerId": "4560",
+            "property": "flaechenid",
+            "styleId": "location_eventlotse"
+          }
+        ]
+      },
+      "portalFooter": {
+        "urls": [
+          {
+            "bezeichnung": "common:modules.portalFooter.designation",
+            "url": "https://geoinfo.hamburg.de/",
+            "alias": "Landesbetrieb Geoinformation und Vermessung",
+            "alias_mobil": "LGV"
+          }
+        ],
+        "scaleLine": true
+      },
+      "mainMenu": {
+        "expanded": true,
+        "sections": [
+          [
+            {
+              "type": "login"
+            },
+            {
+              "name": "Legende",
+              "type": "legend"
+            },
+            {
+              "type": "language"
+            },
+            {
+              "type": "about",
+              "cswUrl": "https://metaver.de/csw",
+              "metaUrl": "to be filled",
+              "metaId": "to be filled"
+            }
+          ]
+        ],
+        "title": {
+          "text": "Scenario Explorer",
+          "logo": "resources/img/Logo.jpg",
+          "link": "",
+          "toolTip": "toolTip"
+        },
+        "searchBar": {
+          "searchInterfaces": [
+            {
+              "serviceId": "11",
+              "limit": 20,
+              "lang": "de",
+              "lat": 53.6,
+              "lon": 10,
+              "bbox": "9.6,53.3,10.4,53.8",
+              "type": "komootPhoton"
+            },
+            {
+              "type": "visibleVector"
+            },
+            {
+              "type": "topicTree"
+            }
+          ],
+          "placeholder": "Suche nach: - Adresse - Aktiven WFS"
+        }
+      },
+      "secondaryMenu": {
+        "expanded": false,
+        "sections": [
+          [
+            {
+              "name": "additional:modules.tools.simulationTool.title",
+              "icon": "bi-sliders2",
+              "type": "simulationTool"
+            },
+            {
+              "type": "print",
+              "printServiceId": "mapfish",
+              "printAppId": "master",
+              "filename": "Ausdruck",
+              "title": "Mein Titel",
+              "currentLayoutName": "A4 Hochformat",
+              "printMapMarker": true
+            },
+            {
+              "type": "routing",
+              "icon": "bi-signpost-2",
+              "geosearch": {
+                "type": "BKG",
+                "serviceId": "5",
+                "bbox": {
+                  "CYCLING": "9.6,53.40,10.4,53.84"
+                }
+              },
+              "geosearchReverse": {
+                "type": "BKG",
+                "serviceId": "5"
+              },
+              "directionsSettings": {
+                "type": "ORS",
+                "serviceId": "bkg_ors",
+                "speedProfile": "CAR",
+                "batchProcessing": {
+                  "enabled": false,
+                  "active": false
+                }
+              },
+              "isochronesSettings": {
+                "type": "ORS",
+                "serviceId": "bkg_ors",
+                "speedProfile": "CAR",
+                "batchProcessing": {
+                  "enabled": false,
+                  "active": false
+                }
+              }
+            },
+            {
+              "type": "shareView"
+            },
+            {
+              "type": "modeler3D"
+            },
+            {
+              "type": "shadow",
+              "isShadowEnabled": true
+            }
+          ]
+        ]
+      },
+      "tree": {
+        "singleBaselayer": false,
+        "addLayerButton": {
+          "active": true,
+          "searchBar": {
+            "active": true,
+            "searchInterfaceInstances": [
+              {
+                "id":"elasticSearch_0",
+                "searchCategory": "Thema (externe Fachdaten)"
+              }, 
+              {
+                "id": "topicTree",
+                "searchCategory": "Thema"
+              }
+            ]         
+          }
+        },
+        "highlightedFeatures": {
+          "active": true
+        },
+        "layerIDsToStyle": [
+          {
+            "id": "1933",
+            "styles": "geofox_stations",
+            "name": "Haltestellen",
+            "legendURL": "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bus.png"
+          },
+          {
+            "id": "1935",
+            "styles": [
+              "geofox_Faehre",
+              "geofox-bahn",
+              "geofox-bus",
+              "geofox_BusName"
+            ],
+            "name": [
+              "Fährverbindungen",
+              "Bahnlinien",
+              "Buslinien",
+              "Busliniennummern"
+            ],
+            "legendURL": [
+              "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-faehre.png",
+              "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bahn.png",
+              "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bus.png",
+              "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bus.png"
+            ]
+          }
+        ]
+      }
+    },
+    "layerConfig": {
+      "baselayer": {
+        "elements": [
+          {
+            "id": "453",
+            "name": "Geobasiskarten (HamburgDE)",
+            "shortname": "Geobasiskarten",
+            "typ": "WMS",
+            "visibility": true
+          },
+          {
+            "id": "452",
+            "name": "Digitale Orthophotos (belaubt) Hamburg",
+            "shortname": "Orthophotos",
+            "typ": "WMS",
+            "visibility": false,
+            "transparency": 30,
+            "preview": {
+              "zoomLevel": 6,
+              "center": "566245.97,5938894.79",
+              "radius": 500
+            }
+          },
+          {
+            "id": [
+              "4736",
+              "12062",
+              "4745",
+              "4739",
+              "12061",
+              "4742",
+              "12060",
+              "12059"
+            ],
+            "name": "Geobasiskarten (schwarz-grau)",
+            "shortname": "Karte schwarz-grau",
+            "visibility": false
+          }
+  
+        ]
+      },
+      "subjectlayer": {
+        "elements": []
+      }
+    }
+  }
