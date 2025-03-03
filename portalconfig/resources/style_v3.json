@@ -1,0 +1,65 @@
+[
+    {
+      "styleId": "654321",
+      "rules": [
+        {
+          "style": {
+            "circleRadius": 2,
+            "circleStrokeColor": [
+              0,
+              100,
+              255,
+              255
+            ],
+            "circleFillColor": [
+              50,
+              150,
+              255,
+              255
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "styleId": "7654321",
+      "rules": [
+        {
+          "condition": {
+            "properties": [
+              {
+                "step" : [0, 3]
+              }
+            ]
+          },
+          "style": {
+            "polygonFillColor": [0,255,0,0.7]
+          }
+        },
+        {
+          "condition": {
+            "properties": [
+              {
+                 "step" : [4, 8]
+              }
+            ]
+          },
+          "style": {
+            "polygonFillColor": [255,255,0,0.7]
+          }
+        },
+        {
+          "condition": {
+            "properties": [
+              {
+                 "step" : [9, 15]
+              }
+            ]
+          },
+          "style": {
+            "polygonFillColor": [255,0,0,0.7]
+          }
+        }
+      ]
+    }
+  ]

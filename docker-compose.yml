@@ -1,0 +1,20 @@
+services:
+  nginx:
+    container_name: scenario-explorer-nginx
+    image: nginx:stable
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/default-local.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - scenario-explorer
+  scenario-explorer:
+    container_name: scenario-explorer
+    build:
+      dockerfile: Dockerfile.dev
+    image: cut-masterportal:latest
+    volumes:
+      - ./scenario-explorer/:/masterportal/addons/
+      - ./portalconfig/:/masterportal/portal/simulation/
+    ports:
+      - 9001:9001
