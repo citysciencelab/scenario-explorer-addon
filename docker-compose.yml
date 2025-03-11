@@ -16,5 +16,8 @@ services:
     volumes:
       - ./scenario-explorer/:/masterportal/addons/
       - ./portalconfig/:/masterportal/portal/simulation/
+      - ./portalconfig/package.json:/masterportal/package.json
+      - ./portalconfig/webpack.common.js:/masterportal/devtools/webpack.common.js
+      - ./portalconfig/main.js:/masterportal/src/main.js
     ports:
       - 9001:9001

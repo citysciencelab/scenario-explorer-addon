@@ -39,6 +39,7 @@ const Config = {
         fallbackLanguage: "de",
         changeLanguageOnStartWhen: ["querystring", "localStorage", "htmlTag"]
     },
+    vuetify: "addons/simulationTool/vuetify.js",
     addons: ["simulationTool"],
     simulationApiUrl: "https://modelplatform.comodeling.city/api",
     login: {
