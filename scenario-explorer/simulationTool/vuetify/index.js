@@ -13,7 +13,14 @@ const vuetify = createVuetify({
     themes: {
       light: {
         colors: {
-          primary: '#66afe9',
+          primary: '#D6E3FF',
+          darkblue: '#465166',
+          orange: '#FFAD33',
+          orangelight: '#FEE397',
+          green: '#236051',
+          greenlight: '#72CD86',
+          purple: '#584560',
+          purplelight: '#C2A7CD'
         },
       },
     },

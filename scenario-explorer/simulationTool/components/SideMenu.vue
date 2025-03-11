@@ -74,7 +74,7 @@ export default {
             @click="() => this.setMode('process-list')"
             :title="$t('additional:modules.tools.simulationTool.models')"
         >
-            <i class="bi bi-cpu-fill"></i>
+            <i class="bi bi-motherboard-fill"></i>
         </button>
         <button
             class="btn btn-link"
@@ -82,7 +82,7 @@ export default {
             @click="() => this.setMode('job-list')"
             :title="$t('additional:modules.tools.simulationTool.scenarios')"
         >
-            <i class="bi bi-box-fill"></i>
+            <i class="bi bi-clipboard-data-fill"></i>
         </button>
         <button
             class="btn btn-link"
@@ -91,7 +91,7 @@ export default {
             v-if="this.loggedIn"
             :title="$t('additional:modules.tools.simulationTool.ensembles')"
         >
-            <i class="bi bi-collection-fill"></i>
+            <i class="bi bi-boxes"></i>
         </button>
         <button
             class="btn btn-link"

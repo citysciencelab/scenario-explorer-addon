@@ -25,8 +25,8 @@ export default {
 <template>
     <div class="home-panel">
         <SectionHeader title="Startseite" icon="bi bi-person-fill" />
-        <div class="segment-wrapper">
-            <div v-if="username" class="welcome-user">
+            <v-img width="80" src="resources/img/Logo.jpg" class="m-4"></v-img >
+            <div v-if="username" class="welcome-user p-2">
                 <span>{{ $t("additional:modules.tools.simulationTool.welcome") }}</span>
                 <span v-if="loggedIn">, {{ username }}</span>
             </div>
@@ -34,38 +34,28 @@ export default {
                 <span class="welcome-user">{{ $t("additional:modules.tools.simulationTool.notLoggedIn") }}</span>
                 <div class="not-authenticated">{{ $t("additional:modules.tools.simulationTool.authRequest") }}</div>
             </span>
-            <div class="element-wrapper">
-                <p class="segment-header">
-                    {{ $t("additional:modules.tools.simulationTool.areYouNew") }}
-                </p>
-                <button class="segment-wrapper btn-light" @click="() => this.setMode('tutorial-panel')">
-                    <p>{{ $t("additional:modules.tools.simulationTool.tutorialInfo") }}</p>
-                    <i class="bi bi-arrow-right-circle-fill"></i>
-                </button>
-            </div>
-            <div class="element-wrapper">
-                <div class="segment-header">
-                    {{ $t("additional:modules.tools.simulationTool.continue") }}
-                </div>
-                <ProcessList
-                    :headerIsVisible=false
-                    @selected="(payload) => $emit('selected', payload)"
-                />
-            </div>
-            <div class="element-wrapper" v-if="loggedIn">
-                <div class="segment-header">
-                    {{ $t("additional:modules.tools.simulationTool.news") }}
-                </div>
-                <div class="segment-wrapper">
-                    {{ $t("additional:modules.tools.simulationTool.newsCards") }}
-                </div>
-            </div>
+
+        <div class="element-wrapper">
+
+            <v-sheet rounded color="primary" @click="() => this.setMode('tutorial-panel')" class="p-4">
+                <i class="bi bi-info-lg"></i>
+                <p>{{ $t("additional:modules.tools.simulationTool.tutorialInfo") }} <i class="bi bi-arrow-right-circle-fill"></i></p>
+                
+            </v-sheet>
+            
         </div>
+        <div class="element-wrapper">
+            <div class="segment-header">
+                {{ $t("additional:modules.tools.simulationTool.continue") }}
+            </div>
+            <ProcessList :headerIsVisible=false @selected="(payload) => $emit('selected', payload)" />
+        </div>
+     
+
     </div>
 </template>
 
 <style lang="scss" scoped>
-
 .home-panel {
     max-height: 100vh;
     overflow-y: auto;
@@ -74,11 +64,7 @@ export default {
 .welcome-user {
     font-weight: 600;
     font-size: 24px;
-    padding: 10px;
-}
 
-.not-authenticated {
-    padding: 10px;
 }
 
 .segment-header {
@@ -97,7 +83,6 @@ export default {
     border-radius: 8px;
     box-shadow: var(--bs-box-shadow);
     width: 100%;
-    padding: 10px;
     background-color: transparent;
 
     button.segment-wrapper {
@@ -110,7 +95,8 @@ export default {
         padding: 10px;
 
         &:hover {
-            background-color: var(--bs-btn-hover-bg);;
+            background-color: var(--bs-btn-hover-bg);
+            ;
         }
 
         p {

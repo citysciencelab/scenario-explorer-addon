@@ -15,6 +15,7 @@ export default {
 </script>
 
 <template>
+  <v-sheet rounded color="#ffffff">
   <header class="section-header">
     <i
       v-if="icon"
@@ -26,6 +27,7 @@ export default {
       <slot name="actions"></slot>
     </div>
   </header>
+</v-sheet>
 </template>
 
 <style scoped>
@@ -34,7 +36,6 @@ export default {
     align-items: center;
     font-size: 1.75rem;
     padding: .5rem;
-    border-bottom: 2px solid var(--bs-border-color);
     margin-bottom: 2rem;
 
     i {
