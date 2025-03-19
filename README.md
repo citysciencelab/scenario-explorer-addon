@@ -26,30 +26,6 @@ Most configuration of the AddOn and takes place in the [portalconfig](./portalco
 | - `interceptorUrlRegex`      | A regex pattern to match URLs that should be intercepted.                                       | `^https://api\.example\.com/.*$`             |
 
 
-
-### Starting Development with Docker Compose
-
-To start the development environment using Docker Compose, follow these steps:
-
-1. Ensure Docker and Docker Compose are installed on your machine.
-2. Navigate to the root directory of the `scenario-explorer-addon` repository.
-3. Run the following command to start the services defined in the `docker-compose.yml` file:
-
-```sh
-docker-compose up
-```
-
-This command will build and start the necessary containers for the Scenario Explorer AddOn. Once the process is complete, the application should be accessible at `http://localhost/portal/simulation`.
-
-To stop the running containers, use the following command:
-
-```sh
-docker-compose down
-```
-
-This will stop and remove the containers, networks, and volumes created by `docker-compose up`.
-
-
 ### Modifying Existing Phrasing
 
 If existing text content from any component in the addon needs to be modified, this must be done in the JSON files from the `locales` folder under `scenario-explorer-addon/simulationTool/locales`. Here you can find a json document for each supported language. The `keys` of the `simulationTool` object are referenced in the application. These must remain unchanged. However, the `values` can be adjusted to change the existing texts.
