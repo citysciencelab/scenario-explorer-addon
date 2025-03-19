@@ -108,7 +108,7 @@ export default {
     nav.simulation-tool-sidebar {
         display: flex;
         flex-direction: column;
-        width: 65px;
+        width: 75px;
         gap: 1.5rem;
         background-color: var(--bs-primary);
         padding: 0 .5rem;

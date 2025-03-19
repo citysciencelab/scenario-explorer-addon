@@ -97,7 +97,7 @@ module.exports = function () {
                 "variables": path.resolve(__dirname, "..", "src", "assets", "css", "variables.scss")
             },
           modules: ["node_modules", "src"],  
-          extensions: [".tsx", ".ts", ".js", ".mjs", ".scss"]
+          extensions: [".tsx", ".ts", ".js", ".mjs", ".scss", ".css"]
         },
         module: {
             unknownContextCritical: false,

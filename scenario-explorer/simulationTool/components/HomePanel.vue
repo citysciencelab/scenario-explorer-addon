@@ -1,4 +1,5 @@
 <script>
+
 import ProcessList from "./Process/ProcessList.vue";
 import SectionHeader from "./SectionHeader.vue";
 
@@ -27,12 +28,12 @@ export default {
         <SectionHeader title="Startseite" icon="bi bi-person-fill" />
             <v-img width="80" src="resources/img/Logo.jpg" class="m-4"></v-img >
             <div v-if="username" class="welcome-user p-2">
-                <span>{{ $t("additional:modules.tools.simulationTool.welcome") }}</span>
-                <span v-if="loggedIn">, {{ username }}</span>
+                <span class="text-h2">{{ $t("additional:modules.tools.simulationTool.welcome") }},</span><br/>
+                <span v-if="loggedIn" class="text-h2">{{ username }}</span>
             </div>
-            <span v-else>
+            <span v-else class="p-2">
                 <span class="welcome-user">{{ $t("additional:modules.tools.simulationTool.notLoggedIn") }}</span>
-                <div class="not-authenticated">{{ $t("additional:modules.tools.simulationTool.authRequest") }}</div>
+                <div class="not-authenticated p-2">{{ $t("additional:modules.tools.simulationTool.authRequest") }}</div>
             </span>
 
         <div class="element-wrapper">
@@ -56,6 +57,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+
 .home-panel {
     max-height: 100vh;
     overflow-y: auto;

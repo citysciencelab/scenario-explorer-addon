@@ -13,7 +13,7 @@ export default {
         Multiselect,
         SectionHeader
     },
-    data () {
+    data() {
         return {
             options: [
                 { name: "accepted", code: "accepted" },
@@ -23,7 +23,15 @@ export default {
                 { name: "dismissed", code: "dismissed" }
             ],
             selectedStatus: [],
-            searchString: ""
+            searchString: "",
+            headers: [
+                { title: this.$t('additional:modules.tools.simulationTool.name'), key: 'name' },
+                { title: this.$t('additional:modules.tools.simulationTool.model'), key: 'process_title' },
+                { title: this.$t('additional:modules.tools.simulationTool.date'), key: 'started' },
+                { title: this.$t('additional:modules.tools.simulationTool.status'), key: 'status' },
+                { title: this.$t('additional:modules.tools.simulationTool.user'), key: 'user_id' },
+                { title: this.$t('additional:modules.tools.simulationTool.ensembles'), key: 'ensembles' }
+            ],
         }
     },
     computed: {
@@ -37,6 +45,7 @@ export default {
         filteredJobs: {
             get() {
                 let filteredJobs = this.jobs;
+                console.log(this.jobs)
                 if (this.selectedStatus.length) {
                     filteredJobs = filteredJobs.filter(job => {
                         return this.selectedStatus.some(status =>
@@ -65,6 +74,7 @@ export default {
                     ids = ids.filter(id => otherIds.includes(id));
                     localStorage.setItem('jobs', ids);
                 }
+                console.log(filteredJobs);
                 return filteredJobs;
             },
             set(newJobs) {
@@ -117,58 +127,34 @@ export default {
 
 <template>
     <div class="job-list">
-        <SectionHeader :title="$t('additional:modules.tools.simulationTool.scenarios')" icon="bi-box-fill">
+        <SectionHeader :title="$t('additional:modules.tools.simulationTool.scenarios')" icon="bi-clipboard-data-fill">
             <template #actions>
-                <button
-                    class="btn btn-primary"
-                    @click="() => {
-                        this.setMode('job-execution')
-                        this.setSelectedProcessId(null)
-                    }"
-                >
+                <button class="btn btn-primary" @click="() => {
+                    this.setMode('job-execution')
+                    this.setSelectedProcessId(null)
+                }">
                     <i class="bi bi-plus-lg">&nbsp;</i>
                     <span>{{ $t('additional:modules.tools.simulationTool.newScenario') }}</span>
                 </button>
             </template>
         </SectionHeader>
+
         <div class="job-list-toolbar">
+
             <div class="input-group search-wrapper">
-                <input
-                    class="form-control"
-                    :placeholder="$t('additional:modules.tools.simulationTool.search') + ' …'"
-                    :aria-label="$t('additional:modules.tools.simulationTool.search')"
-                    v-model="searchString"
-                >
-                <i
-                    v-if="searchString"
-                    class="bi-x-lg"
-                    role="img"
-                    @click="clearSearch"
-                ></i>
-                <i
-                    v-else
-                    class="bi-search"
-                    role="img"
-                ></i>
+                <input class="form-control" :placeholder="$t('additional:modules.tools.simulationTool.search') + ' …'"
+                    :aria-label="$t('additional:modules.tools.simulationTool.search')" v-model="searchString">
+                <i v-if="searchString" class="bi-x-lg" role="img" @click="clearSearch"></i>
+                <i v-else class="bi-search" role="img"></i>
             </div>
-            <multiselect
-                v-model="selectedStatus"
+            <multiselect v-model="selectedStatus"
                 :placeholder="$t('additional:modules.tools.simulationTool.filter') + ' …'"
-                :aria-label="$t('additional:modules.tools.simulationTool.filter')"
-                label="name"
-                track-by="code"
-                :options="this.options"
-                :multiple="true"
-                :open="true"
-            >
+                :aria-label="$t('additional:modules.tools.simulationTool.filter')" label="name" track-by="code"
+                :options="this.options" :multiple="true" :open="true">
                 <template #tag="{ option, remove }">
-                    <span class="multiselect__tag" :class="option.code" >
+                    <span class="multiselect__tag" :class="option.code">
                         <span>{{ option.name }}</span>
-                        <i
-                            tabindex="1"
-                            class="multiselect__tag-icon"
-                            @click="remove(option)"
-                        ></i>
+                        <i tabindex="1" class="multiselect__tag-icon" @click="remove(option)"></i>
                     </span>
                 </template>
                 <template #option="p">
@@ -179,19 +165,50 @@ export default {
                     </div>
                 </template>
             </multiselect>
-            <button
-                class="btn btn-primary btn-sm"
-                @click="this.fetchJobs"
-                :title="$t('additional:modules.tools.simulationTool.refresh')"
-            >
+
+            <button class="btn btn-primary btn-sm" @click="this.fetchJobs"
+                :title="$t('additional:modules.tools.simulationTool.refresh')">
                 <i class="bi-arrow-clockwise"></i>
             </button>
         </div>
-        <LoadingMask
-            v-if="jobsLoading"
-            :label="$t('additional:modules.tools.simulationTool.loadingScenarios') + '...'"
-        />
+
+        <LoadingMask v-if="jobsLoading"
+            :label="$t('additional:modules.tools.simulationTool.loadingScenarios') + '...'" />
         <div v-else class="table-wrapper">
+
+
+            <v-data-table :search="searchString" :headers="headers" :items="filteredJobs" items-per-page="10"
+                density="compact" width="100%">
+
+                <!--
+                <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+                    <tr>
+                        <template v-for="column in columns" :key="column.key">
+                            <th>
+                                <div class="d-flex align-center">
+                                    <span class="me-2 cursor-pointer text-overline" @click="toggleSort(column)"
+                                        v-text="column.title"></span>
+
+                                </div>
+                            </th>
+                        </template>
+                    </tr>
+                </template>
+                -->
+                
+                <template v-slot:header.name="{ column }">
+                        <span class="text-overline">{{ $t('additional:modules.tools.simulationTool.name') }}</span>
+                </template>
+
+                
+
+
+            </v-data-table>
+
+
+
+
+
             <table class="job-list-table">
                 <thead>
                     <tr>
@@ -206,34 +223,28 @@ export default {
                 <tbody>
                     <tr v-for="job in filteredJobs">
                         <td>
-                            <button
-                                class="btn btn-link"
-                                @click="onJobClick(job)"
-                            >
-                                {{this.getJobName(job)}}
+                            <button class="btn btn-link" @click="onJobClick(job)">
+                                {{ this.getJobName(job) }}
                             </button>
                         </td>
                         <td>
-                            {{this.getModelName(job)}}
+                            {{ this.getModelName(job) }}
                         </td>
                         <td>
-                            {{this.formatDateTime(job.started)}}
+                            {{ this.formatDateTime(job.started) }}
                         </td>
                         <td>
                             <div class="status" :class="job.status">
-                                {{job.status}}
+                                {{ job.status }}
                             </div>
                         </td>
                         <td v-if="loggedIn">
                             <UserDisplay :user_id="job.user_id" />
                         </td>
                         <td v-if="loggedIn">
-                            <button
-                                v-for="ensemble in job.ensembles"
-                                class="btn btn-link"
-                                @click="onEnsembleClick(ensemble.id)"
-                            >
-                                {{ensemble.name}}
+                            <button v-for="ensemble in job.ensembles" class="btn btn-link"
+                                @click="onEnsembleClick(ensemble.id)">
+                                {{ ensemble.name }}
                             </button>
                         </td>
                     </tr>
@@ -244,72 +255,74 @@ export default {
 </template>
 
 <style scoped lang="scss">
-    .job-list {
-        height: 100%;
+.job-list {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .table-wrapper {
+        flex: 1;
+        overflow: auto;
+    }
+
+    .job-list-toolbar {
         display: flex;
-        flex-direction: column;
-        overflow: hidden;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
 
-        .table-wrapper {
-            flex: 1;
-            overflow: auto;
-        }
-
-        .job-list-toolbar {
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-            margin-bottom: 1rem;
-
-            .search-wrapper {
-                input.form-control {
-                    border-top-right-radius: 5px !important;
-                    border-bottom-right-radius: 5px !important;
-                }
-                i {
-                    z-index: 10;
-                    position: absolute;
-                    right: 1em;
-                    top: 50%;
-                    transform: translate(0, -50%);
-                }
+        .search-wrapper {
+            input.form-control {
+                border-top-right-radius: 5px !important;
+                border-bottom-right-radius: 5px !important;
             }
 
-            >button {
-                align-self: center;
+            i {
+                z-index: 10;
+                position: absolute;
+                right: 1em;
+                top: 50%;
+                transform: translate(0, -50%);
             }
         }
 
-        .job-list-table {
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-
-            th, td {
-                padding: .5rem;
-                text-align: left;
-                overflow: hidden;
-                text-overflow: ellipsis;
-
-                &:not(:last-child) {
-                    border-right: 2px solid var(--bs-default);
-                }
-            }
-
-            th {
-                white-space: nowrap;
-            }
-
-            td > div:not(.status) {
-                white-space: normal;
-                display: -webkit-box;
-                line-clamp: 2;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                word-break: break-word;
-            }
+        >button {
+            align-self: center;
         }
     }
+
+    .job-list-table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+
+        th,
+        td {
+            padding: .5rem;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &:not(:last-child) {
+                border-right: 2px solid var(--bs-default);
+            }
+        }
+
+        th {
+            white-space: nowrap;
+        }
+
+        td>div:not(.status) {
+            white-space: normal;
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-word;
+        }
+    }
+}
 </style>

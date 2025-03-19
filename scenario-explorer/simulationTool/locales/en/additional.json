@@ -80,7 +80,7 @@
         "modelOverview": "Overview of the models",
         "modelOverviewContent": "On this page you will find an overview of all currently applicable (simulation) models. If you are looking for specific topics, tags, parameters, model versions, ensemble affiliations, you can search, filter and sort the models accordingly. A clearly laid out setcard provides you with the most important information about the respective model, such as model name, model version, model server and tags. A short description helps you to understand the purpose of the model as quickly as possible. Further details about the respective model can be found under \"More information\". Alternatively, you can click on the \"Simulate\" button and start a simulation of the selected model directly.",
         "modelOverviewHint": "In contrast to static models, simulations are dynamic models with a progressive index variable, which typically represents time.",
-        "models": "Models",
+        "models": "Simulation models",
         "montecarlo": "Monte Carlo",
         "name": "Name",
         "newEnsemble": "New ensemble",

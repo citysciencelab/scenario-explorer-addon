@@ -6,6 +6,7 @@ import ProcessCard from './ProcessCard.vue';
 import SectionHeader from '../SectionHeader.vue';
 import LoadingMask from "../LoadingMask.vue";
 
+
 export default {
     name: "ProcessList",
     components: {
@@ -90,7 +91,7 @@ export default {
 
 <template>
     <div class="process-list">
-        <SectionHeader v-if="headerIsVisible" :title="$t('additional:modules.tools.simulationTool.models')" icon="bi-cpu-fill" />
+        <SectionHeader v-if="headerIsVisible" :title="$t('additional:modules.tools.simulationTool.models')" icon="bi-motherboard-fill" />
         <div class="process-list-toolbar">
             <div class="input-group search-wrapper">
                 <input

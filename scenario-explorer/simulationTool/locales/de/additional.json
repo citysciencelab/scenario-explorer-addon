@@ -80,7 +80,7 @@
         "modelOverview": "Übersicht der Modelle",
         "modelOverviewContent": "Auf dieser Seite findest du eine Übersicht von allen derzeitig anwendbaren (Simulations)Modellen. Wenn du auf der Suche nach bestimmten Themen, Tags, Parametern, Modellversionen, Ensemblezugehörigkeiten, bist, kannst du die Modelle danach durchsuchen, filtern und sortieren. Anhand einer übersichtlichen Setcard stehen dir die wichtigsten Informationen wie Modellname, Modellversion, Modellserver und Tags über das jeweilige Modell zur Verfügung. Eine kurze Beschreibung hilft dir, den Zweck des Modells schnellstmöglich zu erfassen. Weitere Details über das jeweilige Modell findest du unter \"Mehr Informationen\". Alternativ kannst du auf den Button \"Simulieren\" klicken und direkt eine Simulation des ausgewählten Modells starten.",
         "modelOverviewHint": "Im Gegensatz zu statischen Modellen sind Simulationen dynamische Modelle mit einer fortschreitenden Indexvariable, welche typischerweise Zeit darstellt.",
-        "models": "Modelle",
+        "models": "Simulationsmodelle",
         "montecarlo": "Monte Carlo",
         "name": "Name",
         "newEnsemble": "Neues Ensemble",
