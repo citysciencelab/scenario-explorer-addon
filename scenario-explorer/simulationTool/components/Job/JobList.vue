@@ -192,7 +192,7 @@ export default {
             :label="$t('additional:modules.tools.simulationTool.loadingScenarios') + '...'"
         />
         <div v-else class="table-wrapper">
-            <table class="job-list-table">
+            <table class="table table-hover table-sm table-responsive">
                 <thead>
                     <tr>
                         <th>{{ $t('additional:modules.tools.simulationTool.name') }}</th>
@@ -206,12 +206,12 @@ export default {
                 <tbody>
                     <tr v-for="job in filteredJobs">
                         <td>
-                            <button
-                                class="btn btn-link"
+                            <span
+
                                 @click="onJobClick(job)"
                             >
                                 {{this.getJobName(job)}}
-                            </button>
+                        </span>
                         </td>
                         <td>
                             {{this.getModelName(job)}}
